@@ -29,9 +29,29 @@ public class RoleForm extends AbstractForm {
 		super();
 	}
 
+	public CancelButton getCancelButton() {
+		return getFieldByClass(CancelButton.class);
+	}
+
 	@Override
 	protected String getConfiguredTitle() {
 		return TEXTS.get("Role");
+	}
+
+	public GroupBox getGroupBox() {
+		return getFieldByClass(GroupBox.class);
+	}
+
+	public MainBox getMainBox() {
+		return getFieldByClass(MainBox.class);
+	}
+
+	public NameField getNameField() {
+		return getFieldByClass(NameField.class);
+	}
+
+	public OkButton getOkButton() {
+		return getFieldByClass(OkButton.class);
 	}
 
 	@FormData
@@ -52,32 +72,16 @@ public class RoleForm extends AbstractForm {
 		startInternal(new NewHandler());
 	}
 
-	public CancelButton getCancelButton() {
-		return getFieldByClass(CancelButton.class);
-	}
-
-	public GroupBox getGroupBox() {
-		return getFieldByClass(GroupBox.class);
-	}
-
-	public MainBox getMainBox() {
-		return getFieldByClass(MainBox.class);
-	}
-
-	public NameField getNameField() {
-		return getFieldByClass(NameField.class);
-	}
-
-	public OkButton getOkButton() {
-		return getFieldByClass(OkButton.class);
-	}
-
 	@Order(10.0)
 	public class MainBox extends AbstractGroupBox {
 
 		@Override
 		protected int getConfiguredGridColumnCount() {
 			return 1;
+		}
+
+		@Order(30.0)
+		public class CancelButton extends AbstractCancelButton {
 		}
 
 		@Order(10.0)
@@ -95,10 +99,6 @@ public class RoleForm extends AbstractForm {
 
 		@Order(20.0)
 		public class OkButton extends AbstractOkButton {
-		}
-
-		@Order(30.0)
-		public class CancelButton extends AbstractCancelButton {
 		}
 	}
 

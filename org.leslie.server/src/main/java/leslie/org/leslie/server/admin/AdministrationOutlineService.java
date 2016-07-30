@@ -1,16 +1,17 @@
 package leslie.org.leslie.server.admin;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
-import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
-import org.leslie.server.jpa.EntityManagerService;
+import org.leslie.server.jpa.StoredRole;
+import org.leslie.server.jpa.StoredRolePermission;
 import org.leslie.server.jpa.StoredUser;
 
+import leslie.org.leslie.server.JPA;
 import leslie.org.leslie.shared.admin.IAdministrationOutlineService;
 import leslie.org.leslie.shared.admin.PermissionTablePageData;
+import leslie.org.leslie.shared.admin.PermissionTablePageData.PermissionTableRowData;
+import leslie.org.leslie.shared.admin.RolePageData;
+import leslie.org.leslie.shared.admin.RolePageData.RoleRowData;
 import leslie.org.leslie.shared.admin.UserPageData;
 import leslie.org.leslie.shared.admin.UserPageData.UserRowData;
 
@@ -18,34 +19,65 @@ import leslie.org.leslie.shared.admin.UserPageData.UserRowData;
 public class AdministrationOutlineService implements IAdministrationOutlineService {
 
 	@Override
-	public PermissionTablePageData getPermissionTableData(Long roleNr) throws ProcessingException {
-		return null;
+	public PermissionTablePageData getPermissionTableData(Long roleId) throws ProcessingException {
+		final PermissionTablePageData pageData = new PermissionTablePageData();
+		JPA.createQuery(""
+				+ "SELECT rp "
+				+ "  FROM " + StoredRolePermission.class.getSimpleName() + " rp "
+				+ " WHERE rp.role.id = :roleId ",
+				StoredRolePermission.class)
+				.setParameter("roleId", roleId)
+				.getResultList()
+				.forEach((role) -> copyRowData(role, pageData));
+
+		return pageData;
+	}
+
+	private static void copyRowData(StoredRolePermission rolePermission, PermissionTablePageData pageData) {
+		PermissionTableRowData row = pageData.addRow();
+		row.setLevel(rolePermission.getLevelUid());
+		row.setName(rolePermission.getPermissionClassName());
 	}
 
 	@Override
-	public Object[][] getRoleTableData() throws ProcessingException {
-		// TODO Auto-generated method stub
-		return null;
+	public RolePageData getRoleTableData() throws ProcessingException {
+		final RolePageData pageData = new RolePageData();
+		JPA.createQuery("SELECT r FROM " + StoredRole.class.getSimpleName() + " r ",
+				StoredRole.class)
+				.getResultList()
+				.forEach((src) -> copyRowData(src, pageData));
+
+		return pageData;
+	}
+
+	private static void copyRowData(StoredRole role, RolePageData pageData) {
+		RoleRowData row = pageData.addRow();
+		row.setRoleNr(role.getId());
+		row.setRoleName(role.getName());
 	}
 
 	@Override
 	public UserPageData getUserTableData() throws ProcessingException {
-		EntityManager em = BEANS.get(EntityManagerService.class).getEntityManager();
-		TypedQuery<StoredUser> query = em.createQuery("SELECT u FROM " + StoredUser.class.getSimpleName() + " u ",
-				StoredUser.class);
+		final UserPageData pageData = new UserPageData();
+		JPA.createQuery(""
+				+ "SELECT u "
+				+ "  FROM " + StoredUser.class.getSimpleName() + " u ",
+				StoredUser.class)
+				.getResultList()
+				.forEach((user) -> copyPageData(user, pageData));
 
-		UserPageData pageData = new UserPageData();
-		for (StoredUser user : query.getResultList()) {
-			UserRowData row = pageData.addRow();
-			row.setId(user.getId());
-			row.setUsername(user.getUsername());
-			row.setFirstName(user.getFirstName());
-			row.setLastName(user.getLastName());
-			row.setEmail(user.getEmail());
-			row.setLoginAttempts(user.getFailedLoginAttempts());
-			row.setBlocked(user.isBlocked());
-		}
 		return pageData;
+	}
+
+	private static void copyPageData(StoredUser user, UserPageData pageData) {
+		UserRowData row = pageData.addRow();
+		row.setId(user.getId());
+		row.setUsername(user.getUsername());
+		row.setFirstName(user.getFirstName());
+		row.setLastName(user.getLastName());
+		row.setEmail(user.getEmail());
+		row.setLoginAttempts(user.getFailedLoginAttempts());
+		row.setBlocked(user.isBlocked());
 	}
 
 }

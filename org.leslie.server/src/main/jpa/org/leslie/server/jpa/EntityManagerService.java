@@ -26,24 +26,20 @@ public class EntityManagerService implements IService {
 	private static final String TRANSACTION_ID = EntityManagerService.class.getSimpleName() + ".transaction";
 	private static final Logger logger = LoggerFactory.getLogger(EntityManagerService.class);
 
-	private EntityManager m_entityManager;
+	private EntityManagerFactory m_entityManagerFactory;
 
 	@PostConstruct
 	private void init() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-		m_entityManager = factory.createEntityManager();
+		m_entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 	}
 
-	/**
-	 * @return the entityManager
-	 */
-	public EntityManager getEntityManager() {
-		return m_entityManager;
+	public EntityManagerFactory getEntityManagerFactory() {
+		return m_entityManagerFactory;
 	}
 
 	@PrePersist
 	void onPrePersist(Object o) throws ProcessingException {
-		startTransaction();
+		getOrStartTransaction();
 		logger.debug("onPrePersist - starting transaction: {}", o);
 	}
 
@@ -59,7 +55,7 @@ public class EntityManagerService implements IService {
 
 	@PreUpdate
 	void onPreUpdate(Object o) throws ProcessingException {
-		startTransaction();
+		getOrStartTransaction();
 		logger.debug("onPreUpdate - starting transaction: {}", o);
 	}
 
@@ -70,7 +66,7 @@ public class EntityManagerService implements IService {
 
 	@PreRemove
 	void onPreRemove(Object o) throws ProcessingException {
-		startTransaction();
+		getOrStartTransaction();
 		logger.debug("onPreRemove - starting transaction: {}", o);
 	}
 
@@ -85,7 +81,7 @@ public class EntityManagerService implements IService {
 	 *
 	 * @throws ProcessingException
 	 */
-	private void startTransaction() throws ProcessingException {
+	private JpaTransactionMember getOrStartTransaction() throws ProcessingException {
 		ITransaction reg = Assertions.assertNotNull(ITransaction.CURRENT.get(), "Transaction required");
 		if (reg == null) {
 			throw new ProcessingException("no ITransaction available, use ServerJob to run truncactions");
@@ -95,13 +91,23 @@ public class EntityManagerService implements IService {
 			member = new JpaTransactionMember(TRANSACTION_ID);
 			reg.registerMember(member);
 		}
+
+		return member;
+	}
+
+	public EntityManager getEntityManager() {
+		JpaTransactionMember member = getOrStartTransaction();
+		return member.entityManager;
 	}
 
 	private class JpaTransactionMember extends AbstractTransactionMember {
 
+		private EntityManager entityManager;
+
 		public JpaTransactionMember(String transactionId) {
 			super(transactionId);
-			getEntityManager().getTransaction().begin();
+			entityManager = m_entityManagerFactory.createEntityManager();
+			entityManager.getTransaction().begin();
 		}
 
 		@Override
@@ -116,18 +122,20 @@ public class EntityManagerService implements IService {
 
 		@Override
 		public void commitPhase2() {
-			m_entityManager.flush();
-			m_entityManager.getTransaction().commit();
+			entityManager.flush();
+			entityManager.getTransaction().commit();
+			entityManager.close();
 		}
 
 		@Override
 		public void rollback() {
-			m_entityManager.getTransaction().rollback();
+			entityManager.getTransaction().rollback();
+			entityManager.close();
 		}
 
 		@Override
 		public void release() {
-			m_entityManager.close();
+			entityManager = null;
 		}
 	}
 }

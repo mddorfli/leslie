@@ -2,6 +2,7 @@ package leslie.org.leslie.client.admin;
 
 import java.util.Set;
 
+import org.eclipse.scout.rt.client.dto.PageData;
 import org.eclipse.scout.rt.client.ui.action.menu.AbstractMenu;
 import org.eclipse.scout.rt.client.ui.action.menu.IMenuType;
 import org.eclipse.scout.rt.client.ui.action.menu.TableMenuType;
@@ -23,8 +24,10 @@ import leslie.org.leslie.client.ClientSession;
 import leslie.org.leslie.shared.DataType;
 import leslie.org.leslie.shared.admin.IAdministrationOutlineService;
 import leslie.org.leslie.shared.admin.IRoleService;
+import leslie.org.leslie.shared.admin.RolePageData;
 import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
 
+@PageData(RolePageData.class)
 public class RoleTablePage extends AbstractPageWithTable<RoleTablePage.Table> {
 
 	@Override
@@ -42,7 +45,7 @@ public class RoleTablePage extends AbstractPageWithTable<RoleTablePage.Table> {
 
 	@Override
 	protected void execLoadData(SearchFilter filter) {
-		importTableData(BEANS.get(IAdministrationOutlineService.class).getRoleTableData());
+		importPageData(BEANS.get(IAdministrationOutlineService.class).getRoleTableData());
 	}
 
 	@Order(10.0)

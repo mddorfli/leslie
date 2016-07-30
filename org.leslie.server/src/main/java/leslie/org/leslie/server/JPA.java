@@ -24,4 +24,11 @@ public final class JPA {
 		getEntityManager().persist(entity);
 	}
 
+	public static <T> T find(Class<T> entityClass, long primaryKey) {
+		return getEntityManager().find(entityClass, primaryKey);
+	}
+
+	public static void remove(Object entity) {
+		getEntityManager().remove(entity);
+	}
 }

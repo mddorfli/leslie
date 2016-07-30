@@ -19,21 +19,18 @@ public class RoleFormData extends AbstractFormData {
 	public Name getName() {
 		return getFieldByClass(Name.class);
 	}
-
 	/**
 	 * access method for property RoleNr.
 	 */
 	public Long getRoleNr() {
 		return getRoleNrProperty().getValue();
 	}
-
 	/**
 	 * access method for property RoleNr.
 	 */
 	public void setRoleNr(Long roleNr) {
 		getRoleNrProperty().setValue(roleNr);
 	}
-
 	public RoleNrProperty getRoleNrProperty() {
 		return getPropertyByClass(RoleNrProperty.class);
 	}
@@ -42,7 +39,6 @@ public class RoleFormData extends AbstractFormData {
 
 		private static final long serialVersionUID = 1L;
 	}
-
 	public static class RoleNrProperty extends AbstractPropertyData<Long> {
 
 		private static final long serialVersionUID = 1L;

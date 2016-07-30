@@ -9,7 +9,7 @@ public interface IAdministrationOutlineService extends IService {
 
 	PermissionTablePageData getPermissionTableData(Long roleNr) throws ProcessingException;
 
-	Object[][] getRoleTableData() throws ProcessingException;
+	RolePageData getRoleTableData() throws ProcessingException;
 
 	UserPageData getUserTableData() throws ProcessingException;
 }
