@@ -53,23 +53,32 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 	private static Logger logger = LoggerFactory.getLogger(PermissionTablePage.class);
 
-	private Long m_roleNr;
 	private boolean m_listenersAdded;
+	private Long m_roleNr;
 
-	public PermissionTablePage(Long roleNr) {
+	public PermissionTablePage() {
 		super();
-		m_roleNr = roleNr;
 		m_listenersAdded = false;
 	}
 
-	@Override
-	protected boolean getConfiguredLeaf() {
-		return true;
-	}
+	private void addListeners() {
+		if (!m_listenersAdded) {
+			IDesktop desktop = ClientSession.get().getDesktop();
+			if (getRoleNr() != null) {
+				desktop.addDataChangeListener(new TableReloadListener(this), DataType.ROLE_PERMISSION);
+			} else {
+				desktop.addDataChangeListener(new DataChangeListener() {
+					@Override
+					public void dataChanged(Object... dataTypes) throws ProcessingException {
+						OrderedCollection<IMenu> nodeList = new OrderedCollection<IMenu>();
+						getMenu(AssignToRoleMenu.class).injectMenus(nodeList);
+						getMenu(AssignToRoleMenu.class).setChildActions(nodeList.getOrderedList());
+					}
+				}, DataType.ROLE);
+			}
+			m_listenersAdded = true;
+		}
 
-	@Override
-	protected String getConfiguredTitle() {
-		return TEXTS.get("Permissions");
 	}
 
 	@Override
@@ -78,45 +87,49 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 		if (getRoleNr() != null) {
 			// get permissions for the current role
 			pageData = BEANS.get(IAdministrationOutlineService.class).getPermissionTableData(getRoleNr());
+
 		} else {
+			pageData = new PermissionTablePageData();
+
 			// get all permissions
 			TreeMap<String, Integer[]> validLevels = new TreeMap<String, Integer[]>();
 			for (Class<? extends Permission> c : BEANS.get(IPermissionService.class).getAllPermissionClasses()) {
-				Integer[] levels = null;
-				try {
-					Permission p = c.newInstance();
-					if (p instanceof BasicHierarchyPermission) {
+				if (BasicHierarchyPermission.class.isAssignableFrom(c)) {
+					try {
+						Integer[] levels = null;
+						Permission p = c.newInstance();
 						List<Integer> levelList = ((BasicHierarchyPermission) p).getValidLevels();
-						if (levelList != null) {
-							levels = levelList.toArray(new Integer[] {});
-						}
+						levels = levelList != null ? levelList.toArray(new Integer[]{}) : new Integer[]{};
+						validLevels.put(c.getName(), levels);
+					} catch (InstantiationException | IllegalAccessException e) {
+						logger.error("Could not instantiate permission " + c.getName(), e);
 					}
-					validLevels.put(c.getSimpleName(), levels);
-				} catch (InstantiationException | IllegalAccessException e) {
-					logger.error("Could not instantiate permission " + c.getName(), e);
 				}
 			}
 
-			pageData = new PermissionTablePageData();
 			for (Entry<String, Integer[]> entry : validLevels.entrySet()) {
+				Integer[] levels = entry.getValue();
+				if (levels == null || levels.length == 0) {
+					continue;
+				}
 				PermissionTableRowData row = pageData.addRow();
 				row.setName(entry.getKey());
-				for (Integer level : entry.getValue()) {
+				for (Integer level : levels) {
 					switch (PermissionLevel.getInstance(level.intValue())) {
-					case LEVEL_NONE:
-						row.setNone(true);
-						break;
-					case LEVEL_OWN:
-						row.setOwn(true);
-						break;
-					case LEVEL_PROJECT:
-						row.setProject(true);
-						break;
-					case LEVEL_ALL:
-						row.setAll(true);
-						break;
-					default:
-						break;
+						case LEVEL_NONE :
+							row.setNone(true);
+							break;
+						case LEVEL_OWN :
+							row.setOwn(true);
+							break;
+						case LEVEL_PROJECT :
+							row.setProject(true);
+							break;
+						case LEVEL_ALL :
+							row.setAll(true);
+							break;
+						default :
+							break;
 					}
 				}
 			}
@@ -140,24 +153,14 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 		addListeners();
 	}
 
-	private void addListeners() {
-		if (!m_listenersAdded) {
-			IDesktop desktop = ClientSession.get().getDesktop();
-			if (getRoleNr() != null) {
-				desktop.addDataChangeListener(new TableReloadListener(this), DataType.ROLE_PERMISSION);
-			} else {
-				desktop.addDataChangeListener(new DataChangeListener() {
-					@Override
-					public void dataChanged(Object... dataTypes) throws ProcessingException {
-						OrderedCollection<IMenu> nodeList = new OrderedCollection<IMenu>();
-						getMenu(AssignToRoleMenu.class).injectMenus(nodeList);
-						getMenu(AssignToRoleMenu.class).setChildActions(nodeList.getOrderedList());
-					}
-				}, DataType.ROLE);
-			}
-			m_listenersAdded = true;
-		}
+	@Override
+	protected boolean getConfiguredLeaf() {
+		return true;
+	}
 
+	@Override
+	protected String getConfiguredTitle() {
+		return TEXTS.get("Permissions");
 	}
 
 	@FormData
@@ -173,17 +176,13 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 	@Order(10.0)
 	public class Table extends AbstractTable {
 
-		@Override
-		protected boolean getConfiguredHeaderVisible() {
-			return true;
-		}
-
 		public AllColumn getAllColumn() {
 			return getColumnSet().getColumnByClass(AllColumn.class);
 		}
 
-		public ProjectColumn getProjectColumn() {
-			return getColumnSet().getColumnByClass(ProjectColumn.class);
+		@Override
+		protected boolean getConfiguredHeaderVisible() {
+			return true;
 		}
 
 		public LevelColumn getLevelColumn() {
@@ -202,6 +201,10 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 			return getColumnSet().getColumnByClass(OwnColumn.class);
 		}
 
+		public ProjectColumn getProjectColumn() {
+			return getColumnSet().getColumnByClass(ProjectColumn.class);
+		}
+
 		@Order(10.0)
 		public class NameColumn extends AbstractStringColumn {
 
@@ -217,7 +220,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 			@Override
 			protected int getConfiguredWidth() {
-				return 260;
+				return 430;
 			}
 		}
 
@@ -245,7 +248,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 			@Override
 			protected int getConfiguredWidth() {
-				return 43;
+				return 80;
 			}
 		}
 
@@ -259,7 +262,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 			@Override
 			protected int getConfiguredWidth() {
-				return 40;
+				return 80;
 			}
 		}
 
@@ -273,7 +276,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 			@Override
 			protected int getConfiguredWidth() {
-				return 64;
+				return 80;
 			}
 		}
 
@@ -287,23 +290,12 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 			@Override
 			protected int getConfiguredWidth() {
-				return 68;
+				return 80;
 			}
 		}
 
 		@Order(10.0)
 		public class AssignToRoleMenu extends AbstractMenu {
-
-			@Override
-			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
-				return CollectionUtility.<IMenuType>hashSet(TableMenuType.MultiSelection,
-						TableMenuType.SingleSelection);
-			}
-
-			@Override
-			protected String getConfiguredText() {
-				return TEXTS.get("AssignToRole");
-			}
 
 			@Override
 			protected void execInitAction() throws ProcessingException {
@@ -314,6 +306,17 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 			protected void execOwnerValueChanged(Object newOwnerValue) {
 				// should be at top level
 				setVisible(getRoleNr() == null);
+			}
+
+			@Override
+			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+				return CollectionUtility.<IMenuType>hashSet(TableMenuType.MultiSelection,
+						TableMenuType.SingleSelection);
+			}
+
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("AssignToRole");
 			}
 
 			@Override
@@ -346,14 +349,10 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 							AbstractMenu subMenu = new AbstractMenu() {
 								@Override
-								protected String getConfiguredText() {
-									return level.getNameLK();
-								}
-
-								@Override
-								protected Set<? extends IMenuType> getConfiguredMenuTypes() {
-									return CollectionUtility.<IMenuType>hashSet(TableMenuType.MultiSelection,
-											TableMenuType.SingleSelection);
+								protected void execAction() throws ProcessingException {
+									BEANS.get(IRoleService.class).assignPermissions(roleNr,
+											getNameColumn().getSelectedValues(), level.getValue());
+									ClientSession.get().getDesktop().dataChanged(DataType.ROLE_PERMISSION);
 								}
 
 								@Override
@@ -382,10 +381,14 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 								}
 
 								@Override
-								protected void execAction() throws ProcessingException {
-									BEANS.get(IRoleService.class).assignPermissions(roleNr,
-											getNameColumn().getSelectedValues(), level.getValue());
-									ClientSession.get().getDesktop().dataChanged(DataType.ROLE_PERMISSION);
+								protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+									return CollectionUtility.<IMenuType>hashSet(TableMenuType.MultiSelection,
+											TableMenuType.SingleSelection);
+								}
+
+								@Override
+								protected String getConfiguredText() {
+									return level.getNameLK();
 								}
 							};
 							subMenus.add(subMenu);
@@ -404,6 +407,19 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 		public class RevokePermissionsMenu extends AbstractMenu {
 
 			@Override
+			protected void execAction() throws ProcessingException {
+				BEANS.get(IRoleService.class).revokePermissions(getRoleNr(),
+						getTable().getNameColumn().getSelectedValues());
+				reloadPage();
+			}
+
+			@Override
+			protected void execOwnerValueChanged(Object newOwnerValue) {
+				// only show the remove menu when it is below a parent role
+				setVisible(getRoleNr() != null && ACCESS.check(new UpdateAdministrationPermission()));
+			}
+
+			@Override
 			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
 				return CollectionUtility.<IMenuType>hashSet(TableMenuType.MultiSelection,
 						TableMenuType.SingleSelection);
@@ -412,19 +428,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 			@Override
 			protected String getConfiguredText() {
 				return TEXTS.get("RevokePermissions");
-			}
-
-			@Override
-			protected void execAction() throws ProcessingException {
-				BEANS.get(IRoleService.class).revokePermissions(getRoleNr(),
-						getTable().getNameColumn().getSelectedValues());
-				reloadPage();
-			}
-
-			@Override
-			protected void execInitAction() throws ProcessingException {
-				// only show the remove menu when it is below a parent role
-				setVisible(getRoleNr() != null && ACCESS.check(new UpdateAdministrationPermission()));
 			}
 		}
 	}

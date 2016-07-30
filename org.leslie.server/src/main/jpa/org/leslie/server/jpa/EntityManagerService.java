@@ -124,18 +124,16 @@ public class EntityManagerService implements IService {
 		public void commitPhase2() {
 			entityManager.flush();
 			entityManager.getTransaction().commit();
-			entityManager.close();
 		}
 
 		@Override
 		public void rollback() {
 			entityManager.getTransaction().rollback();
-			entityManager.close();
 		}
 
 		@Override
 		public void release() {
-			entityManager = null;
+			entityManager.close();
 		}
 	}
 }

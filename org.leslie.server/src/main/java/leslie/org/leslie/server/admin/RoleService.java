@@ -118,5 +118,4 @@ public class RoleService implements IRoleService {
 					.ifPresent(JPA::remove);;
 		}
 	}
-
 }

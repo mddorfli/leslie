@@ -14,6 +14,7 @@ public class AdministrationOutline extends AbstractOutline {
 	protected void createChildPagesInternal(List<IPage<?>> pageList) {
 		pageList.add(new RoleTablePage());
 		pageList.add(new UserTablePage());
+		pageList.add(new PermissionTablePage());
 	}
 
 	@Override

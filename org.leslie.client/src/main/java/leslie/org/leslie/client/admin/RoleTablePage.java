@@ -37,8 +37,8 @@ public class RoleTablePage extends AbstractPageWithTable<RoleTablePage.Table> {
 
 	@Override
 	protected IPage<?> execCreateChildPage(ITableRow row) throws ProcessingException {
-		Long roleNr = getTable().getRoleNrColumn().getValue(row);
-		PermissionTablePage childPage = new PermissionTablePage(roleNr);
+		PermissionTablePage childPage = new PermissionTablePage();
+		childPage.setRoleNr(getTable().getRoleNrColumn().getValue(row));
 		childPage.setLeaf(true);
 		return childPage;
 	}
