@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Jul 28, 2016 9:34:06 PM                                                        
+
+     leslie    
+     database utils
+                   
+     kiwi                                                                
+     ====================================================================== -->
+<project name="leslie" default="rebuild">
+    <description>
+            database development utilities
+    </description>
+	
+	<path id="classpath">
+		<fileset dir="${basedir}/lib" includes="**/*.jar"/>
+		<pathelement path="${basedir}/changelogs"/>
+	</path>
+	
+    <target name="update" description="runs all liquibase changelogs">
+    	<java classname="liquibase.integration.commandline.Main" classpathref="classpath" fork="true">
+    		<arg line="--changeLogFile=changelogs/master.xml"/>
+    		<arg line="update"/>
+    	</java>
+    </target>
+
+	<target name="dropAll" description="drops all data in the databse">
+		<java classname="liquibase.integration.commandline.Main" classpathref="classpath" fork="true">
+    		<arg line="dropAll"/>
+    	</java>
+	</target>
+	
+	<target name="rebuild" depends="dropAll,update"/>
+</project>

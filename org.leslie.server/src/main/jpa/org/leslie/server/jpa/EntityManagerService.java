@@ -1,0 +1,133 @@
+package org.leslie.server.jpa;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostRemove;
+import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
+import javax.persistence.PreUpdate;
+
+import org.eclipse.scout.rt.platform.exception.ProcessingException;
+import org.eclipse.scout.rt.platform.service.IService;
+import org.eclipse.scout.rt.platform.util.Assertions;
+import org.eclipse.scout.rt.server.transaction.AbstractTransactionMember;
+import org.eclipse.scout.rt.server.transaction.ITransaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class EntityManagerService implements IService {
+
+	private static final String PERSISTENCE_UNIT_NAME = "leslie";
+	private static final String TRANSACTION_ID = EntityManagerService.class.getSimpleName() + ".transaction";
+	private static final Logger logger = LoggerFactory.getLogger(EntityManagerService.class);
+
+	private EntityManager m_entityManager;
+
+	@PostConstruct
+	private void init() {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+		m_entityManager = factory.createEntityManager();
+	}
+
+	/**
+	 * @return the entityManager
+	 */
+	public EntityManager getEntityManager() {
+		return m_entityManager;
+	}
+
+	@PrePersist
+	void onPrePersist(Object o) throws ProcessingException {
+		startTransaction();
+		logger.debug("onPrePersist - starting transaction: {}", o);
+	}
+
+	@PostPersist
+	void onPostPersist(Object o) {
+		logger.debug("onPostPersist");
+	}
+
+	@PostLoad
+	void onPostLoad(Object o) {
+		logger.debug("onPostLoad");
+	}
+
+	@PreUpdate
+	void onPreUpdate(Object o) throws ProcessingException {
+		startTransaction();
+		logger.debug("onPreUpdate - starting transaction: {}", o);
+	}
+
+	@PostUpdate
+	void onPostUpdate(Object o) {
+		logger.debug("onPostUpdate");
+	}
+
+	@PreRemove
+	void onPreRemove(Object o) throws ProcessingException {
+		startTransaction();
+		logger.debug("onPreRemove - starting transaction: {}", o);
+	}
+
+	@PostRemove
+	void onPostRemove(Object o) {
+		logger.debug("onPostRemove");
+	}
+
+	/**
+	 * Starts a jpa transaction (if one has not alredy been started). Will
+	 * trigger a jpa flush / commit once the scout transaction is closed.
+	 *
+	 * @throws ProcessingException
+	 */
+	private void startTransaction() throws ProcessingException {
+		ITransaction reg = Assertions.assertNotNull(ITransaction.CURRENT.get(), "Transaction required");
+		if (reg == null) {
+			throw new ProcessingException("no ITransaction available, use ServerJob to run truncactions");
+		}
+		JpaTransactionMember member = (JpaTransactionMember) reg.getMember(TRANSACTION_ID);
+		if (member == null) {
+			member = new JpaTransactionMember(TRANSACTION_ID);
+			reg.registerMember(member);
+		}
+	}
+
+	private class JpaTransactionMember extends AbstractTransactionMember {
+
+		public JpaTransactionMember(String transactionId) {
+			super(transactionId);
+			getEntityManager().getTransaction().begin();
+		}
+
+		@Override
+		public boolean needsCommit() {
+			return true;
+		}
+
+		@Override
+		public boolean commitPhase1() {
+			return true;
+		}
+
+		@Override
+		public void commitPhase2() {
+			m_entityManager.flush();
+			m_entityManager.getTransaction().commit();
+		}
+
+		@Override
+		public void rollback() {
+			m_entityManager.getTransaction().rollback();
+		}
+
+		@Override
+		public void release() {
+			m_entityManager.close();
+		}
+	}
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+<changeSet id="1" author="kiwi">
+	<comment>This is called 'users' because 'user' is a reserved keyword.</comment>
+	<createTable tableName="users">
+		<column name="id" type="java.sql.Types.BIGINT" autoIncrement="true">
+			<constraints primaryKey="true"/>
+		</column>
+		<column name="username" type="java.sql.Types.VARCHAR(80)">
+			<constraints nullable="false" unique="true"/>
+		</column>
+		<column name="first_name" type="java.sql.Types.VARCHAR(80)"/>
+		<column name="last_name" type="java.sql.Types.VARCHAR(80)"/>
+		<column name="email" type="java.sql.Types.VARCHAR(80)"/>
+		<column name="failed_login_attempts" type="java.sql.Types.INTEGER"/>
+		<column name="blocked" type="java.sql.Types.BOOLEAN"/>
+		<column name="last_login" type="java.sql.Types.TIMESTAMP"/>
+		<column name="pw_hash" type="java.sql.Types.VARCHAR"/>
+		<column name="pw_salt" type="java.sql.Types.VARCHAR"/>
+	</createTable>
+</changeSet>
+
+</databaseChangeLog>
