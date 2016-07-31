@@ -10,6 +10,10 @@ import org.eclipse.scout.rt.shared.TunnelToServer;
 @TunnelToServer
 public interface IRoleService extends IService {
 
+	PermissionTablePageData getPermissionTableData(Long roleNr);
+
+	RolePageData getRoleTableData();
+
 	RoleFormData create(RoleFormData formData) throws ProcessingException;
 
 	RoleFormData store(RoleFormData formData) throws ProcessingException;

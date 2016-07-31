@@ -22,10 +22,9 @@ import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 
 import leslie.org.leslie.client.ClientSession;
 import leslie.org.leslie.shared.DataType;
-import leslie.org.leslie.shared.admin.IAdministrationOutlineService;
 import leslie.org.leslie.shared.admin.IRoleService;
 import leslie.org.leslie.shared.admin.RolePageData;
-import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.admin.UpdateAdministrationPermission;
 
 @PageData(RolePageData.class)
 public class RoleTablePage extends AbstractPageWithTable<RoleTablePage.Table> {
@@ -45,7 +44,7 @@ public class RoleTablePage extends AbstractPageWithTable<RoleTablePage.Table> {
 
 	@Override
 	protected void execLoadData(SearchFilter filter) {
-		importPageData(BEANS.get(IAdministrationOutlineService.class).getRoleTableData());
+		importPageData(BEANS.get(IRoleService.class).getRoleTableData());
 	}
 
 	@Order(10.0)

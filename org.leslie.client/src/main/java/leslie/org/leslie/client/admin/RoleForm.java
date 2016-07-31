@@ -18,7 +18,7 @@ import leslie.org.leslie.client.admin.RoleForm.MainBox.GroupBox.NameField;
 import leslie.org.leslie.client.admin.RoleForm.MainBox.OkButton;
 import leslie.org.leslie.shared.admin.IRoleService;
 import leslie.org.leslie.shared.admin.RoleFormData;
-import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.admin.UpdateAdministrationPermission;
 
 @FormData(value = RoleFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
 public class RoleForm extends AbstractForm {

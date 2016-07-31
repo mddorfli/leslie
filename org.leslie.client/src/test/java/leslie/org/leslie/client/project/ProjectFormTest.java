@@ -1,4 +1,4 @@
-package leslie.org.leslie.client.work;
+package leslie.org.leslie.client.project;
 
 import org.eclipse.scout.rt.client.testenvironment.TestEnvironmentClientSession;
 import org.eclipse.scout.rt.testing.client.runner.ClientTestRunner;
@@ -10,24 +10,24 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import leslie.org.leslie.shared.personal.IVacationService;
-import leslie.org.leslie.shared.work.VacationFormData;
+import leslie.org.leslie.shared.project.IProjectService;
+import leslie.org.leslie.shared.project.ProjectFormData;
 
 @RunWithSubject("anonymous")
 @RunWith(ClientTestRunner.class)
 @RunWithClientSession(TestEnvironmentClientSession.class)
-public class VacationFormTest {
+public class ProjectFormTest {
 
 	@BeanMock
-	private IVacationService m_mockSvc;
+	private IProjectService m_mockSvc;
 
 	@Before
 	public void setup() {
-		VacationFormData answer = new VacationFormData();
-		Mockito.when(m_mockSvc.prepareCreate(Matchers.any(VacationFormData.class))).thenReturn(answer);
-		Mockito.when(m_mockSvc.create(Matchers.any(VacationFormData.class))).thenReturn(answer);
-		Mockito.when(m_mockSvc.load(Matchers.any(VacationFormData.class))).thenReturn(answer);
-		Mockito.when(m_mockSvc.store(Matchers.any(VacationFormData.class))).thenReturn(answer);
+		ProjectFormData answer = new ProjectFormData();
+		Mockito.when(m_mockSvc.prepareCreate(Matchers.any(ProjectFormData.class))).thenReturn(answer);
+		Mockito.when(m_mockSvc.create(Matchers.any(ProjectFormData.class))).thenReturn(answer);
+		Mockito.when(m_mockSvc.load(Matchers.any(ProjectFormData.class))).thenReturn(answer);
+		Mockito.when(m_mockSvc.store(Matchers.any(ProjectFormData.class))).thenReturn(answer);
 	}
 
 	// TODO [kiwi] add test cases

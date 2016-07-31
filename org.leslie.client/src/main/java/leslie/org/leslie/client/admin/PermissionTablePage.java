@@ -40,13 +40,12 @@ import leslie.org.leslie.client.admin.PermissionTablePage.Table.AssignToRoleMenu
 import leslie.org.leslie.client.lookup.PermissionLevelLookupCall;
 import leslie.org.leslie.client.util.TableReloadListener;
 import leslie.org.leslie.shared.DataType;
-import leslie.org.leslie.shared.admin.IAdministrationOutlineService;
 import leslie.org.leslie.shared.admin.IRoleService;
 import leslie.org.leslie.shared.admin.PermissionTablePageData;
 import leslie.org.leslie.shared.admin.PermissionTablePageData.PermissionTableRowData;
+import leslie.org.leslie.shared.admin.ReadAdministrationPermission;
+import leslie.org.leslie.shared.admin.UpdateAdministrationPermission;
 import leslie.org.leslie.shared.security.PermissionLevel;
-import leslie.org.leslie.shared.security.ReadAdministrationPermission;
-import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
 
 @PageData(PermissionTablePageData.class)
 public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePage.Table> {
@@ -54,6 +53,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 	private static Logger logger = LoggerFactory.getLogger(PermissionTablePage.class);
 
 	private boolean m_listenersAdded;
+
 	private Long m_roleNr;
 
 	public PermissionTablePage() {
@@ -68,6 +68,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 				desktop.addDataChangeListener(new TableReloadListener(this), DataType.ROLE_PERMISSION);
 			} else {
 				desktop.addDataChangeListener(new DataChangeListener() {
+
 					@Override
 					public void dataChanged(Object... dataTypes) throws ProcessingException {
 						OrderedCollection<IMenu> nodeList = new OrderedCollection<IMenu>();
@@ -86,7 +87,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 		PermissionTablePageData pageData;
 		if (getRoleNr() != null) {
 			// get permissions for the current role
-			pageData = BEANS.get(IAdministrationOutlineService.class).getPermissionTableData(getRoleNr());
+			pageData = BEANS.get(IRoleService.class).getPermissionTableData(getRoleNr());
 
 		} else {
 			pageData = new PermissionTablePageData();
@@ -334,6 +335,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 					for (final Long roleNr : roleMenuItems.keySet()) {
 						AbstractMenu roleMenu = new AbstractMenu() {
+
 							@Override
 							protected String getConfiguredText() {
 								return roleMenuItems.get(roleNr);
@@ -348,6 +350,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 							}
 
 							AbstractMenu subMenu = new AbstractMenu() {
+
 								@Override
 								protected void execAction() throws ProcessingException {
 									BEANS.get(IRoleService.class).assignPermissions(roleNr,

@@ -52,8 +52,16 @@ public class StoredUser {
 	private String passwordHash;
 
 	@OneToMany
-	@JoinTable(name = "user_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	@JoinTable(name = "user_x_role",
+			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private List<StoredRole> roles;
+
+	@OneToMany
+	@JoinTable(name = "user_x_project",
+			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"))
+	private List<StoredProject> users;
 
 	public long getId() {
 		return id;
@@ -132,14 +140,6 @@ public class StoredUser {
 		this.lastLogin = lastLogin;
 	}
 
-	public List<StoredRole> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(List<StoredRole> roles) {
-		this.roles = roles;
-	}
-
 	public String getPasswordSalt() {
 		return passwordSalt;
 	}
@@ -154,6 +154,22 @@ public class StoredUser {
 
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
+	}
+
+	public List<StoredRole> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<StoredRole> roles) {
+		this.roles = roles;
+	}
+
+	public List<StoredProject> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<StoredProject> users) {
+		this.users = users;
 	}
 
 }

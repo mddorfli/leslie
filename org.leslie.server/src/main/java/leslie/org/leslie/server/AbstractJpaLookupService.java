@@ -158,12 +158,12 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 	@Override
 	public List<ILookupRow<KEY_TYPE>> getDataByText(ILookupCall<KEY_TYPE> call) {
 		// change wildcards in text to db specific wildcards
-		if (call.getText() != null) {
-			String s = call.getText();
-			// String sqlWildcard =
-			// BEANS.get(ISqlService.class).getSqlStyle().getLikeWildcard();
-			// call.setText(s.replace(call.getWildcard(), sqlWildcard));
-		}
+		// if (call.getText() != null) {
+		// String s = call.getText();
+		// String sqlWildcard =
+		// BEANS.get(ISqlService.class).getSqlStyle().getLikeWildcard();
+		// call.setText(s.replace(call.getWildcard(), sqlWildcard));
+		// }
 		String sql = getConfiguredSqlSelect();
 		return execLoadLookupRows(sql, filterSqlByText(sql), call);
 	}

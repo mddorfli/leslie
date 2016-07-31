@@ -15,8 +15,8 @@ import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 
 import leslie.org.leslie.client.admin.AdministrationOutline;
-import leslie.org.leslie.client.search.SearchOutline;
-import leslie.org.leslie.client.work.WorkOutline;
+import leslie.org.leslie.client.personal.PersonalOutline;
+import leslie.org.leslie.client.project.ProjectOutline;
 import leslie.org.leslie.shared.Icons;
 
 /**
@@ -37,7 +37,7 @@ public class Desktop extends AbstractDesktop {
 
 	@Override
 	protected List<Class<? extends IOutline>> getConfiguredOutlines() {
-		return CollectionUtility.<Class<? extends IOutline>>arrayList(WorkOutline.class, SearchOutline.class,
+		return CollectionUtility.<Class<? extends IOutline>>arrayList(PersonalOutline.class, ProjectOutline.class,
 				AdministrationOutline.class);
 	}
 
@@ -111,13 +111,13 @@ public class Desktop extends AbstractDesktop {
 	}
 
 	@Order(1000)
-	public class WorkOutlineViewButton extends AbstractOutlineViewButton {
+	public class PersonalOutlineViewButton extends AbstractOutlineViewButton {
 
-		public WorkOutlineViewButton() {
-			this(WorkOutline.class);
+		public PersonalOutlineViewButton() {
+			this(PersonalOutline.class);
 		}
 
-		protected WorkOutlineViewButton(Class<? extends WorkOutline> outlineClass) {
+		protected PersonalOutlineViewButton(Class<? extends PersonalOutline> outlineClass) {
 			super(Desktop.this, outlineClass);
 		}
 
@@ -128,13 +128,13 @@ public class Desktop extends AbstractDesktop {
 	}
 
 	@Order(2000)
-	public class SearchOutlineViewButton extends AbstractOutlineViewButton {
+	public class ProjectOutlineViewButton extends AbstractOutlineViewButton {
 
-		public SearchOutlineViewButton() {
-			this(SearchOutline.class);
+		public ProjectOutlineViewButton() {
+			this(ProjectOutline.class);
 		}
 
-		protected SearchOutlineViewButton(Class<? extends SearchOutline> outlineClass) {
+		protected ProjectOutlineViewButton(Class<? extends ProjectOutline> outlineClass) {
 			super(Desktop.this, outlineClass);
 		}
 
