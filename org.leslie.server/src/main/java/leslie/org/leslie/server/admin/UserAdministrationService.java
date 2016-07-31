@@ -7,6 +7,7 @@ import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.platform.security.SecurityUtility;
 import org.eclipse.scout.rt.platform.util.Base64Utility;
+import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.jpa.StoredRole;
@@ -28,12 +29,7 @@ public class UserAdministrationService implements IUserAdministrationService {
 		}
 		StoredUser user = new StoredUser();
 		exportFormData(formData, user);
-
-		byte[] password = Base64Utility.decode(formData.getPassword().getValue());
-		byte[] salt = SecurityUtility.createRandomBytes();
-		byte[] hash = SecurityUtility.hash(password, salt);
-		user.setPasswordSalt(Base64Utility.encode(salt));
-		user.setPasswordHash(Base64Utility.encode(hash));
+		applyPassword(user, formData.getPassword().getValue());
 
 		JPA.persist(user);
 		return formData;
@@ -56,6 +52,9 @@ public class UserAdministrationService implements IUserAdministrationService {
 		}
 		StoredUser user = JPA.find(StoredUser.class, formData.getUserNr());
 		exportFormData(formData, user);
+		if (!StringUtility.isNullOrEmpty(formData.getPassword().getValue())) {
+			applyPassword(user, formData.getPassword().getValue());
+		}
 		JPA.merge(user);
 		return formData;
 	}
@@ -91,5 +90,12 @@ public class UserAdministrationService implements IUserAdministrationService {
 		formData.getRoles().setValue(user.getRoles().stream()
 				.map(StoredRole::getId)
 				.collect(Collectors.toSet()));
+	}
+
+	private static void applyPassword(StoredUser user, String password) {
+		byte[] salt = SecurityUtility.createRandomBytes();
+		byte[] hash = SecurityUtility.hash(Base64Utility.decode(password), salt);
+		user.setPasswordSalt(Base64Utility.encode(salt));
+		user.setPasswordHash(Base64Utility.encode(hash));
 	}
 }
