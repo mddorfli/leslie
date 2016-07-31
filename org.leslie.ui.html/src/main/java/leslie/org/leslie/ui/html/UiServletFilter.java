@@ -23,7 +23,7 @@ import org.eclipse.scout.rt.server.commons.authentication.TrivialAccessControlle
  * <h3>{@link UiServletFilter}</h3> This is the main servlet filter used for the
  * HTML UI.
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 public class UiServletFilter implements Filter {
 

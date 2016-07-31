@@ -7,7 +7,7 @@ package leslie.org.leslie.client;
  * name.<br>
  * Usage: <code>ResourceBase.class.getResource("relativeFolder/file.ext")</code>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 public final class ResourceBase {
 	private ResourceBase() {

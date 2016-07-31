@@ -25,7 +25,7 @@ import leslie.org.leslie.shared.security.AccessControlService;
 /**
  * <h3>{@link AccessControlService}</h3>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 @Replace
 public class ServerAccessControlService extends AccessControlService {

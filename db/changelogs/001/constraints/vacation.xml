@@ -7,13 +7,14 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 <changeSet id="10" author="kiwi">
-	<addForeignKeyConstraint constraintName="fk_role_x_permission_role" 
-		baseTableName="role_x_permission" baseColumnNames="role_id" 
-		referencedTableName="role" referencedColumnNames="id"/>
+	<addForeignKeyConstraint constraintName="fk_vacation_requested_user" 
+		baseTableName="vacation" baseColumnNames="requested_by_user_id" 
+		referencedTableName="users" referencedColumnNames="id"/>
 </changeSet>
 <changeSet id="20" author="kiwi">
-	<addUniqueConstraint tableName="role_x_permission" columnNames="role_id,permission_class_name"/>
+	<addForeignKeyConstraint constraintName="fk_vacation_approved_user" 
+		baseTableName="vacation" baseColumnNames="approved_by_user_id" 
+		referencedTableName="users" referencedColumnNames="id"/>
 </changeSet>
-
 
 </databaseChangeLog>

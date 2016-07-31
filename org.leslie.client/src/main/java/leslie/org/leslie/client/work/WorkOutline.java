@@ -12,16 +12,10 @@ import leslie.org.leslie.shared.Icons;
 /**
  * <h3>{@link WorkOutline}</h3>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 @Order(1000)
 public class WorkOutline extends AbstractOutline {
-
-	@Override
-	protected void execCreateChildPages(List<IPage<?>> pageList) {
-		super.execCreateChildPages(pageList);
-//		pageList.add(new HelloWorldPage());
-	}
 
 	@Override
 	protected String getConfiguredTitle() {
@@ -31,5 +25,10 @@ public class WorkOutline extends AbstractOutline {
 	@Override
 	protected String getConfiguredIconId() {
 		return Icons.Pencil;
+	}
+
+	@Override
+	protected void execCreateChildPages(List<IPage<?>> pageList) {
+		pageList.add(new VacationTablePage());
 	}
 }

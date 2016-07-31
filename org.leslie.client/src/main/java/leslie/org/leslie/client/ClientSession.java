@@ -10,7 +10,7 @@ import leslie.org.leslie.client.Desktop;
 /**
  * <h3>{@link ClientSession}</h3>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 public class ClientSession extends AbstractClientSession {
 

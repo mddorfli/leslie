@@ -22,7 +22,7 @@ import leslie.org.leslie.shared.Icons;
 /**
  * <h3>{@link Desktop}</h3>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 public class Desktop extends AbstractDesktop {
 	@Override

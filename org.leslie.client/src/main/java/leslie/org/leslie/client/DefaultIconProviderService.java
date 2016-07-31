@@ -7,7 +7,7 @@ import org.eclipse.scout.rt.client.services.common.icon.AbstractIconProviderServ
 /**
  * <h3>{@link DefaultIconProviderService}</h3>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 public class DefaultIconProviderService extends AbstractIconProviderService {
 	@Override

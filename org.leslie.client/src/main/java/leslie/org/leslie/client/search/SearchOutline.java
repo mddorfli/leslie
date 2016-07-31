@@ -10,7 +10,7 @@ import leslie.org.leslie.shared.Icons;
 /**
  * <h3>{@link SearchOutline}</h3>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 @Order(2000)
 public class SearchOutline extends AbstractSearchOutline {

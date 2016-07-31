@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * <h3>{@link ServerSession}</h3>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 public class ServerSession extends AbstractServerSession {
 

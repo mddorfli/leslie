@@ -1,7 +1,7 @@
 package leslie.org.leslie.shared;
 
 /**
- * @author Kiwi
+ * @author Marco Dörfliger
  */
 public enum DataType {
 	ROLE, ROLE_PERMISSION,

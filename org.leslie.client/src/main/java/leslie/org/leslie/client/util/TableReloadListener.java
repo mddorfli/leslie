@@ -8,7 +8,7 @@ import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTabl
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 
 /**
- * @author Kiwi
+ * @author Marco Dörfliger
  */
 public class TableReloadListener implements DataChangeListener {
 

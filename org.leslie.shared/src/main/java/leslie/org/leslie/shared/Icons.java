@@ -5,7 +5,7 @@ import org.eclipse.scout.rt.shared.AbstractIcons;
 /**
  * <h3>{@link Icons}</h3>
  *
- * @author kiwi
+ * @author Marco Dörfliger
  */
 public class Icons extends AbstractIcons {
 

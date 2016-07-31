@@ -13,6 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.eclipse.scout.rt.platform.util.StringUtility;
+
 @Entity
 @Table(name = "users")
 public class StoredUser {
@@ -83,6 +85,19 @@ public class StoredUser {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getDisplayName() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(StringUtility.emptyIfNull(getFirstName()));
+		if (sb.length() > 0) {
+			sb.append(" ");
+		}
+		sb.append(StringUtility.emptyIfNull(getLastName()));
+		if (sb.length() == 0) {
+			sb.append(getUsername());
+		}
+		return sb.toString();
 	}
 
 	public String getEmail() {
