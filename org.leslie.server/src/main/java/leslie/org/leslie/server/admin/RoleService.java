@@ -28,9 +28,13 @@ public class RoleService implements IRoleService {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 		StoredRole role = new StoredRole();
-		role.setName(formData.getName().getValue());
+		mapFields(formData, role);
 		JPA.persist(role);
 		return formData;
+	}
+
+	private static void mapFields(RoleFormData formData, StoredRole role) {
+		role.setName(formData.getName().getValue());
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class RoleService implements IRoleService {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 		StoredRole role = JPA.find(StoredRole.class, formData.getRoleNr());
-		role.setName(formData.getName().getValue());
+		mapFields(formData, role);
 		JPA.merge(role);
 		return formData;
 	}

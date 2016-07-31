@@ -29,11 +29,11 @@ import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import leslie.org.leslie.client.ClientSession;
 import leslie.org.leslie.shared.admin.IAdministrationOutlineService;
 import leslie.org.leslie.shared.admin.IUserAdministrationService;
-import leslie.org.leslie.shared.admin.UserPageData;
+import leslie.org.leslie.shared.admin.UserAdministrationPageData;
 import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
 
-@PageData(UserPageData.class)
-public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
+@PageData(UserAdministrationPageData.class)
+public class UserAdministrationTablePage extends AbstractPageWithTable<UserAdministrationTablePage.Table> {
 
 	@Override
 	protected void execLoadData(SearchFilter filter) throws ProcessingException {
@@ -85,7 +85,7 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 			return getColumnSet().getColumnByClass(LastNameColumn.class);
 		}
 
-		public BlockedColumn getLockedColumn() {
+		public BlockedColumn getBlockedColumn() {
 			return getColumnSet().getColumnByClass(BlockedColumn.class);
 		}
 

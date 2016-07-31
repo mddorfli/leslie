@@ -19,13 +19,11 @@ import org.eclipse.scout.rt.shared.services.lookup.LookupCall;
 
 import leslie.org.leslie.client.admin.RoleForm.MainBox.GroupBox;
 import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.CancelButton;
+import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.BlockedField;
 import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.EmailField;
 import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.FirstNameField;
 import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.LastNameField;
-import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.LockedField;
-import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.OrganisationField;
 import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.PasswordField;
-import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.PrivateField;
 import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.RolesField;
 import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.GroupBox.UsernameField;
 import leslie.org.leslie.client.admin.UserAdministrationForm.MainBox.OkButton;
@@ -86,8 +84,8 @@ public class UserAdministrationForm extends AbstractForm {
 		return getFieldByClass(LastNameField.class);
 	}
 
-	public LockedField getLockedField() {
-		return getFieldByClass(LockedField.class);
+	public BlockedField getBlockedField() {
+		return getFieldByClass(BlockedField.class);
 	}
 
 	public MainBox getMainBox() {
@@ -98,19 +96,8 @@ public class UserAdministrationForm extends AbstractForm {
 		return getFieldByClass(OkButton.class);
 	}
 
-	public OrganisationField getOrganisationField() {
-		return getFieldByClass(OrganisationField.class);
-	}
-
 	public PasswordField getPasswordField() {
 		return getFieldByClass(PasswordField.class);
-	}
-
-	/**
-	 * @return the PrivateField
-	 */
-	public PrivateField getPrivateField() {
-		return getFieldByClass(PrivateField.class);
 	}
 
 	public RolesField getRolesField() {
@@ -169,15 +156,6 @@ public class UserAdministrationForm extends AbstractForm {
 				}
 			}
 
-			@Order(40.0)
-			public class OrganisationField extends AbstractStringField {
-
-				@Override
-				protected String getConfiguredLabel() {
-					return TEXTS.get("Organisation");
-				}
-			}
-
 			@Order(50.0)
 			public class EmailField extends AbstractStringField {
 
@@ -220,7 +198,7 @@ public class UserAdministrationForm extends AbstractForm {
 			}
 
 			@Order(100.0)
-			public class LockedField extends AbstractBooleanField {
+			public class BlockedField extends AbstractBooleanField {
 
 				@Override
 				protected int getConfiguredGridX() {
@@ -229,7 +207,7 @@ public class UserAdministrationForm extends AbstractForm {
 
 				@Override
 				protected String getConfiguredLabel() {
-					return TEXTS.get("Locked");
+					return TEXTS.get("Blocked");
 				}
 			}
 
@@ -254,15 +232,6 @@ public class UserAdministrationForm extends AbstractForm {
 				@Override
 				protected Class<? extends LookupCall<Long>> getConfiguredLookupCall() {
 					return RoleLookupCall.class;
-				}
-			}
-
-			@Order(120.0)
-			public class PrivateField extends AbstractBooleanField {
-
-				@Override
-				protected String getConfiguredLabel() {
-					return TEXTS.get("Private");
 				}
 			}
 		}

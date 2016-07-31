@@ -12,8 +12,8 @@ import leslie.org.leslie.shared.admin.PermissionTablePageData;
 import leslie.org.leslie.shared.admin.PermissionTablePageData.PermissionTableRowData;
 import leslie.org.leslie.shared.admin.RolePageData;
 import leslie.org.leslie.shared.admin.RolePageData.RoleRowData;
-import leslie.org.leslie.shared.admin.UserPageData;
-import leslie.org.leslie.shared.admin.UserPageData.UserRowData;
+import leslie.org.leslie.shared.admin.UserAdministrationPageData;
+import leslie.org.leslie.shared.admin.UserAdministrationPageData.UserAdministrationRowData;
 
 @Bean
 public class AdministrationOutlineService implements IAdministrationOutlineService {
@@ -57,8 +57,8 @@ public class AdministrationOutlineService implements IAdministrationOutlineServi
 	}
 
 	@Override
-	public UserPageData getUserTableData() throws ProcessingException {
-		final UserPageData pageData = new UserPageData();
+	public UserAdministrationPageData getUserTableData() throws ProcessingException {
+		final UserAdministrationPageData pageData = new UserAdministrationPageData();
 		JPA.createQuery(""
 				+ "SELECT u "
 				+ "  FROM " + StoredUser.class.getSimpleName() + " u ",
@@ -69,8 +69,8 @@ public class AdministrationOutlineService implements IAdministrationOutlineServi
 		return pageData;
 	}
 
-	private static void copyPageData(StoredUser user, UserPageData pageData) {
-		UserRowData row = pageData.addRow();
+	private static void copyPageData(StoredUser user, UserAdministrationPageData pageData) {
+		UserAdministrationRowData row = pageData.addRow();
 		row.setId(user.getId());
 		row.setUsername(user.getUsername());
 		row.setFirstName(user.getFirstName());

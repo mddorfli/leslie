@@ -11,5 +11,5 @@ public interface IAdministrationOutlineService extends IService {
 
 	RolePageData getRoleTableData() throws ProcessingException;
 
-	UserPageData getUserTableData() throws ProcessingException;
+	UserAdministrationPageData getUserTableData() throws ProcessingException;
 }

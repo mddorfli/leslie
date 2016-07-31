@@ -43,6 +43,12 @@ public class StoredUser {
 	@Column(name = "last_login")
 	private Date lastLogin;
 
+	@Column(name = "pw_salt")
+	private String passwordSalt;
+
+	@Column(name = "pw_hash")
+	private String passwordHash;
+
 	@OneToMany
 	@JoinTable(name = "user_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private List<StoredRole> roles;
@@ -117,6 +123,22 @@ public class StoredUser {
 
 	public void setRoles(List<StoredRole> roles) {
 		this.roles = roles;
+	}
+
+	public String getPasswordSalt() {
+		return passwordSalt;
+	}
+
+	public void setPasswordSalt(String passwordSalt) {
+		this.passwordSalt = passwordSalt;
+	}
+
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
 	}
 
 }
