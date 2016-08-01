@@ -6,8 +6,8 @@ import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithNode
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.IPage;
 import org.eclipse.scout.rt.shared.TEXTS;
 
-import leslie.org.leslie.client.admin.UserTablePage;
-import leslie.org.leslie.shared.admin.IUserService.UserPresentationType;
+import leslie.org.leslie.client.user.UserTablePage;
+import leslie.org.leslie.shared.user.IUserService.UserPresentationType;
 
 public class ProjectNodePage extends AbstractPageWithNodes {
 

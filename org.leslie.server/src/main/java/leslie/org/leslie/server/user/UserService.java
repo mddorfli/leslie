@@ -1,6 +1,10 @@
 package leslie.org.leslie.server.user;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.persistence.TypedQuery;
 
 import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
@@ -14,12 +18,12 @@ import org.leslie.server.jpa.StoredRole;
 import org.leslie.server.jpa.StoredUser;
 
 import leslie.org.leslie.server.JPA;
-import leslie.org.leslie.shared.admin.IUserService;
-import leslie.org.leslie.shared.admin.ReadAdministrationPermission;
-import leslie.org.leslie.shared.admin.UpdateAdministrationPermission;
 import leslie.org.leslie.shared.admin.UserFormData;
 import leslie.org.leslie.shared.admin.UserPageData;
 import leslie.org.leslie.shared.admin.UserPageData.UserRowData;
+import leslie.org.leslie.shared.security.ReadAdministrationPermission;
+import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.user.IUserService;
 
 @Bean
 public class UserService implements IUserService {
@@ -77,9 +81,12 @@ public class UserService implements IUserService {
 		user.setEmail(formData.getEmail().getValue());
 		user.setBlocked(formData.getBlocked().getValue());
 
-		user.setRoles(formData.getRoles().getValue().stream()
-				.map(id -> JPA.find(StoredRole.class, id))
-				.collect(Collectors.toList()));
+		if (formData.getRoles().getValue() != null) {
+			user.setRoles(formData.getRoles().getValue().stream()
+					.map(id -> JPA.find(StoredRole.class, id))
+					.collect(Collectors.toList()));
+		}
+
 	}
 
 	private static void importFormData(UserFormData formData, StoredUser user) {
@@ -89,9 +96,11 @@ public class UserService implements IUserService {
 		formData.getEmail().setValue(user.getEmail());
 		formData.getBlocked().setValue(user.isBlocked());
 
-		formData.getRoles().setValue(user.getRoles().stream()
-				.map(StoredRole::getId)
-				.collect(Collectors.toSet()));
+		if (formData.getRoles().getValue() != null) {
+			formData.getRoles().setValue(user.getRoles().stream()
+					.map(StoredRole::getId)
+					.collect(Collectors.toSet()));
+		}
 	}
 
 	private static void applyPassword(StoredUser user, String password) {
@@ -102,23 +111,40 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public UserPageData getUserTableData() {
+	public UserPageData getUserTableData(UserPresentationType presentationType, Long projectId) {
 		final UserPageData pageData = new UserPageData();
-		JPA.createQuery(""
+		StringBuilder fromSql = new StringBuilder();
+		StringBuilder whereSql = new StringBuilder();
+		Map<String, Long> parameters = new HashMap<>();
+		switch (presentationType) {
+			case PROJECT :
+				fromSql.append(" JOIN FETCH u.projects p ");
+				whereSql.append(" AND p.id = :projectId ");
+				parameters.put("projectId", projectId);
+				break;
+			case ADMINISTRATION :
+			default :
+				break;
+		}
+
+		TypedQuery<StoredUser> query = JPA.createQuery(""
 				+ "SELECT u "
-				+ "  FROM " + StoredUser.class.getSimpleName() + " u ",
-				StoredUser.class)
-				.getResultList()
-				.forEach((user) -> exportPageData(pageData, user));
+				+ "  FROM " + StoredUser.class.getSimpleName() + " u "
+				+ fromSql.toString()
+				+ " WHERE 1=1 "
+				+ whereSql.toString(),
+				StoredUser.class);
+		parameters.forEach(query::setParameter);
+		query.getResultList().forEach((user) -> exportPageData(pageData.addRow(), user));
 
 		return pageData;
 	}
 
-	private static void exportPageData(UserPageData pageData, StoredUser user) {
-		UserRowData row = pageData.addRow();
+	private static void exportPageData(UserRowData row, StoredUser user) {
 		row.setId(user.getId());
 		row.setUsername(user.getUsername());
 		row.setFirstName(user.getFirstName());
+		row.setDisplayName(user.getDisplayName());
 		row.setLastName(user.getLastName());
 		row.setEmail(user.getEmail());
 		row.setLoginAttempts(user.getFailedLoginAttempts());

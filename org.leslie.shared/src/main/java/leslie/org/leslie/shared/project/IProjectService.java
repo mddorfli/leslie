@@ -4,6 +4,9 @@ import org.eclipse.scout.rt.platform.service.IService;
 import org.eclipse.scout.rt.shared.TunnelToServer;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 
+import leslie.org.leslie.shared.project.ProjectFormData;
+import leslie.org.leslie.shared.project.ProjectTablePageData;
+
 @TunnelToServer
 public interface IProjectService extends IService {
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+<changeSet id="1" author="kiwi">
+	<createTable tableName="appointment_ext_vacation">
+		<column name="appointment_id" type="java.sql.Types.BIGINT">
+			<constraints primaryKey="true"/>
+		</column>
+		<column name="requested_by_user_id" type="java.sql.Types.BIGINT">
+			<constraints nullable="false"/>
+		</column>
+		<column name="approved_by_user_id" type="java.sql.Types.BIGINT"/>
+	</createTable>
+</changeSet>
+
+</databaseChangeLog>

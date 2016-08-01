@@ -14,9 +14,9 @@ import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 
-import leslie.org.leslie.client.admin.AdministrationOutline;
-import leslie.org.leslie.client.personal.PersonalOutline;
-import leslie.org.leslie.client.project.ProjectOutline;
+import leslie.org.leslie.client.outline.AdministrationOutline;
+import leslie.org.leslie.client.outline.PersonalOutline;
+import leslie.org.leslie.client.outline.ProjectOutline;
 import leslie.org.leslie.shared.Icons;
 
 /**

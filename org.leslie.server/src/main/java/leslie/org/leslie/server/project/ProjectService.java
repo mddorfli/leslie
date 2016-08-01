@@ -8,13 +8,13 @@ import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.jpa.StoredProject;
 
 import leslie.org.leslie.server.JPA;
-import leslie.org.leslie.shared.project.CreateProjectPermission;
 import leslie.org.leslie.shared.project.IProjectService;
 import leslie.org.leslie.shared.project.ProjectFormData;
 import leslie.org.leslie.shared.project.ProjectTablePageData;
 import leslie.org.leslie.shared.project.ProjectTablePageData.ProjectTableRowData;
-import leslie.org.leslie.shared.project.ReadProjectPermission;
-import leslie.org.leslie.shared.project.UpdateProjectPermission;
+import leslie.org.leslie.shared.security.CreateProjectPermission;
+import leslie.org.leslie.shared.security.ReadProjectPermission;
+import leslie.org.leslie.shared.security.UpdateProjectPermission;
 
 @Bean
 public class ProjectService implements IProjectService {

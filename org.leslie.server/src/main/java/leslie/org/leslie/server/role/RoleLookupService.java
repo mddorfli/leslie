@@ -3,7 +3,7 @@ package leslie.org.leslie.server.role;
 import org.leslie.server.jpa.StoredRole;
 
 import leslie.org.leslie.server.AbstractJpaLookupService;
-import leslie.org.leslie.shared.admin.lookup.IRoleLookupService;
+import leslie.org.leslie.shared.role.IRoleLookupService;
 
 public class RoleLookupService extends AbstractJpaLookupService<Long, StoredRole> implements IRoleLookupService {
 

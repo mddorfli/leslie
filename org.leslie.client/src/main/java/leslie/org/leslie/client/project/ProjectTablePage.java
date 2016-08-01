@@ -78,6 +78,11 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 			protected int getConfiguredWidth() {
 				return 100;
 			}
+
+			@Override
+			protected boolean getConfiguredSummary() {
+				return true;
+			}
 		}
 
 		@Order(3000)
@@ -91,6 +96,11 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 			@Override
 			protected int getConfiguredWidth() {
 				return 100;
+			}
+
+			@Override
+			protected boolean getConfiguredSummary() {
+				return true;
 			}
 		}
 

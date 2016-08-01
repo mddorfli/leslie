@@ -61,7 +61,7 @@ public class StoredUser {
 	@JoinTable(name = "user_x_project",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"))
-	private List<StoredProject> users;
+	private List<StoredProject> projects;
 
 	public long getId() {
 		return id;
@@ -164,12 +164,12 @@ public class StoredUser {
 		this.roles = roles;
 	}
 
-	public List<StoredProject> getUsers() {
-		return users;
+	public List<StoredProject> getProjects() {
+		return projects;
 	}
 
-	public void setUsers(List<StoredProject> users) {
-		this.users = users;
+	public void setProjects(List<StoredProject> projects) {
+		this.projects = projects;
 	}
 
 }

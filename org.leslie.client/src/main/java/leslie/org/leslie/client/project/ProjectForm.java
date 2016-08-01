@@ -12,13 +12,14 @@ import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.shared.TEXTS;
 
 import leslie.org.leslie.client.project.ProjectForm.MainBox.CancelButton;
-import leslie.org.leslie.client.project.ProjectForm.MainBox.NameField;
+import leslie.org.leslie.client.project.ProjectForm.MainBox.GroupBox;
+import leslie.org.leslie.client.project.ProjectForm.MainBox.GroupBox.NameField;
+import leslie.org.leslie.client.project.ProjectForm.MainBox.GroupBox.VersionField;
 import leslie.org.leslie.client.project.ProjectForm.MainBox.OkButton;
-import leslie.org.leslie.client.project.ProjectForm.MainBox.VersionField;
-import leslie.org.leslie.shared.project.CreateProjectPermission;
 import leslie.org.leslie.shared.project.IProjectService;
 import leslie.org.leslie.shared.project.ProjectFormData;
-import leslie.org.leslie.shared.project.UpdateProjectPermission;
+import leslie.org.leslie.shared.security.CreateProjectPermission;
+import leslie.org.leslie.shared.security.UpdateProjectPermission;
 
 @FormData(value = ProjectFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
 public class ProjectForm extends AbstractForm {
@@ -60,6 +61,10 @@ public class ProjectForm extends AbstractForm {
 		return getFieldByClass(VersionField.class);
 	}
 
+	public GroupBox getGroupBox() {
+		return getFieldByClass(GroupBox.class);
+	}
+
 	public NameField getNameField() {
 		return getFieldByClass(NameField.class);
 	}
@@ -76,31 +81,35 @@ public class ProjectForm extends AbstractForm {
 			return 1;
 		}
 
-		@Order(1000)
-		public class NameField extends AbstractStringField {
+		@Order(0)
+		public class GroupBox extends AbstractGroupBox {
 
-			@Override
-			protected String getConfiguredLabel() {
-				return TEXTS.get("Name");
+			@Order(1000)
+			public class NameField extends AbstractStringField {
+
+				@Override
+				protected String getConfiguredLabel() {
+					return TEXTS.get("Name");
+				}
+
+				@Override
+				protected int getConfiguredMaxLength() {
+					return 80;
+				}
 			}
 
-			@Override
-			protected int getConfiguredMaxLength() {
-				return 80;
-			}
-		}
+			@Order(2000)
+			public class VersionField extends AbstractStringField {
 
-		@Order(2000)
-		public class VersionField extends AbstractStringField {
+				@Override
+				protected String getConfiguredLabel() {
+					return TEXTS.get("Version");
+				}
 
-			@Override
-			protected String getConfiguredLabel() {
-				return TEXTS.get("Version");
-			}
-
-			@Override
-			protected int getConfiguredMaxLength() {
-				return 80;
+				@Override
+				protected int getConfiguredMaxLength() {
+					return 80;
+				}
 			}
 		}
 

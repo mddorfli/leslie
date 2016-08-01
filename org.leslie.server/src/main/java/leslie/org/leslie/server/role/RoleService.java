@@ -14,14 +14,14 @@ import org.leslie.server.jpa.StoredRole;
 import org.leslie.server.jpa.StoredRolePermission;
 
 import leslie.org.leslie.server.JPA;
-import leslie.org.leslie.shared.admin.IRoleService;
 import leslie.org.leslie.shared.admin.PermissionTablePageData;
 import leslie.org.leslie.shared.admin.PermissionTablePageData.PermissionTableRowData;
-import leslie.org.leslie.shared.admin.ReadAdministrationPermission;
 import leslie.org.leslie.shared.admin.RoleFormData;
 import leslie.org.leslie.shared.admin.RolePageData;
 import leslie.org.leslie.shared.admin.RolePageData.RoleRowData;
-import leslie.org.leslie.shared.admin.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.role.IRoleService;
+import leslie.org.leslie.shared.security.ReadAdministrationPermission;
+import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
 
 @Bean
 public class RoleService implements IRoleService {

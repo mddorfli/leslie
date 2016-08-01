@@ -10,8 +10,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import leslie.org.leslie.shared.personal.IVacationService;
-import leslie.org.leslie.shared.work.VacationFormData;
+import leslie.org.leslie.shared.appointment.IVacationAppointmentService;
+import leslie.org.leslie.shared.work.VacationAppointmentFormData;
 
 @RunWithSubject("anonymous")
 @RunWith(ClientTestRunner.class)
@@ -19,15 +19,15 @@ import leslie.org.leslie.shared.work.VacationFormData;
 public class VacationFormTest {
 
 	@BeanMock
-	private IVacationService m_mockSvc;
+	private IVacationAppointmentService m_mockSvc;
 
 	@Before
 	public void setup() {
-		VacationFormData answer = new VacationFormData();
-		Mockito.when(m_mockSvc.prepareCreate(Matchers.any(VacationFormData.class))).thenReturn(answer);
-		Mockito.when(m_mockSvc.create(Matchers.any(VacationFormData.class))).thenReturn(answer);
-		Mockito.when(m_mockSvc.load(Matchers.any(VacationFormData.class))).thenReturn(answer);
-		Mockito.when(m_mockSvc.store(Matchers.any(VacationFormData.class))).thenReturn(answer);
+		VacationAppointmentFormData answer = new VacationAppointmentFormData();
+		Mockito.when(m_mockSvc.prepareCreate(Matchers.any(VacationAppointmentFormData.class))).thenReturn(answer);
+		Mockito.when(m_mockSvc.create(Matchers.any(VacationAppointmentFormData.class))).thenReturn(answer);
+		Mockito.when(m_mockSvc.load(Matchers.any(VacationAppointmentFormData.class))).thenReturn(answer);
+		Mockito.when(m_mockSvc.store(Matchers.any(VacationAppointmentFormData.class))).thenReturn(answer);
 	}
 
 	// TODO [kiwi] add test cases
