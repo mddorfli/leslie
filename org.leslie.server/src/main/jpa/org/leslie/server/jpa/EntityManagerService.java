@@ -23,7 +23,9 @@ import org.slf4j.LoggerFactory;
 public class EntityManagerService implements IService {
 
 	private static final String PERSISTENCE_UNIT_NAME = "leslie";
+
 	private static final String TRANSACTION_ID = EntityManagerService.class.getSimpleName() + ".transaction";
+
 	private static final Logger logger = LoggerFactory.getLogger(EntityManagerService.class);
 
 	private EntityManagerFactory m_entityManagerFactory;

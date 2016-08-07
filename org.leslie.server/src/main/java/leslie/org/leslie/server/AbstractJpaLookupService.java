@@ -1,5 +1,10 @@
 package leslie.org.leslie.server;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+
 /*******************************************************************************
  * Copyright (c) 2010-2015 BSI Business Systems Integration AG.
  * All rights reserved. This program and the accompanying materials
@@ -12,6 +17,7 @@ package leslie.org.leslie.server;
  ******************************************************************************/
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,12 +73,11 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 
 	/**
 	 * Sql SELECT statement
+	 * @param call TODO
 	 */
 	@ConfigProperty(ConfigProperty.SQL)
 	@Order(10)
-	protected String getConfiguredSqlSelect() {
-		return null;
-	}
+	protected abstract String getConfiguredSqlSelect(ILookupCall<KEY_TYPE> call);
 
 	protected <SORT_FIELD_TYPE> Function<ENTITY_TYPE, Comparable<SORT_FIELD_TYPE>> getConfiguredSortField() {
 		return null;
@@ -80,7 +85,7 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 
 	protected abstract Class<ENTITY_TYPE> getConfiguredEntityType();
 
-	protected abstract Object[] execGenerateDataRow(ENTITY_TYPE obj);
+	protected abstract Object[] execGenerateDataRow(ENTITY_TYPE obj, ILookupCall<KEY_TYPE> call);
 
 	/**
 	 * This method is called on server side to load lookup rows.
@@ -91,6 +96,10 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 			ILookupCall<KEY_TYPE> call) {
 		TypedQuery<ENTITY_TYPE> query = JPA.createQuery(preprocessedSql, getConfiguredEntityType());
 		query.setMaxResults(call.getMaxRowCount());
+		// only adds those binds which are used in the SQL
+		getCustomBinds(call).entrySet().stream()
+				.filter(entry -> StringUtility.contains(preprocessedSql, ":" + entry.getKey()))
+				.forEach(entry -> query.setParameter(entry.getKey(), entry.getValue()));
 		List<ENTITY_TYPE> data = query.getResultList();
 
 		if (getConfiguredSortField() != null) {
@@ -107,7 +116,7 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 			}
 
 			Object[][] rowData = data.stream()
-					.map(this::execGenerateDataRow)
+					.map(entity -> execGenerateDataRow(entity, call))
 					.collect(Collectors.toList())
 					.toArray(new Object[][]{});
 
@@ -116,6 +125,40 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 			throw new ProcessingException(
 					"Unable to load lookup rows for lookup service '" + getClass().getName() + "'.", e);
 		}
+	}
+
+	/**
+	 * Uses reflection to detect custom parameters in the lookup call.
+	 */
+	private Map<String, Object> getCustomBinds(ILookupCall<KEY_TYPE> call) {
+		Map<String, Object> result = new HashMap<>();
+		for (Field field : call.getClass().getDeclaredFields()) {
+			StringBuilder getterName = new StringBuilder();
+			if (field.getType().equals(Boolean.class) || field.getType().equals(boolean.class)) {
+				getterName.append("is");
+			} else {
+				getterName.append("get");
+			}
+			String fieldName = field.getName();
+			getterName.append(Character.toUpperCase(fieldName.charAt(0)));
+			if (fieldName.length() > 1) {
+				getterName.append(fieldName.substring(1));
+			}
+			try {
+				Method getter = call.getClass().getDeclaredMethod(getterName.toString());
+				if (!getter.getReturnType().equals(field.getType())) {
+					continue;
+				}
+				Object value = getter.invoke(call);
+				result.put(fieldName, value);
+
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
+				// ignore - there is no appropriate getter
+			}
+		}
+		return result;
+
 	}
 
 	/**
@@ -151,7 +194,7 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 
 	@Override
 	public List<ILookupRow<KEY_TYPE>> getDataByKey(ILookupCall<KEY_TYPE> call) {
-		String sql = getConfiguredSqlSelect();
+		String sql = getConfiguredSqlSelect(call);
 		return execLoadLookupRows(sql, filterSqlByKey(sql), call);
 	}
 
@@ -164,13 +207,13 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 		// BEANS.get(ISqlService.class).getSqlStyle().getLikeWildcard();
 		// call.setText(s.replace(call.getWildcard(), sqlWildcard));
 		// }
-		String sql = getConfiguredSqlSelect();
+		String sql = getConfiguredSqlSelect(call);
 		return execLoadLookupRows(sql, filterSqlByText(sql), call);
 	}
 
 	@Override
 	public List<ILookupRow<KEY_TYPE>> getDataByAll(ILookupCall<KEY_TYPE> call) {
-		String sql = getConfiguredSqlSelect();
+		String sql = getConfiguredSqlSelect(call);
 		if (containsRefusingAllTag(sql)) {
 			throw new VetoException(ScoutTexts.get("SearchTextIsTooGeneral"));
 		}
@@ -180,7 +223,7 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 
 	@Override
 	public List<ILookupRow<KEY_TYPE>> getDataByRec(ILookupCall<KEY_TYPE> call) {
-		String sql = getConfiguredSqlSelect();
+		String sql = getConfiguredSqlSelect(call);
 		return execLoadLookupRows(sql, filterSqlByRec(sql), call);
 	}
 

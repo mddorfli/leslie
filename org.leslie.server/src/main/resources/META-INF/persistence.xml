@@ -17,6 +17,13 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/leslie" />
 			<property name="javax.persistence.jdbc.user" value="leslie" />
 			<property name="javax.persistence.jdbc.password" value="leslie" />
+			<property name="eclipselink.logging.logger" value="JavaLogger"/>
+			<property name="eclipselink.logging.level" value="FINE"/>
+			<property name="eclipselink.logging.level.sql" value="FINE"/>
+			<property name="eclipselink.logging.parameters" value="true"/>
+			<property name="eclipselink.logging.timestamp" value="true"/>
+			<property name="eclipselink.logging.session" value="true"/>
+			<property name="eclipselink.logging.exceptions" value="true"/>
 		</properties>
 
 	</persistence-unit>

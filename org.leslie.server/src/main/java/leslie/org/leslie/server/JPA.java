@@ -271,7 +271,7 @@ public final class JPA {
 	 * @return
 	 * @see javax.persistence.EntityManager#createQuery(javax.persistence.criteria.CriteriaUpdate)
 	 */
-	public static Query createQuery(CriteriaUpdate updateQuery) {
+	public static Query createQuery(CriteriaUpdate<?> updateQuery) {
 		return getEntityManager().createQuery(updateQuery);
 	}
 
@@ -280,7 +280,7 @@ public final class JPA {
 	 * @return
 	 * @see javax.persistence.EntityManager#createQuery(javax.persistence.criteria.CriteriaDelete)
 	 */
-	public static Query createQuery(CriteriaDelete deleteQuery) {
+	public static Query createQuery(CriteriaDelete<?> deleteQuery) {
 		return getEntityManager().createQuery(deleteQuery);
 	}
 
@@ -331,7 +331,7 @@ public final class JPA {
 	 * @see javax.persistence.EntityManager#createNativeQuery(java.lang.String,
 	 *      java.lang.Class)
 	 */
-	public static Query createNativeQuery(String sqlString, Class resultClass) {
+	public static Query createNativeQuery(String sqlString, Class<?> resultClass) {
 		return getEntityManager().createNativeQuery(sqlString, resultClass);
 	}
 
@@ -371,7 +371,7 @@ public final class JPA {
 	 * @see javax.persistence.EntityManager#createStoredProcedureQuery(java.lang.String,
 	 *      java.lang.Class[])
 	 */
-	public static StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
+	public static StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class<?>... resultClasses) {
 		return getEntityManager().createStoredProcedureQuery(procedureName, resultClasses);
 	}
 

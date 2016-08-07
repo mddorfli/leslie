@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -21,7 +20,6 @@ public class StoredRolePermission {
 	private long id;
 
 	@ManyToOne
-	@JoinColumn(name = "role_id", referencedColumnName = "id")
 	private StoredRole role;
 
 	@Column(name = "permission_class_name")

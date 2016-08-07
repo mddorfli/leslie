@@ -7,9 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -27,10 +25,7 @@ public class StoredProject {
 	@Column(name = "version")
 	private String version;
 
-	@OneToMany
-	@JoinTable(name = "user_x_project",
-			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"))
+	@ManyToMany(mappedBy = "projects")
 	private List<StoredUser> users;
 
 	public long getId() {

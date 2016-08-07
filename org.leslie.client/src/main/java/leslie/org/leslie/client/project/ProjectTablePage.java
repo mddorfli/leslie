@@ -174,6 +174,5 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 				}
 			}
 		}
-
 	}
 }

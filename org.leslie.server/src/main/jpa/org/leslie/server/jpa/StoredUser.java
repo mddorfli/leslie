@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.eclipse.scout.rt.platform.util.StringUtility;
@@ -51,13 +51,13 @@ public class StoredUser {
 	@Column(name = "pw_hash")
 	private String passwordHash;
 
-	@OneToMany
+	@ManyToMany
 	@JoinTable(name = "user_x_role",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private List<StoredRole> roles;
 
-	@OneToMany
+	@ManyToMany
 	@JoinTable(name = "user_x_project",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"))

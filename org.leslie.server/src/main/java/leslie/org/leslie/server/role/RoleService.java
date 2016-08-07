@@ -12,6 +12,7 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.jpa.StoredRole;
 import org.leslie.server.jpa.StoredRolePermission;
+import org.leslie.server.jpa.StoredUser;
 
 import leslie.org.leslie.server.JPA;
 import leslie.org.leslie.shared.admin.PermissionTablePageData;
@@ -89,11 +90,32 @@ public class RoleService implements IRoleService {
 	}
 
 	@Override
-	public void delete(Long selectedValue) throws ProcessingException {
+	public void delete(Long roleId) throws ProcessingException {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredRole role = JPA.find(StoredRole.class, selectedValue.longValue());
+		StoredRole role = JPA.find(StoredRole.class, roleId.longValue());
+		// remove all permissions from the role
+		JPA.createQuery(""
+				+ "DELETE FROM " + StoredRolePermission.class.getSimpleName() + " c "
+				+ " WHERE c.role = :role ",
+				StoredRolePermission.class)
+				.setParameter("role", role);
+
+		// remove this role from all users
+		JPA.createQuery(""
+				+ "SELECT u "
+				+ " FROM " + StoredUser.class.getSimpleName() + " u "
+				+ " JOIN u.roles r "
+				+ " WHERE r = :role ",
+				StoredUser.class)
+				.setParameter("role", role)
+				.getResultList()
+				.forEach(user -> {
+					user.getRoles().removeIf(userRole -> userRole.getId() == roleId);
+					JPA.merge(user);
+				});
+
 		JPA.remove(role);
 	}
 
@@ -148,18 +170,9 @@ public class RoleService implements IRoleService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		for (String permissionClassName : permissions) {
-			JPA.createQuery(""
-					+ "SELECT rp "
-					+ "  FROM " + StoredRolePermission.class.getSimpleName() + " rp "
-					+ " WHERE rp.role.id = :roleId "
-					+ "   AND rp.permissionClassName = :permissionClassName ",
-					StoredRolePermission.class)
-					.setParameter("roleId", roleId)
-					.setParameter("permissionClassName", permissionClassName)
-					.getResultList()
-					.stream().findAny()
-					.ifPresent(JPA::remove);;
-		}
+		StoredRole role = JPA.find(StoredRole.class, roleId);
+		role.getRolePermissions().removeIf(
+				rolePermission -> permissions.contains(rolePermission.getPermissionClassName()));
+		JPA.merge(role);
 	}
 }

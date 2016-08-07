@@ -27,10 +27,13 @@ import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 
 import leslie.org.leslie.client.ClientSession;
+import leslie.org.leslie.client.user.UserTablePage.Table.AddUserMenu;
 import leslie.org.leslie.client.user.UserTablePage.Table.DeleteUserMenu;
 import leslie.org.leslie.client.user.UserTablePage.Table.EditUserMenu;
 import leslie.org.leslie.client.user.UserTablePage.Table.NewUserMenu;
+import leslie.org.leslie.client.user.UserTablePage.Table.RemoveUserMenu;
 import leslie.org.leslie.shared.admin.UserPageData;
+import leslie.org.leslie.shared.project.IProjectService;
 import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
 import leslie.org.leslie.shared.user.IUserService;
 import leslie.org.leslie.shared.user.IUserService.UserPresentationType;
@@ -72,6 +75,9 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 				break;
 			case ADMINISTRATION :
 				getTable().getDisplayNameColumn().setDisplayable(false);
+
+				getTable().getMenuByClass(AddUserMenu.class).setVisibleGranted(false);
+				getTable().getMenuByClass(RemoveUserMenu.class).setVisibleGranted(false);
 			default :
 				break;
 
@@ -351,5 +357,53 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 				}
 			}
 		}
+
+		@Order(2000)
+		public class AddUserMenu extends AbstractMenu {
+
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("AddUser_");
+			}
+
+			@Override
+			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+				return CollectionUtility.hashSet(TableMenuType.EmptySpace);
+			}
+
+			@Override
+			protected void execAction() {
+				UserSelectionForm form = new UserSelectionForm();
+				form.setProjectId(getProjectId());
+				form.startNew();
+				form.waitFor();
+				if (form.isFormStored()) {
+					reloadPage();
+				}
+			}
+		}
+
+		@Order(3000)
+		public class RemoveUserMenu extends AbstractMenu {
+
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("RemoveUser_");
+			}
+
+			@Override
+			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+				return CollectionUtility.hashSet(TableMenuType.SingleSelection);
+			}
+
+			@Override
+			protected void execAction() {
+				if (MessageBoxes.showDeleteConfirmationMessage(getDisplayNameColumn().getSelectedDisplayText())) {
+					BEANS.get(IProjectService.class).removeUser(getProjectId(), getIdColumn().getSelectedValue());
+					reloadPage();
+				}
+			}
+		}
+
 	}
 }

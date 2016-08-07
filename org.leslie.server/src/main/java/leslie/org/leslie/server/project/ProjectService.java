@@ -6,6 +6,7 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.jpa.StoredProject;
+import org.leslie.server.jpa.StoredUser;
 
 import leslie.org.leslie.server.JPA;
 import leslie.org.leslie.shared.project.IProjectService;
@@ -15,6 +16,7 @@ import leslie.org.leslie.shared.project.ProjectTablePageData.ProjectTableRowData
 import leslie.org.leslie.shared.security.CreateProjectPermission;
 import leslie.org.leslie.shared.security.ReadProjectPermission;
 import leslie.org.leslie.shared.security.UpdateProjectPermission;
+import leslie.org.leslie.shared.user.UserSelectionFormData;
 
 @Bean
 public class ProjectService implements IProjectService {
@@ -76,12 +78,34 @@ public class ProjectService implements IProjectService {
 		return formData;
 	}
 
+	@Override
 	public void deleteProject(Long projectId) {
 		if (!ACCESS.check(new UpdateProjectPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 		StoredProject project = JPA.find(StoredProject.class, projectId);
 		JPA.remove(project);
+	}
+
+	@Override
+	public void removeUser(Long projectId, Long userId) {
+		if (!ACCESS.check(new UpdateProjectPermission())) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+		StoredUser user = JPA.find(StoredUser.class, userId);
+		user.getProjects().removeIf(project -> project.getId() == projectId);
+		JPA.merge(user);
+	}
+
+	@Override
+	public void assignUser(UserSelectionFormData formData) {
+		if (!ACCESS.check(new UpdateProjectPermission())) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+		StoredProject project = JPA.find(StoredProject.class, formData.getProjectId());
+		StoredUser user = JPA.find(StoredUser.class, formData.getUser().getValue());
+		user.getProjects().add(project);
+		JPA.merge(user);
 	}
 
 	private static void importRowData(ProjectTableRowData row, StoredProject project) {

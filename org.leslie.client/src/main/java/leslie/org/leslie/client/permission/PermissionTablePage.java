@@ -71,8 +71,9 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 					@Override
 					public void dataChanged(Object... dataTypes) throws ProcessingException {
 						OrderedCollection<IMenu> nodeList = new OrderedCollection<IMenu>();
-						getMenu(AssignToRoleMenu.class).injectMenus(nodeList);
-						getMenu(AssignToRoleMenu.class).setChildActions(nodeList.getOrderedList());
+						AssignToRoleMenu assignToRoleMenu = getTable().getMenuByClass(AssignToRoleMenu.class);
+						assignToRoleMenu.injectMenus(nodeList);
+						assignToRoleMenu.setChildActions(nodeList.getOrderedList());
 					}
 				}, DataType.ROLE);
 			}
