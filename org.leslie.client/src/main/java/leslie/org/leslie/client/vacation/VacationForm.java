@@ -28,8 +28,8 @@ import leslie.org.leslie.client.vacation.VacationForm.MainBox.GroupBox.DaysField
 import leslie.org.leslie.client.vacation.VacationForm.MainBox.GroupBox.FromField;
 import leslie.org.leslie.client.vacation.VacationForm.MainBox.GroupBox.ToField;
 import leslie.org.leslie.shared.appointment.IVacationAppointmentService;
-import leslie.org.leslie.shared.security.CreateVacationPermission;
-import leslie.org.leslie.shared.security.UpdateVacationPermission;
+import leslie.org.leslie.shared.security.permission.CreateVacationPermission;
+import leslie.org.leslie.shared.security.permission.UpdateVacationPermission;
 import leslie.org.leslie.shared.user.UserLookupCall;
 import leslie.org.leslie.shared.work.VacationAppointmentFormData;
 

@@ -25,7 +25,7 @@ import leslie.org.leslie.client.permission.PermissionTablePage;
 import leslie.org.leslie.shared.DataType;
 import leslie.org.leslie.shared.admin.RolePageData;
 import leslie.org.leslie.shared.role.IRoleService;
-import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.security.permission.UpdateAdministrationPermission;
 
 @PageData(RolePageData.class)
 public class RoleTablePage extends AbstractPageWithTable<RoleTablePage.Table> {

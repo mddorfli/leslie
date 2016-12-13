@@ -7,14 +7,19 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 <changeSet id="10" author="kiwi">
-	<addForeignKeyConstraint constraintName="fk_user_x_project_user" 
-		baseTableName="user_x_project" baseColumnNames="user_id" 
+	<addForeignKeyConstraint constraintName="fk_user_x_role_x_project_user" 
+		baseTableName="user_x_role_x_project" baseColumnNames="user_id" 
 		referencedTableName="users" referencedColumnNames="id"/>
 </changeSet>
 <changeSet id="20" author="kiwi">
-	<addForeignKeyConstraint constraintName="fk_user_x_project_project" 
-		baseTableName="user_x_project" baseColumnNames="project_id" 
+	<addForeignKeyConstraint constraintName="fk_user_x_role_x_project_project" 
+		baseTableName="user_x_role_x_project" baseColumnNames="project_id" 
 		referencedTableName="project" referencedColumnNames="id"/>
+</changeSet>
+<changeSet id="30" author="kiwi">
+	<addForeignKeyConstraint constraintName="fk_user_x_role_x_project_role" 
+		baseTableName="user_x_role_x_project" baseColumnNames="role_id" 
+		referencedTableName="role" referencedColumnNames="id"/>
 </changeSet>
 
 </databaseChangeLog>

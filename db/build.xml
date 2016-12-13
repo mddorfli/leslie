@@ -17,9 +17,18 @@
 		<pathelement path="${basedir}/changelogs"/>
 	</path>
 	
-    <target name="update" description="runs all liquibase changelogs">
+	<target name="chooseContext">
+		<input addproperty="context" 
+			message="Choose context:" 
+			validargs="DEV,TEST,PROD" 
+			defaultvalue="DEV"
+		/>
+	</target>
+	
+    <target name="update" description="runs all liquibase changelogs" depends="chooseContext">
     	<java classname="liquibase.integration.commandline.Main" classpathref="classpath" fork="true">
     		<arg line="--changeLogFile=changelogs/master.xml"/>
+    		<arg line="--contexts=${context}"/>
     		<arg line="update"/>
     	</java>
     </target>
@@ -30,5 +39,5 @@
     	</java>
 	</target>
 	
-	<target name="rebuild" depends="dropAll,update"/>
+	<target name="rebuild" depends="chooseContext,dropAll,update"/>
 </project>

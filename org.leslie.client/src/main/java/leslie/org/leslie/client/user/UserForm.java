@@ -29,7 +29,7 @@ import leslie.org.leslie.client.user.UserForm.MainBox.GroupBox.RolesField;
 import leslie.org.leslie.client.user.UserForm.MainBox.GroupBox.UsernameField;
 import leslie.org.leslie.shared.admin.UserFormData;
 import leslie.org.leslie.shared.role.RoleLookupCall;
-import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.security.permission.UpdateAdministrationPermission;
 import leslie.org.leslie.shared.user.IUserService;
 
 @FormData(value = UserFormData.class, sdkCommand = FormData.SdkCommand.CREATE)

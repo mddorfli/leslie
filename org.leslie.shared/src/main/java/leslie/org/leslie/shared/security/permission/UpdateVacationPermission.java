@@ -1,4 +1,4 @@
-package leslie.org.leslie.shared.security;
+package leslie.org.leslie.shared.security.permission;
 
 import org.eclipse.scout.rt.shared.security.BasicHierarchyPermission;
 

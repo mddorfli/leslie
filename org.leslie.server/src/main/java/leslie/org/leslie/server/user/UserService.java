@@ -14,15 +14,15 @@ import org.eclipse.scout.rt.platform.util.Base64Utility;
 import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
-import org.leslie.server.jpa.StoredRole;
-import org.leslie.server.jpa.StoredUser;
+import org.leslie.server.jpa.Role;
+import org.leslie.server.jpa.User;
 
 import leslie.org.leslie.server.JPA;
 import leslie.org.leslie.shared.admin.UserFormData;
 import leslie.org.leslie.shared.admin.UserPageData;
 import leslie.org.leslie.shared.admin.UserPageData.UserRowData;
-import leslie.org.leslie.shared.security.ReadAdministrationPermission;
-import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.security.permission.ReadAdministrationPermission;
+import leslie.org.leslie.shared.security.permission.UpdateAdministrationPermission;
 import leslie.org.leslie.shared.user.IUserService;
 
 @Bean
@@ -33,7 +33,7 @@ public class UserService implements IUserService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredUser user = new StoredUser();
+		User user = new User();
 		exportFormData(formData, user);
 		applyPassword(user, formData.getPassword().getValue());
 
@@ -46,7 +46,7 @@ public class UserService implements IUserService {
 		if (!ACCESS.check(new ReadAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredUser user = JPA.find(StoredUser.class, formData.getUserNr());
+		User user = JPA.find(User.class, formData.getUserNr());
 		importFormData(formData, user);
 		return formData;
 	}
@@ -56,7 +56,7 @@ public class UserService implements IUserService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredUser user = JPA.find(StoredUser.class, formData.getUserNr());
+		User user = JPA.find(User.class, formData.getUserNr());
 		exportFormData(formData, user);
 		if (!StringUtility.isNullOrEmpty(formData.getPassword().getValue())) {
 			applyPassword(user, formData.getPassword().getValue());
@@ -70,11 +70,11 @@ public class UserService implements IUserService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredUser user = JPA.find(StoredUser.class, selectedValue);
+		User user = JPA.find(User.class, selectedValue);
 		JPA.remove(user);
 	}
 
-	private static void exportFormData(UserFormData formData, StoredUser user) {
+	private static void exportFormData(UserFormData formData, User user) {
 		user.setUsername(formData.getUsername().getValue());
 		user.setFirstName(formData.getFirstName().getValue());
 		user.setLastName(formData.getLastName().getValue());
@@ -83,13 +83,13 @@ public class UserService implements IUserService {
 
 		if (formData.getRoles().getValue() != null) {
 			user.setRoles(formData.getRoles().getValue().stream()
-					.map(id -> JPA.find(StoredRole.class, id))
+					.map(id -> JPA.find(Role.class, id))
 					.collect(Collectors.toList()));
 		}
 
 	}
 
-	private static void importFormData(UserFormData formData, StoredUser user) {
+	private static void importFormData(UserFormData formData, User user) {
 		formData.getUsername().setValue(user.getUsername());
 		formData.getFirstName().setValue(user.getFirstName());
 		formData.getLastName().setValue(user.getLastName());
@@ -98,12 +98,12 @@ public class UserService implements IUserService {
 
 		if (formData.getRoles().getValue() != null) {
 			formData.getRoles().setValue(user.getRoles().stream()
-					.map(StoredRole::getId)
+					.map(Role::getId)
 					.collect(Collectors.toSet()));
 		}
 	}
 
-	private static void applyPassword(StoredUser user, String password) {
+	private static void applyPassword(User user, String password) {
 		byte[] salt = SecurityUtility.createRandomBytes();
 		byte[] hash = SecurityUtility.hash(Base64Utility.decode(password), salt);
 		user.setPasswordSalt(Base64Utility.encode(salt));
@@ -127,20 +127,20 @@ public class UserService implements IUserService {
 				break;
 		}
 
-		TypedQuery<StoredUser> query = JPA.createQuery(""
+		TypedQuery<User> query = JPA.createQuery(""
 				+ "SELECT u "
-				+ "  FROM " + StoredUser.class.getSimpleName() + " u "
+				+ "  FROM " + User.class.getSimpleName() + " u "
 				+ fromSql.toString()
 				+ " WHERE 1=1 "
 				+ whereSql.toString(),
-				StoredUser.class);
+				User.class);
 		parameters.forEach(query::setParameter);
 		query.getResultList().forEach((user) -> exportPageData(pageData.addRow(), user));
 
 		return pageData;
 	}
 
-	private static void exportPageData(UserRowData row, StoredUser user) {
+	private static void exportPageData(UserRowData row, User user) {
 		row.setId(user.getId());
 		row.setUsername(user.getUsername());
 		row.setFirstName(user.getFirstName());

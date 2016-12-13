@@ -3,10 +3,11 @@ package leslie.org.leslie.shared.security;
 import org.eclipse.scout.rt.shared.security.BasicHierarchyPermission;
 
 public enum PermissionLevel {
-
-    LEVEL_UNDEFINED(BasicHierarchyPermission.LEVEL_UNDEFINED, "Undefined"), LEVEL_NONE(
-	    BasicHierarchyPermission.LEVEL_NONE, "None"), LEVEL_OWN(10,
-		    "Own"), LEVEL_PROJECT(20, "Project"), LEVEL_ALL(BasicHierarchyPermission.LEVEL_ALL, "All");
+    LEVEL_UNDEFINED(BasicHierarchyPermission.LEVEL_UNDEFINED, "Undefined"),
+    LEVEL_NONE(BasicHierarchyPermission.LEVEL_NONE, "None"),
+    LEVEL_OWN(10, "Own"),
+    LEVEL_PROJECT(20, "Project"),
+    LEVEL_ALL(BasicHierarchyPermission.LEVEL_ALL, "All");
 
     private int value;
     private String nameLK;

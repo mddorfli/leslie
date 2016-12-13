@@ -7,7 +7,7 @@ import javax.persistence.TypedQuery;
 
 import org.eclipse.scout.rt.server.AbstractServerSession;
 import org.eclipse.scout.rt.server.session.ServerSessionProvider;
-import org.leslie.server.jpa.StoredUser;
+import org.leslie.server.jpa.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +33,12 @@ public class ServerSession extends AbstractServerSession {
 		return ServerSessionProvider.currentSession(ServerSession.class);
 	}
 
-	public StoredUser getUser() {
-		TypedQuery<StoredUser> query = JPA.createQuery(""
+	public User getUser() {
+		TypedQuery<User> query = JPA.createQuery(""
 				+ "SELECT u "
-				+ "  FROM " + StoredUser.class.getSimpleName() + " u "
+				+ "  FROM " + User.class.getSimpleName() + " u "
 				+ " WHERE u.id = :id ",
-				StoredUser.class);
+				User.class);
 		query.setParameter("id", getUserNr());
 		return query.getSingleResult();
 	}
@@ -53,13 +53,13 @@ public class ServerSession extends AbstractServerSession {
 
 	@Override
 	protected void execLoadSession() {
-		TypedQuery<StoredUser> query = JPA.createQuery(""
+		TypedQuery<User> query = JPA.createQuery(""
 				+ "SELECT u "
-				+ "  FROM " + StoredUser.class.getSimpleName() + " u "
+				+ "  FROM " + User.class.getSimpleName() + " u "
 				+ " WHERE u.username = :username ",
-				StoredUser.class);
+				User.class);
 		query.setParameter("username", getUserId());
-		Optional<StoredUser> user = query.getResultList().stream().findAny();
+		Optional<User> user = query.getResultList().stream().findAny();
 		if (user.isPresent()) {
 			setUserNrInternal(Long.valueOf(user.get().getId()));
 			user.get().setLastLogin(new Date(System.currentTimeMillis()));

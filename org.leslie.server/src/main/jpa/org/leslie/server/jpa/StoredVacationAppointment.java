@@ -18,11 +18,11 @@ public class StoredVacationAppointment {
 
 	@ManyToOne
 	@JoinColumn(name = "requested_by_user_id", referencedColumnName = "id")
-	private StoredUser requestedBy;
+	private User requestedBy;
 
 	@ManyToOne
 	@JoinColumn(name = "approved_by_user_id", referencedColumnName = "id")
-	private StoredUser approvedBy;
+	private User approvedBy;
 
 	public StoredAppointment getAppointment() {
 		return appointment;
@@ -32,19 +32,19 @@ public class StoredVacationAppointment {
 		this.appointment = appointment;
 	}
 
-	public StoredUser getRequestedBy() {
+	public User getRequestedBy() {
 		return requestedBy;
 	}
 
-	public void setRequestedBy(StoredUser requestedBy) {
+	public void setRequestedBy(User requestedBy) {
 		this.requestedBy = requestedBy;
 	}
 
-	public StoredUser getApprovedBy() {
+	public User getApprovedBy() {
 		return approvedBy;
 	}
 
-	public void setApprovedBy(StoredUser approvedBy) {
+	public void setApprovedBy(User approvedBy) {
 		this.approvedBy = approvedBy;
 	}
 

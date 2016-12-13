@@ -34,7 +34,7 @@ import leslie.org.leslie.client.user.UserTablePage.Table.NewUserMenu;
 import leslie.org.leslie.client.user.UserTablePage.Table.RemoveUserMenu;
 import leslie.org.leslie.shared.admin.UserPageData;
 import leslie.org.leslie.shared.project.IProjectService;
-import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.security.permission.UpdateAdministrationPermission;
 import leslie.org.leslie.shared.user.IUserService;
 import leslie.org.leslie.shared.user.IUserService.UserPresentationType;
 

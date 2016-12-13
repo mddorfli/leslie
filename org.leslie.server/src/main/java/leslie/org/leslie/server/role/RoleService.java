@@ -10,9 +10,9 @@ import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
-import org.leslie.server.jpa.StoredRole;
-import org.leslie.server.jpa.StoredRolePermission;
-import org.leslie.server.jpa.StoredUser;
+import org.leslie.server.jpa.Role;
+import org.leslie.server.jpa.RolePermission;
+import org.leslie.server.jpa.User;
 
 import leslie.org.leslie.server.JPA;
 import leslie.org.leslie.shared.admin.PermissionTablePageData;
@@ -21,8 +21,8 @@ import leslie.org.leslie.shared.admin.RoleFormData;
 import leslie.org.leslie.shared.admin.RolePageData;
 import leslie.org.leslie.shared.admin.RolePageData.RoleRowData;
 import leslie.org.leslie.shared.role.IRoleService;
-import leslie.org.leslie.shared.security.ReadAdministrationPermission;
-import leslie.org.leslie.shared.security.UpdateAdministrationPermission;
+import leslie.org.leslie.shared.security.permission.ReadAdministrationPermission;
+import leslie.org.leslie.shared.security.permission.UpdateAdministrationPermission;
 
 @Bean
 public class RoleService implements IRoleService {
@@ -30,15 +30,15 @@ public class RoleService implements IRoleService {
 	@Override
 	public RolePageData getRoleTableData() throws ProcessingException {
 		final RolePageData pageData = new RolePageData();
-		JPA.createQuery("SELECT r FROM " + StoredRole.class.getSimpleName() + " r ",
-				StoredRole.class)
+		JPA.createQuery("SELECT r FROM " + Role.class.getSimpleName() + " r ",
+				Role.class)
 				.getResultList()
 				.forEach((src) -> exportRowData(pageData.addRow(), src));
 
 		return pageData;
 	}
 
-	private static void exportRowData(RoleRowData row, StoredRole role) {
+	private static void exportRowData(RoleRowData row, Role role) {
 		row.setRoleNr(role.getId());
 		row.setRoleName(role.getName());
 	}
@@ -48,9 +48,9 @@ public class RoleService implements IRoleService {
 		final PermissionTablePageData pageData = new PermissionTablePageData();
 		JPA.createQuery(""
 				+ "SELECT rp "
-				+ "  FROM " + StoredRolePermission.class.getSimpleName() + " rp "
+				+ "  FROM " + RolePermission.class.getSimpleName() + " rp "
 				+ " WHERE rp.role.id = :roleId ",
-				StoredRolePermission.class)
+				RolePermission.class)
 				.setParameter("roleId", roleId)
 				.getResultList()
 				.forEach((role) -> importRowData(role, pageData.addRow()));
@@ -58,7 +58,7 @@ public class RoleService implements IRoleService {
 		return pageData;
 	}
 
-	private static void importRowData(StoredRolePermission rolePermission, PermissionTableRowData row) {
+	private static void importRowData(RolePermission rolePermission, PermissionTableRowData row) {
 		row.setLevel(rolePermission.getLevelUid());
 		row.setName(rolePermission.getPermissionClassName());
 	}
@@ -68,13 +68,13 @@ public class RoleService implements IRoleService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredRole role = new StoredRole();
+		Role role = new Role();
 		mapFields(formData, role);
 		JPA.persist(role);
 		return formData;
 	}
 
-	private static void mapFields(RoleFormData formData, StoredRole role) {
+	private static void mapFields(RoleFormData formData, Role role) {
 		role.setName(formData.getName().getValue());
 	}
 
@@ -83,7 +83,7 @@ public class RoleService implements IRoleService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredRole role = JPA.find(StoredRole.class, formData.getRoleNr());
+		Role role = JPA.find(Role.class, formData.getRoleNr());
 		mapFields(formData, role);
 		JPA.merge(role);
 		return formData;
@@ -94,21 +94,21 @@ public class RoleService implements IRoleService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredRole role = JPA.find(StoredRole.class, roleId.longValue());
+		Role role = JPA.find(Role.class, roleId.longValue());
 		// remove all permissions from the role
 		JPA.createQuery(""
-				+ "DELETE FROM " + StoredRolePermission.class.getSimpleName() + " c "
+				+ "DELETE FROM " + RolePermission.class.getSimpleName() + " c "
 				+ " WHERE c.role = :role ",
-				StoredRolePermission.class)
+				RolePermission.class)
 				.setParameter("role", role);
 
 		// remove this role from all users
 		JPA.createQuery(""
 				+ "SELECT u "
-				+ " FROM " + StoredUser.class.getSimpleName() + " u "
+				+ " FROM " + User.class.getSimpleName() + " u "
 				+ " JOIN u.roles r "
 				+ " WHERE r = :role ",
-				StoredUser.class)
+				User.class)
 				.setParameter("role", role)
 				.getResultList()
 				.forEach(user -> {
@@ -126,11 +126,11 @@ public class RoleService implements IRoleService {
 		}
 
 		return JPA.createQuery(""
-				+ "SELECT r FROM " + StoredRole.class.getSimpleName() + " r ",
-				StoredRole.class)
+				+ "SELECT r FROM " + Role.class.getSimpleName() + " r ",
+				Role.class)
 				.getResultList()
 				.stream()
-				.collect(Collectors.toMap(StoredRole::getId, StoredRole::getName));
+				.collect(Collectors.toMap(Role::getId, Role::getName));
 	}
 
 	@Override
@@ -138,14 +138,14 @@ public class RoleService implements IRoleService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		final StoredRole role = JPA.find(StoredRole.class, roleId);
+		final Role role = JPA.find(Role.class, roleId);
 		for (String permissionClassName : permissions) {
-			Optional<StoredRolePermission> existing = JPA.createQuery(""
+			Optional<RolePermission> existing = JPA.createQuery(""
 					+ "SELECT rp "
-					+ "  FROM " + StoredRolePermission.class.getSimpleName() + " rp "
+					+ "  FROM " + RolePermission.class.getSimpleName() + " rp "
 					+ " WHERE rp.role = :role "
 					+ "   AND rp.permissionClassName = :permissionClassName ",
-					StoredRolePermission.class)
+					RolePermission.class)
 					.setParameter("role", role)
 					.setParameter("permissionClassName", permissionClassName)
 					.getResultList()
@@ -156,7 +156,7 @@ public class RoleService implements IRoleService {
 				JPA.merge(existing.get());
 			} else {
 				// insert
-				StoredRolePermission rp = new StoredRolePermission();
+				RolePermission rp = new RolePermission();
 				rp.setRole(role);
 				rp.setPermissionClassName(permissionClassName);
 				rp.setLevelUid(level);
@@ -170,7 +170,7 @@ public class RoleService implements IRoleService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		StoredRole role = JPA.find(StoredRole.class, roleId);
+		Role role = JPA.find(Role.class, roleId);
 		role.getRolePermissions().removeIf(
 				rolePermission -> permissions.contains(rolePermission.getPermissionClassName()));
 		JPA.merge(role);

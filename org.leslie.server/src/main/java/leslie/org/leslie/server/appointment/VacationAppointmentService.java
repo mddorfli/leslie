@@ -11,16 +11,16 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.jpa.StoredAppointment;
-import org.leslie.server.jpa.StoredUser;
+import org.leslie.server.jpa.User;
 import org.leslie.server.jpa.StoredVacationAppointment;
 
 import leslie.org.leslie.server.JPA;
 import leslie.org.leslie.server.ServerSession;
 import leslie.org.leslie.shared.appointment.AppointmentCodeType.VacationCode;
+import leslie.org.leslie.shared.security.permission.CreateVacationPermission;
+import leslie.org.leslie.shared.security.permission.ReadVacationPermission;
+import leslie.org.leslie.shared.security.permission.UpdateVacationPermission;
 import leslie.org.leslie.shared.appointment.IVacationAppointmentService;
-import leslie.org.leslie.shared.security.CreateVacationPermission;
-import leslie.org.leslie.shared.security.ReadVacationPermission;
-import leslie.org.leslie.shared.security.UpdateVacationPermission;
 import leslie.org.leslie.shared.work.VacationAppointmentFormData;
 import leslie.org.leslie.shared.work.VacationAppointmentTablePageData;
 import leslie.org.leslie.shared.work.VacationAppointmentTablePageData.VacationAppointmentTableRowData;
@@ -141,6 +141,6 @@ public class VacationAppointmentService implements IVacationAppointmentService {
 		vacation.getAppointment().setFromDate(formData.getFrom().getValue());
 		vacation.getAppointment().setToDate(formData.getTo().getValue());
 		Long approverId = formData.getApprovedBy().getValue();
-		vacation.setApprovedBy(approverId == null ? null : JPA.find(StoredUser.class, approverId));
+		vacation.setApprovedBy(approverId == null ? null : JPA.find(User.class, approverId));
 	}
 }
