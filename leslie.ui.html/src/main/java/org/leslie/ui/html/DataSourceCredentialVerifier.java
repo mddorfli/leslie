@@ -154,8 +154,8 @@ public class DataSourceCredentialVerifier implements ICredentialVerifier {
     }
 
     public static void main(String[] args) {
-	String username = "dmi";
-	String password = "dmi";
+	String username = "admin";
+	String password = "manager";
 	byte[] salt = SecurityUtility.createRandomBytes();
 	byte[] hash = SecurityUtility.hash(Base64Utility.decode(password), salt);
 

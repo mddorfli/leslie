@@ -95,11 +95,9 @@ public class UserService implements IUserService {
 	formData.getEmail().setValue(user.getEmail());
 	formData.getBlocked().setValue(user.isBlocked());
 
-	if (formData.getRoles().getValue() != null) {
-	    formData.getRoles().setValue(user.getRoles().stream()
-		    .map(Role::getId)
-		    .collect(Collectors.toSet()));
-	}
+	formData.getRoles().setValue(user.getRoles().stream()
+		.map(Role::getId)
+		.collect(Collectors.toSet()));
     }
 
     private static void applyPassword(User user, String password) {

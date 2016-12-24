@@ -9,6 +9,6 @@ public class ReadProjectPermission extends BasicHierarchyPermission {
     public static final int LEVEL_PROJECT = 10;
 
     public ReadProjectPermission() {
-	super(ReadProjectPermission.class.getSimpleName(), LEVEL_ALL);
+	super(ReadProjectPermission.class.getSimpleName());
     }
 }

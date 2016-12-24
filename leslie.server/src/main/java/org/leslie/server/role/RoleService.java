@@ -59,7 +59,7 @@ public class RoleService implements IRoleService {
 
     private static void importRowData(RolePermission rolePermission, PermissionTableRowData row) {
 	row.setLevel(rolePermission.getLevelUid());
-	row.setName(rolePermission.getPermissionClassName());
+	row.setName(rolePermission.getPermissionName());
     }
 
     @Override
@@ -157,7 +157,7 @@ public class RoleService implements IRoleService {
 		// insert
 		RolePermission rp = new RolePermission();
 		rp.setRole(role);
-		rp.setPermissionClassName(permissionClassName);
+		rp.setPermissionName(permissionClassName);
 		rp.setLevelUid(level);
 		JPA.persist(rp);
 	    }
@@ -171,7 +171,7 @@ public class RoleService implements IRoleService {
 	}
 	Role role = JPA.find(Role.class, roleId);
 	role.getRolePermissions().removeIf(
-		rolePermission -> permissions.contains(rolePermission.getPermissionClassName()));
+		rolePermission -> permissions.contains(rolePermission.getPermissionName()));
 	JPA.merge(role);
     }
 }

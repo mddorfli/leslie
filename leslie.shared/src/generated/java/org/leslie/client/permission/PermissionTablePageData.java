@@ -55,13 +55,11 @@ public class PermissionTablePageData extends AbstractTablePageData {
 	public static final String name = "name";
 	public static final String level = "level";
 	public static final String none = "none";
-	public static final String own = "own";
 	public static final String project = "project";
 	public static final String all = "all";
 	private String m_name;
 	private Integer m_level;
 	private Boolean m_none;
-	private Boolean m_own;
 	private Boolean m_project;
 	private Boolean m_all;
 
@@ -87,14 +85,6 @@ public class PermissionTablePageData extends AbstractTablePageData {
 
 	public void setNone(Boolean newNone) {
 	    m_none = newNone;
-	}
-
-	public Boolean getOwn() {
-	    return m_own;
-	}
-
-	public void setOwn(Boolean newOwn) {
-	    m_own = newOwn;
 	}
 
 	public Boolean getProject() {

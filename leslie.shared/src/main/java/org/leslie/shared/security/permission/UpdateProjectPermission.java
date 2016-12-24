@@ -8,6 +8,6 @@ public class UpdateProjectPermission extends BasicHierarchyPermission {
     public static final int LEVEL_PROJECT = 10;
 
     public UpdateProjectPermission() {
-	super(UpdateProjectPermission.class.getSimpleName(), LEVEL_ALL);
+	super(UpdateProjectPermission.class.getSimpleName());
     }
 }

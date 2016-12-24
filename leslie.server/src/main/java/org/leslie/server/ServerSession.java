@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.TypedQuery;
 
+import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.server.AbstractServerSession;
 import org.eclipse.scout.rt.server.session.ServerSessionProvider;
 import org.leslie.server.jpa.JPA;
@@ -61,7 +62,9 @@ public class ServerSession extends AbstractServerSession {
 	query.setParameter("username", getUserId());
 	User user = query.getResultList().stream()
 		.findAny()
-		.orElseThrow(() -> new SecurityException("Could not find user with username " + getUserId()));
+		.orElseThrow(() -> new SecurityException(
+			new ProcessingException("Could not find user with username {}", (Object) getUserId())));
+
 	setUserNrInternal(Long.valueOf(user.getId()));
 	user.setLastLogin(new Date(System.currentTimeMillis()));
 	user.setFailedLoginAttempts(0);

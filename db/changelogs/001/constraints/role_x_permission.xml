@@ -12,7 +12,7 @@
 		referencedTableName="role" referencedColumnNames="id"/>
 </changeSet>
 <changeSet id="20" author="kiwi">
-	<addUniqueConstraint tableName="role_x_permission" columnNames="role_id,permission_class_name"/>
+	<addUniqueConstraint tableName="role_x_permission" columnNames="role_id,permission_name"/>
 </changeSet>
 
 

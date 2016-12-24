@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 @PageData(PermissionTablePageData.class)
 public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePage.Table> {
 
-    private static Logger logger = LoggerFactory.getLogger(PermissionTablePage.class);
+    private static Logger LOG = LoggerFactory.getLogger(PermissionTablePage.class);
 
     private boolean m_listenersAdded;
 
@@ -65,7 +65,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 		desktop.addDataChangeListener(new TableReloadListener(this), DataType.ROLE_PERMISSION);
 	    } else {
 		desktop.addDataChangeListener(new DataChangeListener() {
-
 		    @Override
 		    public void dataChanged(Object... dataTypes) throws ProcessingException {
 			OrderedCollection<IMenu> nodeList = new OrderedCollection<IMenu>();
@@ -77,7 +76,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 	    }
 	    m_listenersAdded = true;
 	}
-
     }
 
     @Override
@@ -93,7 +91,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 	    // get all permissions
 	    TreeMap<String, Integer[]> validLevels = new TreeMap<String, Integer[]>();
 	    for (Class<? extends Permission> clazz : BEANS.get(IPermissionService.class).getAllPermissionClasses()) {
-		if (!clazz.isAssignableFrom(BasicHierarchyPermission.class)) {
+		if (!BasicHierarchyPermission.class.isAssignableFrom(clazz)) {
 		    continue;
 		}
 		try {
@@ -102,7 +100,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 		    Integer[] levels = levelList != null ? levelList.toArray(new Integer[] {}) : new Integer[] {};
 		    validLevels.put(permissionInstance.getName(), levels);
 		} catch (InstantiationException | IllegalAccessException e) {
-		    e.printStackTrace();
+		    LOG.warn("Could not instantiate permission of type {}", clazz);
 		}
 	    }
 
@@ -117,9 +115,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 		    switch (PermissionLevel.getInstance(level.intValue())) {
 		    case LEVEL_NONE:
 			row.setNone(true);
-			break;
-		    case LEVEL_OWN:
-			row.setOwn(true);
 			break;
 		    case LEVEL_PROJECT:
 			row.setProject(true);
@@ -141,7 +136,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 	if (getRoleNr() != null) {
 	    // displaying only permissions of an existing role
 	    getTable().getNoneColumn().setDisplayable(false);
-	    getTable().getOwnColumn().setDisplayable(false);
 	    getTable().getProjectColumn().setDisplayable(false);
 	    getTable().getAllColumn().setDisplayable(false);
 	} else {
@@ -196,10 +190,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 	    return getColumnSet().getColumnByClass(NoneColumn.class);
 	}
 
-	public OwnColumn getOwnColumn() {
-	    return getColumnSet().getColumnByClass(OwnColumn.class);
-	}
-
 	public ProjectColumn getProjectColumn() {
 	    return getColumnSet().getColumnByClass(ProjectColumn.class);
 	}
@@ -235,6 +225,11 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 	    protected Class<? extends ILookupCall<Integer>> getConfiguredLookupCall() {
 		return PermissionLevelLookupCall.class;
 	    }
+
+	    @Override
+	    protected int getConfiguredWidth() {
+		return 90;
+	    }
 	}
 
 	@Order(30.0)
@@ -243,20 +238,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 	    @Override
 	    protected String getConfiguredHeaderText() {
 		return TEXTS.get("None");
-	    }
-
-	    @Override
-	    protected int getConfiguredWidth() {
-		return 80;
-	    }
-	}
-
-	@Order(40.0)
-	public class OwnColumn extends AbstractBooleanColumn {
-
-	    @Override
-	    protected String getConfiguredHeaderText() {
-		return TEXTS.get("Own");
 	    }
 
 	    @Override
@@ -364,8 +345,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 				    List<Boolean> values = null;
 				    if (level.getValue() == BasicHierarchyPermission.LEVEL_NONE) {
 					values = getNoneColumn().getSelectedValues();
-				    } else if (level.getValue() == PermissionLevel.LEVEL_OWN.getValue()) {
-					values = getOwnColumn().getSelectedValues();
 				    } else if (level.getValue() == PermissionLevel.LEVEL_PROJECT.getValue()) {
 					values = getProjectColumn().getSelectedValues();
 				    } else if (level.getValue() == BasicHierarchyPermission.LEVEL_ALL) {
@@ -399,7 +378,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 			nodeList.addLast(roleMenu);
 		    }
 		} catch (ProcessingException e) {
-		    logger.error("Error occurred populating menu", e);
+		    LOG.error("Error occurred populating menu", e);
 		}
 	    }
 	}

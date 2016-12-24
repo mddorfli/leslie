@@ -11,8 +11,8 @@
 	<comment>Always insert an admin user (id should be 1). Default password is 'manager'.</comment>
 	<insert tableName="users">
 		<column name="username" value="admin"/>
-		<column name="pw_hash" value="No58CUXtIz4wfPIWVydseiGE4dZi9DlHM6kk+qOUS1tO5eDSgekgEEFZGafkBgg6nIElvIfaHgqm4AjP/HzCLg=="/>
 		<column name="pw_salt" value="kAkXSej9Ky9QEvuLeTb53Q=="/>
+		<column name="pw_hash" value="No58CUXtIz4wfPIWVydseiGE4dZi9DlHM6kk+qOUS1tO5eDSgekgEEFZGafkBgg6nIElvIfaHgqm4AjP/HzCLg=="/>
 	</insert>
 </changeSet>
 
@@ -27,6 +27,12 @@
 </changeSet>
 <changeSet id="130" author="kiwi" context="DEV">
 	<loadData tableName="user_x_project" file="changelogs/001/data/dev/user_x_project.csv"/>
+</changeSet>
+<changeSet id="140" author="kiwi" context="DEV">
+	<loadData tableName="role_x_permission" file="changelogs/001/data/dev/role_x_permission.csv"/>
+</changeSet>
+<changeSet id="145" author="kiwi" context="DEV">
+	<loadData tableName="user_x_role" file="changelogs/001/data/dev/user_x_role.csv"/>
 </changeSet>
 
 </databaseChangeLog>

@@ -19,8 +19,8 @@ public class RolePermission {
     @ManyToOne
     private Role role;
 
-    @Column(name = "permission_class_name")
-    private String permissionClassName;
+    @Column(name = "permission_name")
+    private String permissionName;
 
     @Column(name = "level_uid")
     private int levelUid;
@@ -41,12 +41,12 @@ public class RolePermission {
 	this.role = role;
     }
 
-    public String getPermissionClassName() {
-	return permissionClassName;
+    public String getPermissionName() {
+	return permissionName;
     }
 
-    public void setPermissionClassName(String permissionClassName) {
-	this.permissionClassName = permissionClassName;
+    public void setPermissionName(String permissionName) {
+	this.permissionName = permissionName;
     }
 
     public int getLevelUid() {

@@ -14,7 +14,7 @@
 		<column name="role_id" type="java.sql.Types.BIGINT">
 			<constraints nullable="false"/>
 		</column>
-		<column name="permission_class_name" type="java.sql.Types.VARCHAR(80)">
+		<column name="permission_name" type="java.sql.Types.VARCHAR(80)">
 			<constraints nullable="false"/>
 		</column>
 		<column name="level_uid" type="java.sql.Types.INTEGER">
