@@ -26,7 +26,7 @@
 	<loadData tableName="project" file="changelogs/001/data/dev/project.csv"/>
 </changeSet>
 <changeSet id="130" author="kiwi" context="DEV">
-	<loadData tableName="user_x_role_x_project" file="changelogs/001/data/dev/user_x_role_x_project.csv"/>
+	<loadData tableName="user_x_project" file="changelogs/001/data/dev/user_x_project.csv"/>
 </changeSet>
 
 </databaseChangeLog>
