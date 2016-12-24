@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Leslie</title>
+    <scout:include template="head.html" />
+    <scout:stylesheet src="res/scout-login-module.css" />
+    <scout:script src="res/jquery-all-macro.js" />
+    <scout:script src="res/scout-login-module.js" />
+    <script>
+      $(document).ready(function() {
+        scout.logout.init({texts: <scout:message style="javascript" key="ui.LogoutSuccessful" key="ui.LoginAgain" /> });
+      });
+    </script>
+  </head>
+  <body>
+    <scout:include template="no-script.html" />
+  </body>
+</html>

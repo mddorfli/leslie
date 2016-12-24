@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+	
+	<persistence-unit name="leslie" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.leslie.server.jpa.entity.Project</class>
+		<class>org.leslie.server.jpa.entity.Role</class>
+		<class>org.leslie.server.jpa.entity.RolePermission</class>
+		<class>org.leslie.server.jpa.entity.User</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/leslie" />
+			<property name="javax.persistence.jdbc.user" value="leslie" />
+			<property name="javax.persistence.jdbc.password" value="leslie" />
+			
+			<property name="eclipselink.logging.logger" value="JavaLogger"/>
+			<property name="eclipselink.logging.level" value="FINE"/>
+			<property name="eclipselink.logging.level.sql" value="FINE"/>
+			<property name="eclipselink.logging.parameters" value="true"/>
+			<property name="eclipselink.logging.timestamp" value="true"/>
+			<property name="eclipselink.logging.session" value="true"/>
+			<property name="eclipselink.logging.exceptions" value="true"/>
+			
+<!-- 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/> -->
+		</properties>
+
+	</persistence-unit>
+</persistence> 
