@@ -21,30 +21,39 @@ import javax.persistence.Table;
 
 import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.leslie.server.jpa.AccessLevel;
+import org.leslie.server.jpa.mapping.FieldMapping;
+import org.leslie.server.jpa.mapping.UserRoleMapping;
 
 @Entity
 @Table(name = "users")
 public class User {
 
+    @FieldMapping(formDataName = "userNr", readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @FieldMapping
     private String username;
 
+    @FieldMapping
     @Column(name = "first_name")
     private String firstName;
 
+    @FieldMapping
     @Column(name = "last_name")
     private String lastName;
 
+    @FieldMapping
     private String email;
 
     @Column(name = "failed_login_attempts")
     private int failedLoginAttempts;
 
+    @FieldMapping
     private boolean blocked;
 
+    @FieldMapping(ignoreFormData = true)
     @Column(name = "last_login")
     private Date lastLogin;
 
@@ -54,10 +63,9 @@ public class User {
     @Column(name = "pw_hash")
     private String passwordHash;
 
+    @FieldMapping(customMapping = UserRoleMapping.class, ignorePageData = true)
     @ManyToMany
-    @JoinTable(name = "user_x_role",
-	    joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-	    inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "user_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
     @ElementCollection

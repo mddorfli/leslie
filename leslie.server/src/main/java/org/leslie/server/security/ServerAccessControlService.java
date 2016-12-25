@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 @Replace
 public class ServerAccessControlService extends AccessControlService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServerAccessControlService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ServerAccessControlService.class);
 
     @Override
     protected Permissions execLoadPermissions(String userId) {
@@ -57,6 +57,7 @@ public class ServerAccessControlService extends AccessControlService {
 	if (user != null && user.getId() == 1L || Platform.get().inDevelopmentMode()) {
 	    // admin user always has all permissions
 	    permissions.add(new AllPermission());
+	    LOG.info("Admin user granted all permissions!");
 
 	} else if (user != null) {
 	    final Map<String, BasicHierarchyPermission> permissionsByName = BEANS.get(IPermissionService.class)
