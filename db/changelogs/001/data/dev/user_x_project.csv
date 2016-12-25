@@ -2,6 +2,8 @@ user_id,project_id,access_level
 2,1,UPDATE
 2,2,UPDATE
 3,2,UPDATE
+3,3,UPDATE
 4,1,UPDATE
 5,1,MANAGE
 5,2,MANAGE
+5,3,MANAGE

@@ -12,6 +12,6 @@ import org.eclipse.scout.rt.shared.services.common.text.AbstractDynamicNlsTextPr
 public class DefaultTextProviderService extends AbstractDynamicNlsTextProviderService {
     @Override
     protected String getDynamicNlsBaseName() {
-	return "org.leslie.leslie.shared.texts.Texts";
+	return "org.leslie.shared.texts.Texts";
     }
 }

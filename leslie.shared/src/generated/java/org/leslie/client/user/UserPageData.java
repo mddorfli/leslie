@@ -59,6 +59,7 @@ public class UserPageData extends AbstractTablePageData {
 	public static final String firstName = "firstName";
 	public static final String lastName = "lastName";
 	public static final String displayName = "displayName";
+	public static final String accessLevel = "accessLevel";
 	public static final String email = "email";
 	public static final String lastLogin = "lastLogin";
 	public static final String loginAttempts = "loginAttempts";
@@ -68,6 +69,7 @@ public class UserPageData extends AbstractTablePageData {
 	private String m_firstName;
 	private String m_lastName;
 	private String m_displayName;
+	private String m_accessLevel;
 	private String m_email;
 	private Date m_lastLogin;
 	private Integer m_loginAttempts;
@@ -111,6 +113,14 @@ public class UserPageData extends AbstractTablePageData {
 
 	public void setDisplayName(String newDisplayName) {
 	    m_displayName = newDisplayName;
+	}
+
+	public String getAccessLevel() {
+	    return m_accessLevel;
+	}
+
+	public void setAccessLevel(String newAccessLevel) {
+	    m_accessLevel = newAccessLevel;
 	}
 
 	public String getEmail() {

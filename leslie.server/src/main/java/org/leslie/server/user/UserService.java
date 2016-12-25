@@ -1,6 +1,7 @@
 package org.leslie.server.user;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.TypedQuery;
@@ -71,6 +72,7 @@ public class UserService implements IUserService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	User user = JPA.find(User.class, selectedValue);
+	// TODO remove links
 	JPA.remove(user);
     }
 
@@ -79,12 +81,12 @@ public class UserService implements IUserService {
 	final UserPageData pageData = new UserPageData();
 	StringBuilder fromSql = new StringBuilder();
 	StringBuilder whereSql = new StringBuilder();
-	Map<String, Long> parameters = new HashMap<>();
+	Map<String, Object> parameters = new HashMap<>();
 	switch (presentationType) {
 	case PROJECT:
-	    // fromSql.append(" JOIN FETCH u.projectAssignments p ");
-	    // whereSql.append(" AND p.key.id = :projectId ");
-	    // parameters.put("projectId", projectId);
+	    fromSql.append(" JOIN FETCH u.projectAssignments pa ");
+	    whereSql.append(" AND KEY(pa).id = :projectId  ");
+	    parameters.put("projectId", projectId);
 	    break;
 	case ADMINISTRATION:
 	default:
@@ -98,19 +100,21 @@ public class UserService implements IUserService {
 		+ " WHERE 1=1 "
 		+ whereSql.toString(),
 		User.class);
+
 	parameters.forEach(query::setParameter);
 
-	// Project p = JPA.find(Project.class, projectId);
-	// query.getResultList().stream()
-	// .filter(user -> user.getProjectAssignments().containsKey(p))
-	// .forEach((user) -> {
-	// UserRowData row = pageData.addRow();
-	// FieldMapper.importTableRowData(user, row);
-	// row.setDisplayName(user.getDisplayName());
-	// });
-
-	FieldMapper.importTablePageData(query.getResultList(), pageData,
-		(user, row) -> ((UserRowData) row).setDisplayName(user.getDisplayName()));
+	List<User> result = query.getResultList();
+	FieldMapper.importTablePageData(result, pageData,
+		(user, row) -> {
+		    UserRowData userRow = (UserRowData) row;
+		    userRow.setDisplayName(user.getDisplayName());
+		    if (presentationType == UserPresentationType.PROJECT) {
+			user.getProjectAssignments().entrySet().stream()
+				.filter(entry -> entry.getKey().getId() == projectId.longValue())
+				.findAny()
+				.ifPresent(entry -> userRow.setAccessLevel(entry.getValue().name()));
+		    }
+		});
 
 	return pageData;
     }

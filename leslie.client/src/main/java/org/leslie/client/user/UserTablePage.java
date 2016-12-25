@@ -73,6 +73,7 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	    break;
 	case ADMINISTRATION:
 	    getTable().getDisplayNameColumn().setDisplayable(false);
+	    getTable().getAccessLevelColumn().setDisplayable(false);
 
 	    getTable().getMenuByClass(AddUserMenu.class).setVisibleGranted(false);
 	    getTable().getMenuByClass(RemoveUserMenu.class).setVisibleGranted(false);
@@ -144,6 +145,10 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	    return getColumnSet().getColumnByClass(DisplayNameColumn.class);
 	}
 
+	public AccessLevelColumn getAccessLevelColumn() {
+	    return getColumnSet().getColumnByClass(AccessLevelColumn.class);
+	}
+
 	public UsernameColumn getUsernameColumn() {
 	    return getColumnSet().getColumnByClass(UsernameColumn.class);
 	}
@@ -210,6 +215,20 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	    @Override
 	    protected int getConfiguredWidth() {
 		return 200;
+	    }
+	}
+
+	@Order(47)
+	public class AccessLevelColumn extends AbstractStringColumn {
+
+	    @Override
+	    protected String getConfiguredHeaderText() {
+		return TEXTS.get("AccessLevel");
+	    }
+
+	    @Override
+	    protected int getConfiguredWidth() {
+		return 120;
 	    }
 	}
 
