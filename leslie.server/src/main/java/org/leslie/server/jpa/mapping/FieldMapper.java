@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.shared.data.basic.table.AbstractTableRowData;
@@ -96,13 +97,22 @@ public class FieldMapper {
     }
 
     public static void importTablePageData(List<?> fromEntities, AbstractTablePageData toTablePage) {
-	for (Object entity : fromEntities) {
-	    AbstractTableRowData row = toTablePage.addRow();
-	    importTableRowData(entity, row);
-	}
+	importTablePageData(fromEntities, toTablePage, null);
     }
 
-    private static void importTableRowData(Object fromEntity, AbstractTableRowData toRowData) {
+    public static <E> void importTablePageData(List<E> fromEntities, AbstractTablePageData toTablePage,
+	    BiConsumer<E, AbstractTableRowData> customMapping) {
+	for (E entity : fromEntities) {
+	    AbstractTableRowData row = toTablePage.addRow();
+	    importTableRowData(entity, row);
+	    if (customMapping != null) {
+		customMapping.accept(entity, row);
+	    }
+	}
+
+    }
+
+    public static void importTableRowData(Object fromEntity, AbstractTableRowData toRowData) {
 	for (Field field : fromEntity.getClass().getDeclaredFields()) {
 	    FieldMapping annotation = field.getAnnotation(FieldMapping.class);
 	    if (annotation == null || annotation.ignorePageData()) {

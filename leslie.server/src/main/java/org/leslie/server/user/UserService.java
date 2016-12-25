@@ -15,6 +15,7 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.user.UserFormData;
 import org.leslie.client.user.UserPageData;
+import org.leslie.client.user.UserPageData.UserRowData;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.User;
 import org.leslie.server.jpa.mapping.FieldMapper;
@@ -102,8 +103,14 @@ public class UserService implements IUserService {
 	// Project p = JPA.find(Project.class, projectId);
 	// query.getResultList().stream()
 	// .filter(user -> user.getProjectAssignments().containsKey(p))
-	// .forEach((user) -> exportPageData(pageData.addRow(), user));
-	FieldMapper.importTablePageData(query.getResultList(), pageData);
+	// .forEach((user) -> {
+	// UserRowData row = pageData.addRow();
+	// FieldMapper.importTableRowData(user, row);
+	// row.setDisplayName(user.getDisplayName());
+	// });
+
+	FieldMapper.importTablePageData(query.getResultList(), pageData,
+		(user, row) -> ((UserRowData) row).setDisplayName(user.getDisplayName()));
 
 	return pageData;
     }
