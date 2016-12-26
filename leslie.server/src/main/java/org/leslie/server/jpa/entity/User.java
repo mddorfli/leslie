@@ -20,9 +20,9 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.eclipse.scout.rt.platform.util.StringUtility;
-import org.leslie.server.jpa.AccessLevel;
 import org.leslie.server.jpa.mapping.FieldMapping;
 import org.leslie.server.jpa.mapping.UserRoleMapping;
+import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 @Entity
 @Table(name = "users")
@@ -71,9 +71,9 @@ public class User {
     @ElementCollection
     @CollectionTable(name = "user_x_project")
     @MapKeyJoinColumn(name = "project_id")
-    @Column(name = "access_level")
+    @Column(name = "participation_level_uid")
     @Enumerated(EnumType.STRING)
-    private Map<Project, AccessLevel> projectAssignments;
+    private Map<Project, Participation> projectAssignments;
 
     public long getId() {
 	return id;
@@ -176,11 +176,11 @@ public class User {
 	this.roles = roles;
     }
 
-    public Map<Project, AccessLevel> getProjectAssignments() {
+    public Map<Project, Participation> getProjectAssignments() {
 	return projectAssignments;
     }
 
-    public void setProjectAssignments(Map<Project, AccessLevel> projectAssignments) {
+    public void setProjectAssignments(Map<Project, Participation> projectAssignments) {
 	this.projectAssignments = projectAssignments;
     }
 

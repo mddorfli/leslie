@@ -38,21 +38,12 @@ public class ProjectFormData extends AbstractFormData {
 	return getFieldByClass(Name.class);
     }
 
-    public Version getVersion() {
-	return getFieldByClass(Version.class);
-    }
-
     public static class IdProperty extends AbstractPropertyData<Long> {
 
 	private static final long serialVersionUID = 1L;
     }
 
     public static class Name extends AbstractValueFieldData<String> {
-
-	private static final long serialVersionUID = 1L;
-    }
-
-    public static class Version extends AbstractValueFieldData<String> {
 
 	private static final long serialVersionUID = 1L;
     }

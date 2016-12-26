@@ -13,25 +13,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MapKeyJoinColumn;
 
-import org.leslie.server.jpa.AccessLevel;
+import org.leslie.server.jpa.mapping.FieldMapping;
+import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 @Entity
 public class Project {
 
+    @FieldMapping(readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @FieldMapping
     private String name;
-
-    private String version;
 
     @ElementCollection
     @CollectionTable(name = "user_x_project")
     @MapKeyJoinColumn(name = "user_id")
-    @Column(name = "access_level")
+    @Column(name = "participation_level_uid")
     @Enumerated(EnumType.STRING)
-    private Map<User, AccessLevel> userAssignments;
+    private Map<User, Participation> userAssignments;
 
     public long getId() {
 	return id;
@@ -49,19 +50,11 @@ public class Project {
 	this.name = name;
     }
 
-    public String getVersion() {
-	return version;
-    }
-
-    public void setVersion(String version) {
-	this.version = version;
-    }
-
-    public Map<User, AccessLevel> getUserAssignments() {
+    public Map<User, Participation> getUserAssignments() {
 	return userAssignments;
     }
 
-    public void setUserAssignments(Map<User, AccessLevel> userAssignments) {
+    public void setUserAssignments(Map<User, Participation> userAssignments) {
 	this.userAssignments = userAssignments;
     }
 

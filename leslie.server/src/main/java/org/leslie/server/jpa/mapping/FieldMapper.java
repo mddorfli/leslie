@@ -139,39 +139,6 @@ public class FieldMapper {
 	}
     }
 
-    /**
-     * Exports page data into an entity (i.e. writes to an entity).
-     * 
-     * @param fromTableRow
-     * @param toEntity
-     */
-    private static void exportTableRowData(AbstractTableRowData fromTableRow, Object toEntity) {
-	for (Field field : toEntity.getClass().getDeclaredFields()) {
-	    FieldMapping annotation = field.getAnnotation(FieldMapping.class);
-	    if (annotation == null || annotation.readOnly() || annotation.ignorePageData()) {
-		// ignore unmapped, read-only and ignored fields
-		continue;
-	    }
-
-	    if (!NoMapping.class.equals(annotation.customMapping())) {
-		// apply custom mapping
-		try {
-		    ICustomMapping customMapper = annotation.customMapping().newInstance();
-		    customMapper.write(fromTableRow, toEntity);
-		} catch (InstantiationException | IllegalAccessException e) {
-		    LOG.error("Unable to instantiate " + annotation.customMapping(), e);
-		    throw new ProcessingException("Unable to instantiate {}: {}", annotation.customMapping(),
-			    e.getMessage());
-		}
-		continue;
-	    }
-
-	    String mappedFieldName = annotation.formDataName().isEmpty() ? field.getName() : annotation.formDataName();
-	    Object value = getProperty(fromTableRow, mappedFieldName, field.getType());
-	    setProperty(toEntity, field.getName(), field.getType(), value);
-	}
-    }
-
     private static void setProperty(Object object, String fieldName, Class<?> fieldType, Object value) {
 	String setterName = "set" + capatalizeFieldName(fieldName);
 	try {

@@ -14,7 +14,6 @@
 		<column name="name" type="java.sql.Types.VARCHAR(80)">
 			<constraints nullable="false"/>
 		</column>
-		<column name="version" type="java.sql.Types.VARCHAR(80)"/>
 	</createTable>
 </changeSet>
 

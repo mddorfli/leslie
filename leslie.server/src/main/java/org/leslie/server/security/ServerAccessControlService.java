@@ -1,10 +1,10 @@
 package org.leslie.server.security;
 
 import java.security.AllPermission;
+import java.security.Permission;
 import java.security.Permissions;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,7 +19,6 @@ import org.eclipse.scout.rt.shared.security.RemoteServiceAccessPermission;
 import org.eclipse.scout.rt.shared.services.common.security.IPermissionService;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Role;
-import org.leslie.server.jpa.entity.RolePermission;
 import org.leslie.server.jpa.entity.User;
 import org.leslie.shared.security.AccessControlService;
 import org.slf4j.Logger;
@@ -60,20 +59,25 @@ public class ServerAccessControlService extends AccessControlService {
 	    LOG.info("Admin user granted all permissions!");
 
 	} else if (user != null) {
-	    final Map<String, BasicHierarchyPermission> permissionsByName = BEANS.get(IPermissionService.class)
+	    final Map<String, Class<? extends Permission>> classesBySimpleName = BEANS.get(IPermissionService.class)
 		    .getAllPermissionClasses().stream()
 		    .filter(BasicHierarchyPermission.class::isAssignableFrom)
-		    .map(ServerAccessControlService::getInstance)
-		    .filter(Optional::isPresent)
-		    .map(Optional::get)
-		    .collect(Collectors.toMap(BasicHierarchyPermission::getName, Function.identity()));
+		    .collect(Collectors.toMap(Class::getSimpleName, Function.identity()));
 
 	    user.getRoles().stream()
 		    .map(Role::getRolePermissions)
 		    .flatMap(Collection::stream)
-		    .map(RolePermission::getPermissionName)
-		    .map(permissionsByName::get)
-		    .filter(Objects::nonNull)
+		    .map(rolePermission -> {
+			Class<? extends Permission> clazz = classesBySimpleName.get(rolePermission.getPermissionName());
+			Optional<BasicHierarchyPermission> permission = getInstance(clazz);
+			if (permission.isPresent()) {
+			    permission.get().setLevel(rolePermission.getLevelUid());
+			}
+			return permission;
+
+		    })
+		    .filter(Optional::isPresent)
+		    .map(Optional::get)
 		    .forEach(permissions::add);
 	}
 

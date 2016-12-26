@@ -6,6 +6,7 @@ import javax.annotation.Generated;
 
 import org.eclipse.scout.rt.shared.data.basic.table.AbstractTableRowData;
 import org.eclipse.scout.rt.shared.data.page.AbstractTablePageData;
+import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 /**
  * <b>NOTE:</b><br>
@@ -59,7 +60,7 @@ public class UserPageData extends AbstractTablePageData {
 	public static final String firstName = "firstName";
 	public static final String lastName = "lastName";
 	public static final String displayName = "displayName";
-	public static final String accessLevel = "accessLevel";
+	public static final String participationLevel = "participationLevel";
 	public static final String email = "email";
 	public static final String lastLogin = "lastLogin";
 	public static final String loginAttempts = "loginAttempts";
@@ -69,7 +70,7 @@ public class UserPageData extends AbstractTablePageData {
 	private String m_firstName;
 	private String m_lastName;
 	private String m_displayName;
-	private String m_accessLevel;
+	private Participation m_participationLevel;
 	private String m_email;
 	private Date m_lastLogin;
 	private Integer m_loginAttempts;
@@ -115,12 +116,12 @@ public class UserPageData extends AbstractTablePageData {
 	    m_displayName = newDisplayName;
 	}
 
-	public String getAccessLevel() {
-	    return m_accessLevel;
+	public Participation getParticipationLevel() {
+	    return m_participationLevel;
 	}
 
-	public void setAccessLevel(String newAccessLevel) {
-	    m_accessLevel = newAccessLevel;
+	public void setParticipationLevel(Participation newParticipationLevel) {
+	    m_participationLevel = newParticipationLevel;
 	}
 
 	public String getEmail() {

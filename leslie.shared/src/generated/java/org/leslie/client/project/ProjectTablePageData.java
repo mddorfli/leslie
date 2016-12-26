@@ -4,6 +4,7 @@ import javax.annotation.Generated;
 
 import org.eclipse.scout.rt.shared.data.basic.table.AbstractTableRowData;
 import org.eclipse.scout.rt.shared.data.page.AbstractTablePageData;
+import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 /**
  * <b>NOTE:</b><br>
@@ -54,10 +55,10 @@ public class ProjectTablePageData extends AbstractTablePageData {
 	private static final long serialVersionUID = 1L;
 	public static final String id = "id";
 	public static final String name = "name";
-	public static final String version = "version";
+	public static final String participation = "participation";
 	private Long m_id;
 	private String m_name;
-	private String m_version;
+	private Participation m_participation;
 
 	public Long getId() {
 	    return m_id;
@@ -75,12 +76,12 @@ public class ProjectTablePageData extends AbstractTablePageData {
 	    m_name = newName;
 	}
 
-	public String getVersion() {
-	    return m_version;
+	public Participation getParticipation() {
+	    return m_participation;
 	}
 
-	public void setVersion(String newVersion) {
-	    m_version = newVersion;
+	public void setParticipation(Participation newParticipation) {
+	    m_participation = newParticipation;
 	}
     }
 }

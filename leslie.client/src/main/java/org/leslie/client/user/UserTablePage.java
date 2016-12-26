@@ -13,6 +13,7 @@ import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractBooleanColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractDateTimeColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractIntegerColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
+import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
 import org.eclipse.scout.rt.client.ui.messagebox.MessageBoxes;
@@ -23,6 +24,7 @@ import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.platform.util.CompareUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.data.basic.FontSpec;
+import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.ClientSession;
@@ -31,7 +33,10 @@ import org.leslie.client.user.UserTablePage.Table.DeleteUserMenu;
 import org.leslie.client.user.UserTablePage.Table.EditUserMenu;
 import org.leslie.client.user.UserTablePage.Table.NewUserMenu;
 import org.leslie.client.user.UserTablePage.Table.RemoveUserMenu;
+import org.leslie.shared.code.ParticipationCodeType;
+import org.leslie.shared.code.ParticipationCodeType.Participation;
 import org.leslie.shared.project.IProjectService;
+import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.UpdateAdministrationPermission;
 import org.leslie.shared.user.IUserService;
 import org.leslie.shared.user.IUserService.UserPresentationType;
@@ -58,7 +63,17 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
     @Override
     protected void execPageActivated() {
 	switch (presentationType) {
+	case ADMINISTRATION:
+	    getTable().getDisplayNameColumn().setDisplayable(false);
+	    getTable().getParticipationLevelColumn().setDisplayable(false);
+
+	    getTable().getMenuByClass(AddUserMenu.class).setVisibleGranted(false);
+	    getTable().getMenuByClass(RemoveUserMenu.class).setVisibleGranted(false);
+	    break;
+
 	case PROJECT:
+	    boolean pmEnabled = ACCESS.check(new ManageProjectPermission(getProjectId()));
+
 	    getTable().getUsernameColumn().setDisplayable(false);
 	    getTable().getFirstNameColumn().setDisplayable(false);
 	    getTable().getLastNameColumn().setDisplayable(false);
@@ -70,22 +85,22 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	    getTable().getMenuByClass(NewUserMenu.class).setVisibleGranted(false);
 	    getTable().getMenuByClass(EditUserMenu.class).setVisibleGranted(false);
 	    getTable().getMenuByClass(DeleteUserMenu.class).setVisibleGranted(false);
+	    getTable().getMenuByClass(AddUserMenu.class).setEnabled(pmEnabled);
+	    getTable().getMenuByClass(RemoveUserMenu.class).setEnabled(pmEnabled);
 	    break;
-	case ADMINISTRATION:
-	    getTable().getDisplayNameColumn().setDisplayable(false);
-	    getTable().getAccessLevelColumn().setDisplayable(false);
-
-	    getTable().getMenuByClass(AddUserMenu.class).setVisibleGranted(false);
-	    getTable().getMenuByClass(RemoveUserMenu.class).setVisibleGranted(false);
-	default:
-	    break;
-
 	}
     }
 
     @Override
     protected void execLoadData(SearchFilter filter) throws ProcessingException {
-	importPageData(BEANS.get(IUserService.class).getUserTableData(presentationType, projectId));
+	switch (presentationType) {
+	case ADMINISTRATION:
+	    importPageData(BEANS.get(IUserService.class).getAdministrationUserTableData());
+	    break;
+	case PROJECT:
+	    importPageData(BEANS.get(IUserService.class).getProjectUserTableData(getProjectId()));
+	    break;
+	}
     }
 
     @Override
@@ -145,8 +160,8 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	    return getColumnSet().getColumnByClass(DisplayNameColumn.class);
 	}
 
-	public AccessLevelColumn getAccessLevelColumn() {
-	    return getColumnSet().getColumnByClass(AccessLevelColumn.class);
+	public ParticipationLevelColumn getParticipationLevelColumn() {
+	    return getColumnSet().getColumnByClass(ParticipationLevelColumn.class);
 	}
 
 	public UsernameColumn getUsernameColumn() {
@@ -219,11 +234,16 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	}
 
 	@Order(47)
-	public class AccessLevelColumn extends AbstractStringColumn {
+	public class ParticipationLevelColumn extends AbstractSmartColumn<Participation> {
 
 	    @Override
 	    protected String getConfiguredHeaderText() {
-		return TEXTS.get("AccessLevel");
+		return TEXTS.get("Participation");
+	    }
+
+	    @Override
+	    protected Class<? extends ICodeType<?, Participation>> getConfiguredCodeType() {
+		return ParticipationCodeType.class;
 	    }
 
 	    @Override
@@ -399,6 +419,11 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 		    reloadPage();
 		}
 	    }
+
+	    @Override
+	    protected boolean getConfiguredVisible() {
+		return ACCESS.check(new ManageProjectPermission());
+	    }
 	}
 
 	@Order(3000)
@@ -421,7 +446,11 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 		    reloadPage();
 		}
 	    }
-	}
 
+	    @Override
+	    protected boolean getConfiguredVisible() {
+		return ACCESS.check(new ManageProjectPermission());
+	    }
+	}
     }
 }

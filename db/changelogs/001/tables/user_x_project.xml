@@ -17,7 +17,7 @@
 		<column name="project_id" type="java.sql.Types.BIGINT">
 			<constraints nullable="false"/>
 		</column>
-		<column name="access_level" type="java.sql.Types.VARCHAR(6)" remarks="may be READ, UPDATE or MANAGE">
+		<column name="participation_level_uid" type="java.sql.Types.VARCHAR(7)" remarks="may be VIEWER, MEMBER or MANAGER">
 			<constraints nullable="false"/>
 		</column>
 	</createTable>

@@ -22,7 +22,7 @@ public interface IUserService extends IService {
 	PROJECT
     }
 
-    UserPageData getUserTableData(UserPresentationType presentationType, Long projectId);
+    UserPageData getAdministrationUserTableData();
 
     UserFormData create(UserFormData formData) throws ProcessingException;
 
@@ -31,4 +31,6 @@ public interface IUserService extends IService {
     UserFormData store(UserFormData formData) throws ProcessingException;
 
     void delete(Long selectedValue) throws ProcessingException;
+
+    UserPageData getProjectUserTableData(Long projectId);
 }

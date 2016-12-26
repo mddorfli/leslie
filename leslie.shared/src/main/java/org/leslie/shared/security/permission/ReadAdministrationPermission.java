@@ -7,6 +7,6 @@ public class ReadAdministrationPermission extends BasicHierarchyPermission {
     private static final long serialVersionUID = 0L;
 
     public ReadAdministrationPermission() {
-	super(ReadAdministrationPermission.class.getSimpleName());
+	super(ReadAdministrationPermission.class.getSimpleName(), LEVEL_ALL);
     }
 }

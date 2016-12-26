@@ -13,11 +13,10 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.leslie.client.project.ProjectForm.MainBox.CancelButton;
 import org.leslie.client.project.ProjectForm.MainBox.GroupBox;
 import org.leslie.client.project.ProjectForm.MainBox.GroupBox.NameField;
-import org.leslie.client.project.ProjectForm.MainBox.GroupBox.VersionField;
 import org.leslie.client.project.ProjectForm.MainBox.OkButton;
 import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.CreateProjectPermission;
-import org.leslie.shared.security.permission.UpdateProjectPermission;
+import org.leslie.shared.security.permission.ManageProjectPermission;
 
 @FormData(value = ProjectFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
 public class ProjectForm extends AbstractForm {
@@ -53,10 +52,6 @@ public class ProjectForm extends AbstractForm {
 
     public MainBox getMainBox() {
 	return getFieldByClass(MainBox.class);
-    }
-
-    public VersionField getVersionField() {
-	return getFieldByClass(VersionField.class);
     }
 
     public GroupBox getGroupBox() {
@@ -95,20 +90,6 @@ public class ProjectForm extends AbstractForm {
 		    return 80;
 		}
 	    }
-
-	    @Order(2000)
-	    public class VersionField extends AbstractStringField {
-
-		@Override
-		protected String getConfiguredLabel() {
-		    return TEXTS.get("Version");
-		}
-
-		@Override
-		protected int getConfiguredMaxLength() {
-		    return 80;
-		}
-	    }
 	}
 
 	@Order(100000)
@@ -130,7 +111,7 @@ public class ProjectForm extends AbstractForm {
 	    formData = service.load(formData);
 	    importFormData(formData);
 
-	    setEnabledPermission(new UpdateProjectPermission());
+	    setEnabledPermission(new ManageProjectPermission(getId()));
 	}
 
 	@Override

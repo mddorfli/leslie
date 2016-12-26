@@ -4,13 +4,16 @@ role_id,permission_name,level_uid
 1,CreateProjectPermission,0
 1,ReadProjectPermission,10
 1,UpdateProjectPermission,10
+1,ManageProjectPermission,0
 2,ReadAdministrationPermission,0
 2,UpdateAdministrationPermission,0
 2,CreateProjectPermission,0
 2,ReadProjectPermission,10
 2,UpdateProjectPermission,10
+2,ManageProjectPermission,10
 3,ReadAdministrationPermission,100
 3,UpdateAdministrationPermission,100
 3,CreateProjectPermission,100
 3,ReadProjectPermission,100
 3,UpdateProjectPermission,100
+3,ManageProjectPermission,100

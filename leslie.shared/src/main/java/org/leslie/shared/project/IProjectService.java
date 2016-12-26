@@ -6,6 +6,7 @@ import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.leslie.client.project.ProjectFormData;
 import org.leslie.client.project.ProjectTablePageData;
 import org.leslie.client.user.UserSelectionFormData;
+import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 @TunnelToServer
 public interface IProjectService extends IService {
@@ -26,5 +27,5 @@ public interface IProjectService extends IService {
 
     void assignUser(UserSelectionFormData formData);
 
-    boolean isOwnProject(long projectId);
+    Participation getParticipationLevel(long projectId);
 }

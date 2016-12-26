@@ -5,6 +5,7 @@ import javax.annotation.Generated;
 import org.eclipse.scout.rt.shared.data.form.AbstractFormData;
 import org.eclipse.scout.rt.shared.data.form.fields.AbstractValueFieldData;
 import org.eclipse.scout.rt.shared.data.form.properties.AbstractPropertyData;
+import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 /**
  * <b>NOTE:</b><br>
@@ -15,6 +16,10 @@ import org.eclipse.scout.rt.shared.data.form.properties.AbstractPropertyData;
 public class UserSelectionFormData extends AbstractFormData {
 
     private static final long serialVersionUID = 1L;
+
+    public Particiaption getParticiaption() {
+	return getFieldByClass(Particiaption.class);
+    }
 
     /**
      * access method for property ProjectId.
@@ -36,6 +41,11 @@ public class UserSelectionFormData extends AbstractFormData {
 
     public User getUser() {
 	return getFieldByClass(User.class);
+    }
+
+    public static class Particiaption extends AbstractValueFieldData<Participation> {
+
+	private static final long serialVersionUID = 1L;
     }
 
     public static class ProjectIdProperty extends AbstractPropertyData<Long> {

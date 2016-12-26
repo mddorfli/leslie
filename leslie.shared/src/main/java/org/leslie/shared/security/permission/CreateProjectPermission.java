@@ -7,6 +7,6 @@ public class CreateProjectPermission extends BasicHierarchyPermission {
     private static final long serialVersionUID = 1L;
 
     public CreateProjectPermission() {
-	super(CreateProjectPermission.class.getSimpleName());
+	super(CreateProjectPermission.class.getSimpleName(), LEVEL_ALL);
     }
 }

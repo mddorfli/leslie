@@ -9,6 +9,7 @@ import org.eclipse.scout.rt.client.ui.action.menu.TableMenuType;
 import org.eclipse.scout.rt.client.ui.basic.table.AbstractTable;
 import org.eclipse.scout.rt.client.ui.basic.table.ITableRow;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
+import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.IPage;
@@ -17,9 +18,16 @@ import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
+import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
+import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.project.ProjectTablePage.Table;
+import org.leslie.shared.code.ParticipationCodeType;
+import org.leslie.shared.code.ParticipationCodeType.Participation;
 import org.leslie.shared.project.IProjectService;
+import org.leslie.shared.security.permission.CreateProjectPermission;
+import org.leslie.shared.security.permission.ManageProjectPermission;
+import org.leslie.shared.security.permission.ReadProjectPermission;
 
 @Data(ProjectTablePageData.class)
 public class ProjectTablePage extends AbstractPageWithTable<Table> {
@@ -43,8 +51,8 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 
     public class Table extends AbstractTable {
 
-	public VersionColumn getVersionColumn() {
-	    return getColumnSet().getColumnByClass(VersionColumn.class);
+	public ParticipationColumn getParticipationColumn() {
+	    return getColumnSet().getColumnByClass(ParticipationColumn.class);
 	}
 
 	public NameColumn getNameColumn() {
@@ -74,7 +82,7 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 
 	    @Override
 	    protected int getConfiguredWidth() {
-		return 100;
+		return 300;
 	    }
 
 	    @Override
@@ -84,21 +92,20 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 	}
 
 	@Order(3000)
-	public class VersionColumn extends AbstractStringColumn {
-
+	public class ParticipationColumn extends AbstractSmartColumn<Participation> {
 	    @Override
 	    protected String getConfiguredHeaderText() {
-		return TEXTS.get("Version");
+		return TEXTS.get("Participation");
 	    }
 
 	    @Override
 	    protected int getConfiguredWidth() {
-		return 100;
+		return 150;
 	    }
 
 	    @Override
-	    protected boolean getConfiguredSummary() {
-		return true;
+	    protected Class<? extends ICodeType<?, Participation>> getConfiguredCodeType() {
+		return ParticipationCodeType.class;
 	    }
 	}
 
@@ -123,6 +130,11 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 		if (form.isFormStored()) {
 		    reloadPage();
 		}
+	    }
+
+	    @Override
+	    protected boolean getConfiguredVisible() {
+		return ACCESS.check(new CreateProjectPermission());
 	    }
 	}
 
@@ -149,6 +161,11 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 		    reloadPage();
 		}
 	    }
+
+	    @Override
+	    protected boolean getConfiguredVisible() {
+		return ACCESS.check(new ReadProjectPermission());
+	    }
 	}
 
 	@Order(3000)
@@ -170,6 +187,17 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 		    BEANS.get(IProjectService.class).deleteProject(getIdColumn().getSelectedValue());
 		    reloadPage();
 		}
+	    }
+
+	    @Override
+	    protected boolean getConfiguredVisible() {
+		return ACCESS.check(new ManageProjectPermission());
+	    }
+
+	    @Override
+	    protected void execOwnerValueChanged(Object newOwnerValue) {
+		ITableRow row = CollectionUtility.firstElement(newOwnerValue);
+		setEnabled(ACCESS.check(new ManageProjectPermission(getIdColumn().getValue(row))));
 	    }
 	}
     }
