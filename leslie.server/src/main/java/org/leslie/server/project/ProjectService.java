@@ -127,7 +127,6 @@ public class ProjectService implements IProjectService {
 		break;
 	    }
 	}
-	JPA.merge(user);
     }
 
     @Override
@@ -140,9 +139,6 @@ public class ProjectService implements IProjectService {
 
 	user.getProjectAssignments().put(project, formData.getParticiaption().getValue());
 	project.getUserAssignments().put(user, formData.getParticiaption().getValue());
-
-	JPA.merge(user);
-	JPA.merge(project);
     }
 
     // private static void importRowData(ProjectTableRowData row, Project

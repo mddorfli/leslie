@@ -16,5 +16,8 @@
 		baseTableName="user_x_project" baseColumnNames="project_id" 
 		referencedTableName="project" referencedColumnNames="id"/>
 </changeSet>
+<changeSet id="30" author="kiwi">
+	<addUniqueConstraint tableName="user_x_project" columnNames="user_id,project_id"/>
+</changeSet>
 
 </databaseChangeLog>
