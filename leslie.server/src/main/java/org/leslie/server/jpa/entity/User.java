@@ -2,27 +2,20 @@ package org.leslie.server.jpa.entity;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.leslie.server.jpa.mapping.FieldMapping;
 import org.leslie.server.jpa.mapping.UserRoleMapping;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 @Entity
 @Table(name = "users")
@@ -67,13 +60,6 @@ public class User {
     @ManyToMany
     @JoinTable(name = "user_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
-
-    @ElementCollection
-    @CollectionTable(name = "user_x_project")
-    @MapKeyJoinColumn(name = "project_id")
-    @Column(name = "participation_level_uid")
-    @Enumerated(EnumType.STRING)
-    private Map<Project, Participation> projectAssignments;
 
     public long getId() {
 	return id;
@@ -175,13 +161,4 @@ public class User {
     public void setRoles(Collection<Role> roles) {
 	this.roles = roles;
     }
-
-    public Map<Project, Participation> getProjectAssignments() {
-	return projectAssignments;
-    }
-
-    public void setProjectAssignments(Map<Project, Participation> projectAssignments) {
-	this.projectAssignments = projectAssignments;
-    }
-
 }

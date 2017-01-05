@@ -17,7 +17,7 @@
 		<pathelement path="${basedir}/changelogs"/>
 	</path>
 	
-	<target name="chooseContext">
+	<target name="chooseContext" unless="context">
 		<input addproperty="context" 
 			message="Choose context:" 
 			validargs="DEV,TEST,PROD" 

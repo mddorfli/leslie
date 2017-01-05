@@ -1,21 +1,16 @@
 package org.leslie.server.role;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
-import org.leslie.server.jpa.AbstractJpaLookupService;
+import org.eclipse.scout.rt.shared.services.lookup.ILookupRow;
+import org.eclipse.scout.rt.shared.services.lookup.LookupRow;
+import org.leslie.server.jpa.AbstractJpaEntityLookupService;
 import org.leslie.server.jpa.entity.Role;
 import org.leslie.shared.role.IRoleLookupService;
 
-public class RoleLookupService extends AbstractJpaLookupService<Long, Role> implements IRoleLookupService {
-
-    @Override
-    protected String getConfiguredSqlSelect(ILookupCall<Long> call) {
-	return "SELECT r "
-		+ " FROM " + Role.class.getSimpleName() + " r "
-		+ "WHERE 1=1 "
-		+ "<key>AND ROLE_NR = :key</key> "
-		+ "<text>AND UPPER(NAME) LIKE UPPER(:text || '%')</text> "
-		+ "<all></all> ";
-    }
+public class RoleLookupService extends AbstractJpaEntityLookupService<Long, Role> implements IRoleLookupService {
 
     @Override
     protected Class<Role> getConfiguredEntityType() {
@@ -23,7 +18,20 @@ public class RoleLookupService extends AbstractJpaLookupService<Long, Role> impl
     }
 
     @Override
-    protected Object[] execGenerateDataRow(Role obj, ILookupCall<Long> call) {
-	return new Object[] { obj.getId(), obj.getName() };
+    protected String getConfiguredJpqlSelect() {
+	return ""
+		+ "SELECT r "
+		+ "FROM " + Role.class.getSimpleName() + " r "
+		+ "WHERE 1=1 "
+		+ "<key>AND r.id = :key</key> "
+		+ "<text>AND UPPER(r.name) LIKE UPPER(:text || '%')</text> "
+		+ "<all></all> ";
+    }
+
+    @Override
+    protected List<ILookupRow<Long>> execGenerateLookupRowData(ILookupCall<Long> call, List<Role> resultList) {
+	return resultList.stream()
+		.map(role -> new LookupRow<Long>(Long.valueOf(role.getId()), role.getName()))
+		.collect(Collectors.toList());
     }
 }

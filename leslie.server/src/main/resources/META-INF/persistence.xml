@@ -23,9 +23,11 @@
 			<property name="eclipselink.logging.timestamp" value="true"/>
 			<property name="eclipselink.logging.session" value="true"/>
 			<property name="eclipselink.logging.exceptions" value="true"/>
-			
 <!-- 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/> -->
-		</properties>
 
+			<!-- Enables SQL query logging -->
+			<property name="openjpa.Log" value="SQL=Trace" />
+			<property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+		</properties>
 	</persistence-unit>
 </persistence> 

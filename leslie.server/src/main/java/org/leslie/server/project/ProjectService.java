@@ -1,6 +1,5 @@
 package org.leslie.server.project;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -26,9 +25,13 @@ import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.CreateProjectPermission;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Bean
 public class ProjectService implements IProjectService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectService.class);
 
     @Override
     public ProjectTablePageData getProjectTableData(SearchFilter filter) {
@@ -99,7 +102,6 @@ public class ProjectService implements IProjectService {
 	}
 	Project project = JPA.find(Project.class, formData.getId());
 	FieldMapper.exportFormData(formData, project);
-	JPA.merge(project);
 
 	return formData;
     }
@@ -119,14 +121,8 @@ public class ProjectService implements IProjectService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	User user = JPA.find(User.class, userId);
-	for (Iterator<Entry<Project, Participation>> iterator = user.getProjectAssignments().entrySet()
-		.iterator(); iterator.hasNext();) {
-	    Entry<Project, Participation> entry = iterator.next();
-	    if (entry.getKey().getId() == projectId) {
-		iterator.remove();
-		break;
-	    }
-	}
+	Project project = JPA.find(Project.class, projectId);
+	project.getUserAssignments().remove(user);
     }
 
     @Override
@@ -137,7 +133,6 @@ public class ProjectService implements IProjectService {
 	Project project = JPA.find(Project.class, formData.getProjectId());
 	User user = JPA.find(User.class, formData.getUser().getValue());
 
-	user.getProjectAssignments().put(project, formData.getParticiaption().getValue());
 	project.getUserAssignments().put(user, formData.getParticiaption().getValue());
     }
 

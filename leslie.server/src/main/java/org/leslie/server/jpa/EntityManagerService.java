@@ -1,8 +1,10 @@
 package org.leslie.server.jpa;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
@@ -29,14 +31,18 @@ public class EntityManagerService implements IService {
     private static final Logger logger = LoggerFactory.getLogger(EntityManagerService.class);
 
     private EntityManagerFactory m_entityManagerFactory;
+    private EntityManager m_entityManager;
 
     @PostConstruct
     private void init() {
 	m_entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+	m_entityManager = m_entityManagerFactory.createEntityManager();
     }
 
-    public EntityManagerFactory getEntityManagerFactory() {
-	return m_entityManagerFactory;
+    @PreDestroy
+    private void destroy() {
+	m_entityManager.close();
+	m_entityManagerFactory.close();
     }
 
     @PrePersist
@@ -77,6 +83,11 @@ public class EntityManagerService implements IService {
 	logger.debug("onPostRemove");
     }
 
+    public EntityManager getEntityManager() {
+	getOrStartTransaction();
+	return m_entityManager;
+    }
+
     /**
      * Starts a jpa transaction (if one has not alredy been started). Will
      * trigger a jpa flush / commit once the scout transaction is closed.
@@ -97,24 +108,20 @@ public class EntityManagerService implements IService {
 	return member;
     }
 
-    public EntityManager getEntityManager() {
-	JpaTransactionMember member = getOrStartTransaction();
-	return member.entityManager;
-    }
-
     private class JpaTransactionMember extends AbstractTransactionMember {
 
-	private EntityManager entityManager;
+	private EntityTransaction tx;
 
 	public JpaTransactionMember(String transactionId) {
 	    super(transactionId);
-	    entityManager = m_entityManagerFactory.createEntityManager();
-	    entityManager.getTransaction().begin();
+	    logger.debug("JPA transaction begun.");
+	    tx = m_entityManager.getTransaction();
+	    tx.begin();
 	}
 
 	@Override
 	public boolean needsCommit() {
-	    return true;
+	    return tx.isActive();
 	}
 
 	@Override
@@ -124,18 +131,19 @@ public class EntityManagerService implements IService {
 
 	@Override
 	public void commitPhase2() {
-	    entityManager.flush();
-	    entityManager.getTransaction().commit();
+	    logger.debug("JPA transaction committed.");
+	    tx.commit();
 	}
 
 	@Override
 	public void rollback() {
-	    entityManager.getTransaction().rollback();
+	    logger.debug("JPA transaction rolled back.");
+	    tx.rollback();
 	}
 
 	@Override
 	public void release() {
-	    entityManager.close();
+	    // n/a
 	}
     }
 }

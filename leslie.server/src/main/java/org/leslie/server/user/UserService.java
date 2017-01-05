@@ -1,7 +1,7 @@
 package org.leslie.server.user;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,9 +25,13 @@ import org.leslie.shared.security.permission.ReadAdministrationPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 import org.leslie.shared.security.permission.UpdateAdministrationPermission;
 import org.leslie.shared.user.IUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Bean
 public class UserService implements IUserService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public UserFormData create(UserFormData formData) throws ProcessingException {
@@ -104,25 +108,14 @@ public class UserService implements IUserService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 
-	List<User> resultList = JPA.createQuery(""
-		+ "SELECT u "
-		+ "  FROM " + User.class.getSimpleName() + " u "
-		+ " JOIN FETCH u.projectAssignments pa "
-		+ " WHERE KEY(pa).id = :projectId ",
-		User.class)
-		.setParameter("projectId", projectId)
-		.getResultList();
+	final Project project = JPA.find(Project.class, projectId);
+	List<User> users = new ArrayList<>(project.getUserAssignments().keySet());
 
 	final UserPageData pageData = new UserPageData();
-	final Project project = JPA.find(Project.class, projectId);
-	FieldMapper.importTablePageData(resultList, pageData, (user, row) -> {
+	FieldMapper.importTablePageData(users, pageData, (user, row) -> {
 	    UserRowData userRow = (UserRowData) row;
 	    userRow.setDisplayName(user.getDisplayName());
-	    user.getProjectAssignments().entrySet().stream()
-		    .filter(entry -> project.equals(entry.getKey()))
-		    .map(Entry::getValue)
-		    .findAny()
-		    .ifPresent(userRow::setParticipationLevel);
+	    userRow.setParticipationLevel(project.getUserAssignments().get(user));
 	});
 
 	return pageData;

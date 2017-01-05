@@ -118,6 +118,11 @@ public class UserSelectionForm extends AbstractForm {
 	    protected Class<? extends ICodeType<?, Participation>> getConfiguredCodeType() {
 		return ParticipationCodeType.class;
 	    }
+
+	    @Override
+	    protected boolean getConfiguredMandatory() {
+		return true;
+	    }
 	}
 
 	@Order(100000)

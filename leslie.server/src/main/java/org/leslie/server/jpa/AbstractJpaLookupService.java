@@ -1,46 +1,15 @@
 package org.leslie.server.jpa;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
-/*******************************************************************************
- * Copyright (c) 2010-2015 BSI Business Systems Integration AG.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     BSI Business Systems Integration AG - initial API and implementation
- ******************************************************************************/
-
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
-import org.eclipse.scout.rt.platform.Order;
-import org.eclipse.scout.rt.platform.annotations.ConfigOperation;
-import org.eclipse.scout.rt.platform.annotations.ConfigProperty;
-import org.eclipse.scout.rt.platform.exception.ProcessingException;
-import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.eclipse.scout.rt.platform.util.TriState;
-import org.eclipse.scout.rt.platform.util.TypeCastUtility;
 import org.eclipse.scout.rt.server.services.lookup.AbstractLookupService;
-import org.eclipse.scout.rt.shared.ScoutTexts;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupRow;
-import org.eclipse.scout.rt.shared.services.lookup.ILookupService;
 import org.eclipse.scout.rt.shared.services.lookup.LookupRow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Sql SELECT statement for getting {@link LookupRow}s.<br>
@@ -64,170 +33,13 @@ import org.slf4j.LoggerFactory;
  * {@link TriState} active<br>
  * Valid xml tags are: &lt;key&gt;, &lt;text&gt;, &lt;all&gt;, &lt;rec&gt;
  */
-public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends AbstractLookupService<KEY_TYPE> {
+public abstract class AbstractJpaLookupService<K> extends AbstractLookupService<K> {
 
-    private static final Pattern REFUSING_ALL_TAGS_REGEX = Pattern
-	    .compile("<all>\\s*and\\s*([0-9]+)\\s*=\\s*([0-9]+)\\s*</all>", Pattern.DOTALL);
-
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractJpaLookupService.class);
-
-    /**
-     * Sql SELECT statement
-     * 
-     * @param call
-     *            TODO
-     */
-    @ConfigProperty(ConfigProperty.SQL)
-    @Order(10)
-    protected abstract String getConfiguredSqlSelect(ILookupCall<KEY_TYPE> call);
-
-    protected <SORT_FIELD_TYPE> Function<ENTITY_TYPE, Comparable<SORT_FIELD_TYPE>> getConfiguredSortField() {
-	return null;
+    protected enum CALL_TYPE {
+	KEY, TEXT, ALL, REC
     }
 
-    protected abstract Class<ENTITY_TYPE> getConfiguredEntityType();
-
-    protected abstract Object[] execGenerateDataRow(ENTITY_TYPE obj, ILookupCall<KEY_TYPE> call);
-
-    /**
-     * This method is called on server side to load lookup rows.
-     */
-    @ConfigOperation
-    @Order(10)
-    protected List<ILookupRow<KEY_TYPE>> execLoadLookupRows(String originalSql, String preprocessedSql,
-	    ILookupCall<KEY_TYPE> call) {
-	TypedQuery<ENTITY_TYPE> query = JPA.createQuery(preprocessedSql, getConfiguredEntityType());
-	query.setMaxResults(call.getMaxRowCount());
-	// only adds those binds which are used in the SQL
-	getCustomBinds(call).entrySet().stream()
-		.filter(entry -> StringUtility.contains(preprocessedSql, ":" + entry.getKey()))
-		.forEach(entry -> query.setParameter(entry.getKey(), entry.getValue()));
-	List<ENTITY_TYPE> data = query.getResultList();
-
-	if (getConfiguredSortField() != null) {
-	    data.sort(this::compareRows);
-	}
-
-	try {
-	    Class<?> genericsParameterClass = Object.class;
-	    try {
-		genericsParameterClass = TypeCastUtility.getGenericsParameterClass(getClass(), ILookupService.class);
-	    } catch (IllegalArgumentException e) {
-		LOG.warn("Unable to calculate type parameters for lookup service '" + getClass().getName()
-			+ "'. No key type validation will be performed.");
-	    }
-
-	    Object[][] rowData = data.stream()
-		    .map(entity -> execGenerateDataRow(entity, call))
-		    .collect(Collectors.toList())
-		    .toArray(new Object[][] {});
-
-	    return createLookupRowArray(rowData, call, genericsParameterClass);
-	} catch (IllegalArgumentException e) {
-	    throw new ProcessingException(
-		    "Unable to load lookup rows for lookup service '" + getClass().getName() + "'.", e);
-	}
-    }
-
-    /**
-     * Uses reflection to detect custom parameters in the lookup call.
-     */
-    private Map<String, Object> getCustomBinds(ILookupCall<KEY_TYPE> call) {
-	Map<String, Object> result = new HashMap<>();
-	for (Field field : call.getClass().getDeclaredFields()) {
-	    StringBuilder getterName = new StringBuilder();
-	    if (field.getType().equals(Boolean.class) || field.getType().equals(boolean.class)) {
-		getterName.append("is");
-	    } else {
-		getterName.append("get");
-	    }
-	    String fieldName = field.getName();
-	    getterName.append(Character.toUpperCase(fieldName.charAt(0)));
-	    if (fieldName.length() > 1) {
-		getterName.append(fieldName.substring(1));
-	    }
-	    try {
-		Method getter = call.getClass().getDeclaredMethod(getterName.toString());
-		if (!getter.getReturnType().equals(field.getType())) {
-		    continue;
-		}
-		Object value = getter.invoke(call);
-		result.put(fieldName, value);
-
-	    } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-		    | InvocationTargetException e) {
-		// ignore - there is no appropriate getter
-	    }
-	}
-	return result;
-
-    }
-
-    /**
-     * Compares two data inputs by their indicated sort fields.
-     * 
-     * @param a
-     * @param b
-     * @return
-     */
-    private int compareRows(ENTITY_TYPE a, ENTITY_TYPE b) {
-	int result = 0;
-	if (a == null) {
-	    result++;
-	}
-	if (b == null) {
-	    result--;
-	}
-	if (a != null && b != null) {
-	    Comparable<Object> aVal = getConfiguredSortField().apply(a);
-	    Comparable<Object> bVal = getConfiguredSortField().apply(b);
-	    if (aVal == null) {
-		result++;
-	    }
-	    if (bVal == null) {
-		result--;
-	    }
-	    if (aVal != null && bVal != null) {
-		result = aVal.compareTo(bVal);
-	    }
-	}
-	return result;
-    }
-
-    @Override
-    public List<ILookupRow<KEY_TYPE>> getDataByKey(ILookupCall<KEY_TYPE> call) {
-	String sql = getConfiguredSqlSelect(call);
-	return execLoadLookupRows(sql, filterSqlByKey(sql), call);
-    }
-
-    @Override
-    public List<ILookupRow<KEY_TYPE>> getDataByText(ILookupCall<KEY_TYPE> call) {
-	// change wildcards in text to db specific wildcards
-	// if (call.getText() != null) {
-	// String s = call.getText();
-	// String sqlWildcard =
-	// BEANS.get(ISqlService.class).getSqlStyle().getLikeWildcard();
-	// call.setText(s.replace(call.getWildcard(), sqlWildcard));
-	// }
-	String sql = getConfiguredSqlSelect(call);
-	return execLoadLookupRows(sql, filterSqlByText(sql), call);
-    }
-
-    @Override
-    public List<ILookupRow<KEY_TYPE>> getDataByAll(ILookupCall<KEY_TYPE> call) {
-	String sql = getConfiguredSqlSelect(call);
-	if (containsRefusingAllTag(sql)) {
-	    throw new VetoException(ScoutTexts.get("SearchTextIsTooGeneral"));
-	}
-	List<ILookupRow<KEY_TYPE>> rows = execLoadLookupRows(sql, filterSqlByAll(sql), call);
-	return rows;
-    }
-
-    @Override
-    public List<ILookupRow<KEY_TYPE>> getDataByRec(ILookupCall<KEY_TYPE> call) {
-	String sql = getConfiguredSqlSelect(call);
-	return execLoadLookupRows(sql, filterSqlByRec(sql), call);
-    }
+    protected abstract List<? extends ILookupRow<K>> getRowData(ILookupCall<K> call, CALL_TYPE callType);
 
     /**
      * Process xml tags.<br>
@@ -259,16 +71,6 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 		"all");
     }
 
-    protected static boolean containsRefusingAllTag(String sqlSelect) {
-	Matcher m = REFUSING_ALL_TAGS_REGEX.matcher(sqlSelect.toLowerCase());
-	if (m.find()) {
-	    if (!m.group(1).equals(m.group(2))) {
-		return true;
-	    }
-	}
-	return false;
-    }
-
     /**
      * Process xml tags.<br>
      * Keep content of "rec" tag.<br>
@@ -279,4 +81,52 @@ public abstract class AbstractJpaLookupService<KEY_TYPE, ENTITY_TYPE> extends Ab
 		"rec");
     }
 
+    @Override
+    public List<? extends ILookupRow<K>> getDataByKey(ILookupCall<K> call) {
+	return getRowData(call, CALL_TYPE.KEY);
+    }
+
+    @Override
+    public List<? extends ILookupRow<K>> getDataByText(ILookupCall<K> call) {
+	return getRowData(call, CALL_TYPE.TEXT);
+    }
+
+    @Override
+    public List<? extends ILookupRow<K>> getDataByAll(ILookupCall<K> call) {
+	return getRowData(call, CALL_TYPE.ALL);
+    }
+
+    @Override
+    public List<? extends ILookupRow<K>> getDataByRec(ILookupCall<K> call) {
+	return getRowData(call, CALL_TYPE.REC);
+    }
+
+    protected String filterSqlByCallType(String sqlSelect, CALL_TYPE callType) {
+	String modifiedQueryString;
+	switch (callType) {
+	default:
+	case ALL:
+	    modifiedQueryString = filterSqlByAll(sqlSelect);
+	    break;
+	case KEY:
+	    modifiedQueryString = filterSqlByKey(sqlSelect);
+	    break;
+	case REC:
+	    modifiedQueryString = filterSqlByRec(sqlSelect);
+	    break;
+	case TEXT:
+	    modifiedQueryString = filterSqlByText(sqlSelect);
+	    break;
+	}
+	return modifiedQueryString;
+    }
+
+    protected void setCallParameters(ILookupCall<K> call, CALL_TYPE callType, Query query) {
+	if (callType == CALL_TYPE.KEY) {
+	    query.setParameter("key", call.getKey());
+
+	} else if (callType == CALL_TYPE.TEXT) {
+	    query.setParameter("text", call.getText());
+	}
+    }
 }
