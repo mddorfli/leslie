@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD })
-public @interface FieldMapping {
+public @interface FieldDataMapping {
     /**
      * @return the name of the field on the FormData this field maps to.
      */
@@ -41,7 +41,5 @@ public @interface FieldMapping {
      * @return true if this mapping should not be applied to page data.
      */
     boolean ignorePageData() default false;
-
-    Class<? extends ICustomMapping> customMapping() default NoMapping.class;
 
 }

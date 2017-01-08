@@ -10,13 +10,13 @@ import org.leslie.shared.user.IUserService.UserPresentationType;
 
 public class ProjectNodePage extends AbstractPageWithNodes {
 
-    private long projectId;
+    private Long projectId;
 
-    public long getProjectId() {
+    public Long getProjectId() {
 	return projectId;
     }
 
-    public void setProjectId(long projectId) {
+    public void setProjectId(Long projectId) {
 	this.projectId = projectId;
     }
 
@@ -30,5 +30,9 @@ public class ProjectNodePage extends AbstractPageWithNodes {
 	UserTablePage userPage = new UserTablePage(UserPresentationType.PROJECT);
 	userPage.setProjectId(projectId);
 	pageList.add(userPage);
+
+	ProjectActivityTablePage resourcePage = new ProjectActivityTablePage();
+	resourcePage.setProjectId(projectId);
+	pageList.add(resourcePage);
     }
 }

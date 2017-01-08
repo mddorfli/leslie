@@ -14,21 +14,23 @@ import javax.persistence.Id;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.NamedQuery;
 
-import org.leslie.server.jpa.mapping.FieldMapping;
+import org.leslie.server.jpa.mapping.ClassDataMapping;
+import org.leslie.server.jpa.mapping.FieldDataMapping;
 import org.leslie.shared.code.ParticipationCodeType.Participation;
 
+@ClassDataMapping
 @Entity
 @NamedQuery(name = Project.QUERY_ALL, query = "SELECT p FROM Project p")
 public class Project {
 
     public static final String QUERY_ALL = "Project.all";
 
-    @FieldMapping(readOnly = true)
+    @FieldDataMapping(readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @FieldMapping
+    @FieldDataMapping
     private String name;
 
     @ElementCollection

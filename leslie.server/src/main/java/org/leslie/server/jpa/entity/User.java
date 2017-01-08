@@ -16,9 +16,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.eclipse.scout.rt.platform.util.StringUtility;
-import org.leslie.server.jpa.mapping.FieldMapping;
-import org.leslie.server.jpa.mapping.UserRoleMapping;
+import org.leslie.server.jpa.mapping.ClassDataMapping;
+import org.leslie.server.jpa.mapping.FieldDataMapping;
+import org.leslie.server.jpa.mapping.impl.UserMapping;
 
+@ClassDataMapping(UserMapping.class)
 @Entity
 @Table(name = "users")
 @NamedQueries({
@@ -30,32 +32,32 @@ public class User {
     public static final String QUERY_ALL = "User.all";
     public static final String QUERY_BY_ROLE = "User.byRole";
 
-    @FieldMapping(formDataName = "userNr", readOnly = true)
+    @FieldDataMapping(formDataName = "userNr", readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @FieldMapping
+    @FieldDataMapping
     private String username;
 
-    @FieldMapping
+    @FieldDataMapping
     @Column(name = "first_name")
     private String firstName;
 
-    @FieldMapping
+    @FieldDataMapping
     @Column(name = "last_name")
     private String lastName;
 
-    @FieldMapping
+    @FieldDataMapping
     private String email;
 
     @Column(name = "failed_login_attempts")
     private int failedLoginAttempts;
 
-    @FieldMapping
+    @FieldDataMapping
     private boolean blocked;
 
-    @FieldMapping(ignoreFormData = true)
+    @FieldDataMapping(ignoreFormData = true)
     @Column(name = "last_login")
     private Date lastLogin;
 
@@ -65,7 +67,6 @@ public class User {
     @Column(name = "pw_hash")
     private String passwordHash;
 
-    @FieldMapping(customMapping = UserRoleMapping.class, ignorePageData = true)
     @ManyToMany
     @JoinTable(name = "user_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;

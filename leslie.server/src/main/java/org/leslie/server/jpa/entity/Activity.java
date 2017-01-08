@@ -16,22 +16,29 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.leslie.server.jpa.mapping.ClassDataMapping;
+import org.leslie.server.jpa.mapping.FieldDataMapping;
+
+@ClassDataMapping
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "activity_type_uid", discriminatorType = DiscriminatorType.INTEGER)
 public abstract class Activity {
 
+    @FieldDataMapping(readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(name = "activity_type_uid")
     private int activityTypeUid;
 
+    @FieldDataMapping
     @Column(name = "from_date")
     @Temporal(TemporalType.DATE)
     private Date from;
 
+    @FieldDataMapping
     @Column(name = "to_date")
     @Temporal(TemporalType.DATE)
     private Date to;
@@ -40,11 +47,11 @@ public abstract class Activity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public int getId() {
+    public long getId() {
 	return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
 	this.id = id;
     }
 
