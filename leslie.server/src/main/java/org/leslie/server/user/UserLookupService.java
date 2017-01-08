@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupRow;
 import org.eclipse.scout.rt.shared.services.lookup.LookupRow;
-import org.leslie.server.jpa.AbstractJpaEntityLookupService;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.User;
+import org.leslie.server.jpa.lookup.AbstractJpaEntityLookupService;
 import org.leslie.shared.user.IUserLookupService;
 import org.leslie.shared.user.UserLookupCall;
 
@@ -28,7 +28,7 @@ public class UserLookupService extends AbstractJpaEntityLookupService<Long, User
 		+ "  FROM " + User.class.getSimpleName() + " u "
 		+ "WHERE 1=1 "
 		+ "<key>AND u.id = :key</key> "
-		+ "<text>AND UPPER(u.name) LIKE UPPER(:text || '%')</text> "
+		+ "<text>AND UPPER(u.name) LIKE UPPER(CONCAT(:text, '%'))</text> "
 		+ "<all></all> ";
     }
 

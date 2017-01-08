@@ -29,9 +29,7 @@ public class RoleService implements IRoleService {
     @Override
     public RolePageData getRoleTableData() throws ProcessingException {
 	final RolePageData pageData = new RolePageData();
-	JPA.createQuery("SELECT r FROM " + Role.class.getSimpleName() + " r ",
-		Role.class)
-		.getResultList()
+	JPA.createNamedQuery(Role.QUERY_ALL, Role.class).getResultList()
 		.forEach((src) -> exportRowData(pageData.addRow(), src));
 
 	return pageData;
@@ -45,11 +43,7 @@ public class RoleService implements IRoleService {
     @Override
     public PermissionTablePageData getPermissionTableData(Long roleId) {
 	final PermissionTablePageData pageData = new PermissionTablePageData();
-	JPA.createQuery(""
-		+ "SELECT rp "
-		+ "  FROM " + RolePermission.class.getSimpleName() + " rp "
-		+ " WHERE rp.role.id = :roleId ",
-		RolePermission.class)
+	JPA.createNamedQuery(RolePermission.QUERY_BY_ROLE_ID, RolePermission.class)
 		.setParameter("roleId", roleId)
 		.getResultList()
 		.forEach((role) -> importRowData(role, pageData.addRow()));
@@ -102,12 +96,7 @@ public class RoleService implements IRoleService {
 		.setParameter("role", role);
 
 	// remove this role from all users
-	JPA.createQuery(""
-		+ "SELECT u "
-		+ " FROM " + User.class.getSimpleName() + " u "
-		+ " JOIN u.roles r "
-		+ " WHERE r = :role ",
-		User.class)
+	JPA.createNamedQuery(User.QUERY_BY_ROLE, User.class)
 		.setParameter("role", role)
 		.getResultList()
 		.forEach(user -> {
@@ -124,11 +113,8 @@ public class RoleService implements IRoleService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 
-	return JPA.createQuery(""
-		+ "SELECT r FROM " + Role.class.getSimpleName() + " r ",
-		Role.class)
-		.getResultList()
-		.stream()
+	return JPA.createNamedQuery(Role.QUERY_ALL, Role.class)
+		.getResultList().stream()
 		.collect(Collectors.toMap(Role::getId, Role::getName));
     }
 

@@ -8,18 +8,13 @@
 
 
 <changeSet id="10" author="kiwi">
-	<addForeignKeyConstraint constraintName="fk_appointment_ext_vacation_appointment" 
-		baseTableName="appointment_ext_vacation" baseColumnNames="appointment_id" 
-		referencedTableName="appointment" referencedColumnNames="id"/>
+	<addForeignKeyConstraint constraintName="fk_activity_vacation_activity" 
+		baseTableName="activity_vacation" baseColumnNames="activity_id" 
+		referencedTableName="activity" referencedColumnNames="id"/>
 </changeSet>
 <changeSet id="20" author="kiwi">
-	<addForeignKeyConstraint constraintName="fk_appointment_ext_vacation_requested_user" 
-		baseTableName="appointment_ext_vacation" baseColumnNames="requested_by_user_id" 
-		referencedTableName="users" referencedColumnNames="id"/>
-</changeSet>
-<changeSet id="30" author="kiwi">
-	<addForeignKeyConstraint constraintName="fk_appointment_ext_vacation_approved_user" 
-		baseTableName="appointment_ext_vacation" baseColumnNames="approved_by_user_id" 
+	<addForeignKeyConstraint constraintName="fk_activity_vacation_approvedby" 
+		baseTableName="activity_vacation" baseColumnNames="approved_by_user_id" 
 		referencedTableName="users" referencedColumnNames="id"/>
 </changeSet>
 

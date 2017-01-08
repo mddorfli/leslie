@@ -41,10 +41,7 @@ public class ProjectService implements IProjectService {
 	}
 
 	final ProjectTablePageData pageData = new ProjectTablePageData();
-	TypedQuery<Project> query = JPA.createQuery(""
-		+ "SELECT p "
-		+ "  FROM " + Project.class.getSimpleName() + " p ",
-		Project.class);
+	TypedQuery<Project> query = JPA.createNamedQuery(Project.QUERY_ALL, Project.class);
 
 	final User user = ServerSession.get().getUser();
 	List<Project> resultList = query.getResultList().stream()
@@ -135,25 +132,6 @@ public class ProjectService implements IProjectService {
 
 	project.getUserAssignments().put(user, formData.getParticiaption().getValue());
     }
-
-    // private static void importRowData(ProjectTableRowData row, Project
-    // project) {
-    // row.setId(project.getId());
-    // row.setName(project.getName());
-    // row.setVersion(project.getVersion());
-    // }
-    //
-    // private static void exportFormData(ProjectFormData formData, Project
-    // project) {
-    // project.setName(formData.getName().getValue());
-    // project.setVersion(formData.getVersion().getValue());
-    // }
-    //
-    // private static void importFormData(ProjectFormData formData, Project
-    // project) {
-    // formData.getName().setValue(project.getName());
-    // formData.getVersion().setValue(project.getVersion());
-    // }
 
     @Override
     public Participation getParticipationLevel(long projectId) {

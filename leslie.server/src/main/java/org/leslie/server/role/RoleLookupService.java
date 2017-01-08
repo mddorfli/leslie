@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupRow;
 import org.eclipse.scout.rt.shared.services.lookup.LookupRow;
-import org.leslie.server.jpa.AbstractJpaEntityLookupService;
 import org.leslie.server.jpa.entity.Role;
+import org.leslie.server.jpa.lookup.AbstractJpaEntityLookupService;
 import org.leslie.shared.role.IRoleLookupService;
 
 public class RoleLookupService extends AbstractJpaEntityLookupService<Long, Role> implements IRoleLookupService {
@@ -24,7 +24,7 @@ public class RoleLookupService extends AbstractJpaEntityLookupService<Long, Role
 		+ "FROM " + Role.class.getSimpleName() + " r "
 		+ "WHERE 1=1 "
 		+ "<key>AND r.id = :key</key> "
-		+ "<text>AND UPPER(r.name) LIKE UPPER(:text || '%')</text> "
+		+ "<text>AND UPPER(r.name) LIKE UPPER(CONCAT(:text, '%'))</text> "
 		+ "<all></all> ";
     }
 

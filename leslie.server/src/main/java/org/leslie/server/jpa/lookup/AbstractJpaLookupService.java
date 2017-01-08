@@ -1,4 +1,4 @@
-package org.leslie.server.jpa;
+package org.leslie.server.jpa.lookup;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public abstract class AbstractJpaLookupService<K> extends AbstractLookupService<
 	KEY, TEXT, ALL, REC
     }
 
-    protected abstract List<? extends ILookupRow<K>> getRowData(ILookupCall<K> call, CALL_TYPE callType);
+    protected abstract List<? extends ILookupRow<K>> execGenerateRowData(ILookupCall<K> call, CALL_TYPE callType);
 
     /**
      * Process xml tags.<br>
@@ -83,22 +83,22 @@ public abstract class AbstractJpaLookupService<K> extends AbstractLookupService<
 
     @Override
     public List<? extends ILookupRow<K>> getDataByKey(ILookupCall<K> call) {
-	return getRowData(call, CALL_TYPE.KEY);
+	return execGenerateRowData(call, CALL_TYPE.KEY);
     }
 
     @Override
     public List<? extends ILookupRow<K>> getDataByText(ILookupCall<K> call) {
-	return getRowData(call, CALL_TYPE.TEXT);
+	return execGenerateRowData(call, CALL_TYPE.TEXT);
     }
 
     @Override
     public List<? extends ILookupRow<K>> getDataByAll(ILookupCall<K> call) {
-	return getRowData(call, CALL_TYPE.ALL);
+	return execGenerateRowData(call, CALL_TYPE.ALL);
     }
 
     @Override
     public List<? extends ILookupRow<K>> getDataByRec(ILookupCall<K> call) {
-	return getRowData(call, CALL_TYPE.REC);
+	return execGenerateRowData(call, CALL_TYPE.REC);
     }
 
     protected String filterSqlByCallType(String sqlSelect, CALL_TYPE callType) {
@@ -121,7 +121,7 @@ public abstract class AbstractJpaLookupService<K> extends AbstractLookupService<
 	return modifiedQueryString;
     }
 
-    protected void setCallParameters(ILookupCall<K> call, CALL_TYPE callType, Query query) {
+    protected void setCallQueryBinds(Query query, ILookupCall<K> call, CALL_TYPE callType) {
 	if (callType == CALL_TYPE.KEY) {
 	    query.setParameter("key", call.getKey());
 

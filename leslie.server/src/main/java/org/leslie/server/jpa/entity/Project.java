@@ -12,12 +12,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.NamedQuery;
 
 import org.leslie.server.jpa.mapping.FieldMapping;
 import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 @Entity
+@NamedQuery(name = Project.QUERY_ALL, query = "SELECT p FROM Project p")
 public class Project {
+
+    public static final String QUERY_ALL = "Project.all";
 
     @FieldMapping(readOnly = true)
     @Id

@@ -1,4 +1,4 @@
-package org.leslie.server.jpa;
+package org.leslie.server.jpa.lookup;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import javax.persistence.TypedQuery;
 
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupRow;
+import org.leslie.server.jpa.JPA;
 
 public abstract class AbstractJpaEntityLookupService<K, E> extends AbstractJpaLookupService<K> {
 
@@ -25,11 +26,11 @@ public abstract class AbstractJpaEntityLookupService<K, E> extends AbstractJpaLo
     }
 
     @Override
-    public List<ILookupRow<K>> getRowData(ILookupCall<K> call, CALL_TYPE callType) {
+    public List<ILookupRow<K>> execGenerateRowData(ILookupCall<K> call, CALL_TYPE callType) {
 	String queryString = getConfiguredJpqlSelect();
 	TypedQuery<E> query = JPA.createQuery(filterSqlByCallType(queryString, callType), getConfiguredEntityType());
 
-	setCallParameters(call, callType, query);
+	setCallQueryBinds(query, call, callType);
 	execPrepareQuery(query);
 
 	query.setMaxResults(call.getMaxRowCount());

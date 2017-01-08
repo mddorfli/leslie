@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.eclipse.scout.rt.platform.util.StringUtility;
@@ -19,7 +21,14 @@ import org.leslie.server.jpa.mapping.UserRoleMapping;
 
 @Entity
 @Table(name = "users")
+@NamedQueries({
+	@NamedQuery(name = User.QUERY_ALL, query = "SELECT u FROM User u "),
+	@NamedQuery(name = User.QUERY_BY_ROLE, query = "SELECT u FROM User u JOIN u.roles r WHERE r = :role ")
+})
 public class User {
+
+    public static final String QUERY_ALL = "User.all";
+    public static final String QUERY_BY_ROLE = "User.byRole";
 
     @FieldMapping(formDataName = "userNr", readOnly = true)
     @Id

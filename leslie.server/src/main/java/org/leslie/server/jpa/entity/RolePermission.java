@@ -6,11 +6,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "role_x_permission")
+@NamedQuery(name = RolePermission.QUERY_BY_ROLE_ID, query = "SELECT rp FROM RolePermission rp WHERE rp.role.id = :roleId")
 public class RolePermission {
+
+    public static final String QUERY_BY_ROLE_ID = "RolePermission.byRoleId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

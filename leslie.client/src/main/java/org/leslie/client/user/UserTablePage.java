@@ -73,7 +73,7 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 
 	case PROJECT:
 	    boolean pmEnabled = ACCESS.check(new ManageProjectPermission(getProjectId()));
-
+	    getTable().setTitle(TEXTS.get("Members"));
 	    getTable().getUsernameColumn().setDisplayable(false);
 	    getTable().getFirstNameColumn().setDisplayable(false);
 	    getTable().getLastNameColumn().setDisplayable(false);

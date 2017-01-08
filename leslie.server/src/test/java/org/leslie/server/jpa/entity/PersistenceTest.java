@@ -1,11 +1,17 @@
 package org.leslie.server.jpa.entity;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.scout.rt.testing.platform.runner.RunWithSubject;
 import org.eclipse.scout.rt.testing.server.runner.RunWithServerSession;
 import org.eclipse.scout.rt.testing.server.runner.ServerTestRunner;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.leslie.server.ServerSession;
@@ -28,7 +34,7 @@ public class PersistenceTest {
 			.map(User::getUsername)
 			.collect(Collectors.toList()));
 
-	Assert.assertTrue("User mdo does not exist",
+	assertTrue("User mdo does not exist",
 		project.getUserAssignments().keySet().stream()
 			.map(User::getUsername)
 			.anyMatch(username -> "mdo".equals(username)));
@@ -50,9 +56,35 @@ public class PersistenceTest {
 			.map(User::getUsername)
 			.collect(Collectors.toList()));
 
-	Assert.assertTrue("User mdo was not removed",
+	assertTrue("User mdo was not removed",
 		project.getUserAssignments().keySet().stream()
 			.map(User::getUsername)
 			.noneMatch(username -> "mdo".equals(username)));
+
+	JPA.getTransaction().setRollbackOnly();
+    }
+
+    @Test
+    public void readUserActivityTest() {
+	List<Activity> resultList = JPA.createQuery(""
+		+ "SELECT pa "
+		+ "  FROM Activity pa "
+		+ "  JOIN pa.user pu "
+		+ " WHERE pu.username = 'mdo' "
+		+ "   AND TYPE(pa) = ProjectActivity ",
+		Activity.class).getResultList();
+
+	double percentage = 0.0;
+	for (Activity activity : resultList) {
+	    Date startTime = Date.from(LocalDate.of(2017, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
+	    Date endTime = Date.from(LocalDate.of(2017, 03, 31).atStartOfDay(ZoneId.systemDefault()).toInstant());
+	    assertEquals(startTime, activity.getFrom());
+	    assertEquals(endTime, activity.getTo());
+
+	    assertTrue(activity instanceof ProjectActivity);
+	    ProjectActivity pa = (ProjectActivity) activity;
+	    percentage += pa.getPercentage();
+	}
+	assertEquals("Project bookings for mdo should add up to 100%", 100.0, percentage, 0.1);
     }
 }

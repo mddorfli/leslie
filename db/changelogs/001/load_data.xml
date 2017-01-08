@@ -34,5 +34,14 @@
 <changeSet id="145" author="kiwi" context="DEV">
 	<loadData tableName="user_x_role" file="changelogs/001/data/dev/user_x_role.csv"/>
 </changeSet>
+<changeSet id="200" author="kiwi" context="DEV">
+	<loadData tableName="activity" file="changelogs/001/data/dev/activity.csv"/>
+</changeSet>
+<changeSet id="210" author="kiwi" context="DEV">
+	<loadData tableName="activity_project" file="changelogs/001/data/dev/activity_project.csv"/>
+</changeSet>
+<changeSet id="220" author="kiwi" context="DEV">
+	<loadData tableName="activity_vacation" file="changelogs/001/data/dev/activity_vacation.csv"/>
+</changeSet>
 
 </databaseChangeLog>

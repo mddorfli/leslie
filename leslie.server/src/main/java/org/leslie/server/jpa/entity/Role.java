@@ -7,10 +7,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
+@NamedQueries({
+	@NamedQuery(name = Role.QUERY_ALL, query = "SELECT r FROM Role r"),
+	@NamedQuery(name = Role.QUERY_BY_IDS, query = "SELECT r FROM Role r WHERE r.id IN :roleIds")
+})
 public class Role {
+
+    public static final String QUERY_ALL = "Role.all";
+    public static final String QUERY_BY_IDS = "Role.byIds";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

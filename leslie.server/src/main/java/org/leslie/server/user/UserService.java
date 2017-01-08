@@ -75,11 +75,7 @@ public class UserService implements IUserService {
 	    user.getRoles().removeIf(role -> {
 		return !selectedRoleIds.contains(Long.valueOf(role.getId()));
 	    });
-	    List<Role> newRoles = JPA.createQuery(""
-		    + "SELECT r "
-		    + " FROM " + Role.class.getSimpleName() + " r "
-		    + " WHERE r.id IN :roleIds ",
-		    Role.class)
+	    List<Role> newRoles = JPA.createNamedQuery(Role.QUERY_BY_IDS, Role.class)
 		    .setParameter("roleIds", selectedRoleIds)
 		    .getResultList();
 	    user.getRoles().addAll(newRoles);
@@ -127,8 +123,7 @@ public class UserService implements IUserService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 
-	List<User> result = JPA.createQuery("SELECT u FROM " + User.class.getSimpleName() + " u ", User.class)
-		.getResultList();
+	List<User> result = JPA.createNamedQuery(User.QUERY_ALL, User.class).getResultList();
 	final UserPageData pageData = new UserPageData();
 
 	FieldMapper.importTablePageData(result, pageData, (user, row) -> {
@@ -144,41 +139,4 @@ public class UserService implements IUserService {
 	user.setPasswordSalt(Base64Utility.encode(salt));
 	user.setPasswordHash(Base64Utility.encode(hash));
     }
-
-    // private static void exportFormData(UserFormData formData, User user) {
-    // user.setUsername(formData.getUsername().getValue());
-    // user.setFirstName(formData.getFirstName().getValue());
-    // user.setLastName(formData.getLastName().getValue());
-    // user.setEmail(formData.getEmail().getValue());
-    // user.setBlocked(formData.getBlocked().getValue());
-    //
-    // if (formData.getRoles().getValue() != null) {
-    // user.setRoles(formData.getRoles().getValue().stream()
-    // .map(id -> JPA.find(Role.class, id))
-    // .collect(Collectors.toList()));
-    // }
-    // }
-
-    // private static void importFormData(UserFormData formData, User user) {
-    // formData.getUsername().setValue(user.getUsername());
-    // formData.getFirstName().setValue(user.getFirstName());
-    // formData.getLastName().setValue(user.getLastName());
-    // formData.getEmail().setValue(user.getEmail());
-    // formData.getBlocked().setValue(user.isBlocked());
-    //
-    // formData.getRoles().setValue(user.getRoles().stream()
-    // .map(Role::getId)
-    // .collect(Collectors.toSet()));
-    // }
-
-    // private static void exportPageData(UserRowData row, User user) {
-    // row.setId(user.getId());
-    // row.setUsername(user.getUsername());
-    // row.setFirstName(user.getFirstName());
-    // row.setDisplayName(user.getDisplayName());
-    // row.setLastName(user.getLastName());
-    // row.setEmail(user.getEmail());
-    // row.setLoginAttempts(user.getFailedLoginAttempts());
-    // row.setBlocked(user.isBlocked());
-    // }
 }
