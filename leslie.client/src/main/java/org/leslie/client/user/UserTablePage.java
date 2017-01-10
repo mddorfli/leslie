@@ -360,7 +360,7 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	    @Override
 	    protected void execAction() throws ProcessingException {
 		UserForm form = new UserForm();
-		form.setUserNr(getTable().getIdColumn().getSelectedValue());
+		form.setUserId(getTable().getIdColumn().getSelectedValue());
 		form.startModify();
 		form.waitFor();
 		if (form.isFormStored()) {

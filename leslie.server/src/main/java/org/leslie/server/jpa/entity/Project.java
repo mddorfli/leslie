@@ -25,9 +25,9 @@ public class Project {
 
     public static final String QUERY_ALL = "Project.all";
 
-    @FieldDataMapping(readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @FieldDataMapping(readOnly = true, formFieldName = "projectId")
     private long id;
 
     @FieldDataMapping

@@ -21,16 +21,16 @@ import org.leslie.shared.security.permission.ManageProjectPermission;
 @FormData(value = ProjectFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
 public class ProjectForm extends AbstractForm {
 
-    private long id;
+    private Long projectId;
 
     @FormData
-    public long getId() {
-	return id;
+    public Long getProjectId() {
+	return projectId;
     }
 
     @FormData
-    public void setId(long id) {
-	this.id = id;
+    public void setProjectId(Long projectId) {
+	this.projectId = projectId;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class ProjectForm extends AbstractForm {
 	    formData = service.load(formData);
 	    importFormData(formData);
 
-	    setEnabledPermission(new ManageProjectPermission(getId()));
+	    setEnabledPermission(new ManageProjectPermission(getProjectId()));
 	}
 
 	@Override

@@ -24,8 +24,8 @@ public abstract class ActivityTablePage<T extends ActivityTablePage<T>.Table>
 	    return getColumnSet().getColumnByClass(UserColumn.class);
 	}
 
-	public ActivityTablePage<?>.Table.IdColumn getIdColumn() {
-	    return getColumnSet().getColumnByClass(IdColumn.class);
+	public ActivityTablePage<?>.Table.ActivityIdColumn getActivityIdColumn() {
+	    return getColumnSet().getColumnByClass(ActivityIdColumn.class);
 	}
 
 	public ActivityTablePage<?>.Table.ToColumn getToColumn() {
@@ -37,7 +37,7 @@ public abstract class ActivityTablePage<T extends ActivityTablePage<T>.Table>
 	}
 
 	@Order(0)
-	public class IdColumn extends AbstractLongColumn {
+	public class ActivityIdColumn extends AbstractLongColumn {
 	    @Override
 	    protected boolean getConfiguredDisplayable() {
 		return false;

@@ -19,19 +19,15 @@ import org.leslie.server.ServerSession;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.User;
-import org.leslie.server.jpa.mapping.FieldMapper;
+import org.leslie.server.jpa.mapping.FieldMappingUtility;
 import org.leslie.shared.code.ParticipationCodeType.Participation;
 import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.CreateProjectPermission;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Bean
 public class ProjectService implements IProjectService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectService.class);
 
     @Override
     public ProjectTablePageData getProjectTableData(SearchFilter filter) {
@@ -50,7 +46,7 @@ public class ProjectService implements IProjectService {
 				&& project.getUserAssignments().containsKey(user))
 		.collect(Collectors.toList());
 
-	FieldMapper.importTablePageData(resultList, pageData, (project, row) -> {
+	FieldMappingUtility.importTablePageData(resultList, pageData, (project, row) -> {
 	    if (project.getUserAssignments() != null) {
 		project.getUserAssignments().entrySet().stream()
 			.filter(entry -> user.equals(entry.getKey()))
@@ -77,28 +73,28 @@ public class ProjectService implements IProjectService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	Project project = new Project();
-	FieldMapper.exportFormData(formData, project);
+	FieldMappingUtility.exportFormData(formData, project);
 	JPA.persist(project);
 	return formData;
     }
 
     @Override
     public ProjectFormData load(ProjectFormData formData) {
-	if (!ACCESS.check(new ReadProjectPermission(formData.getId()))) {
+	if (!ACCESS.check(new ReadProjectPermission(formData.getProjectId()))) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	Project project = JPA.find(Project.class, formData.getId());
-	FieldMapper.importFormData(project, formData);
+	Project project = JPA.find(Project.class, formData.getProjectId());
+	FieldMappingUtility.importFormData(project, formData);
 	return formData;
     }
 
     @Override
     public ProjectFormData store(ProjectFormData formData) {
-	if (!ACCESS.check(new ManageProjectPermission(formData.getId()))) {
+	if (!ACCESS.check(new ManageProjectPermission(formData.getProjectId()))) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	Project project = JPA.find(Project.class, formData.getId());
-	FieldMapper.exportFormData(formData, project);
+	Project project = JPA.find(Project.class, formData.getProjectId());
+	FieldMappingUtility.exportFormData(formData, project);
 
 	return formData;
     }

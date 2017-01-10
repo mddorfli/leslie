@@ -7,6 +7,8 @@ public class UserLookupCall extends LookupCall<Long> {
 
     private static final long serialVersionUID = 1L;
 
+    private Long projectId;
+
     private Long disabledProjectId;
 
     public Long getDisabledProjectId() {
@@ -15,6 +17,14 @@ public class UserLookupCall extends LookupCall<Long> {
 
     public void setDisabledProjectId(Long disabledProjectId) {
 	this.disabledProjectId = disabledProjectId;
+    }
+
+    public Long getProjectId() {
+	return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+	this.projectId = projectId;
     }
 
     @Override

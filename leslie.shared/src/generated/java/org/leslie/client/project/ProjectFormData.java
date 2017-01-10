@@ -16,34 +16,34 @@ public class ProjectFormData extends AbstractFormData {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * access method for property Id.
-     */
-    public long getId() {
-	return getIdProperty().getValue() == null ? 0L : getIdProperty().getValue();
-    }
-
-    /**
-     * access method for property Id.
-     */
-    public void setId(long id) {
-	getIdProperty().setValue(id);
-    }
-
-    public IdProperty getIdProperty() {
-	return getPropertyByClass(IdProperty.class);
-    }
-
     public Name getName() {
 	return getFieldByClass(Name.class);
     }
 
-    public static class IdProperty extends AbstractPropertyData<Long> {
+    /**
+     * access method for property ProjectId.
+     */
+    public Long getProjectId() {
+	return getProjectIdProperty().getValue();
+    }
+
+    /**
+     * access method for property ProjectId.
+     */
+    public void setProjectId(Long projectId) {
+	getProjectIdProperty().setValue(projectId);
+    }
+
+    public ProjectIdProperty getProjectIdProperty() {
+	return getPropertyByClass(ProjectIdProperty.class);
+    }
+
+    public static class Name extends AbstractValueFieldData<String> {
 
 	private static final long serialVersionUID = 1L;
     }
 
-    public static class Name extends AbstractValueFieldData<String> {
+    public static class ProjectIdProperty extends AbstractPropertyData<Long> {
 
 	private static final long serialVersionUID = 1L;
     }

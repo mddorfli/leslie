@@ -32,20 +32,20 @@ public class User {
     public static final String QUERY_ALL = "User.all";
     public static final String QUERY_BY_ROLE = "User.byRole";
 
-    @FieldDataMapping(formDataName = "userNr", readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @FieldDataMapping(formFieldName = "userId", readOnly = true)
     private long id;
 
     @FieldDataMapping
     private String username;
 
-    @FieldDataMapping
     @Column(name = "first_name")
+    @FieldDataMapping
     private String firstName;
 
-    @FieldDataMapping
     @Column(name = "last_name")
+    @FieldDataMapping
     private String lastName;
 
     @FieldDataMapping
@@ -57,8 +57,8 @@ public class User {
     @FieldDataMapping
     private boolean blocked;
 
-    @FieldDataMapping(ignoreFormData = true)
     @Column(name = "last_login")
+    @FieldDataMapping(ignoreFormData = true)
     private Date lastLogin;
 
     @Column(name = "pw_salt")

@@ -7,14 +7,14 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.jpa.JPA;
+import org.leslie.server.jpa.entity.Activity;
 import org.leslie.server.jpa.entity.ProjectActivity;
-import org.leslie.server.jpa.mapping.FieldMapper;
+import org.leslie.server.jpa.mapping.FieldMappingUtility;
 import org.leslie.shared.activity.IActivityService;
 import org.leslie.shared.activity.ProjectActivityTablePageData;
-import org.leslie.shared.activity.ProjectActivityTablePageData.ProjectActivityTableRowData;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 
-public class AbstractActivityService implements IActivityService {
+public class ActivityService implements IActivityService {
 
     @Override
     public ProjectActivityTablePageData getProjectActivityTableData(SearchFilter filter, Long projectId) {
@@ -33,11 +33,19 @@ public class AbstractActivityService implements IActivityService {
 		.getResultList();
 
 	ProjectActivityTablePageData pageData = new ProjectActivityTablePageData();
-	FieldMapper.importTablePageData(resultList, pageData, (pa, row) -> {
-	    ProjectActivityTableRowData resRow = (ProjectActivityTableRowData) row;
-	    resRow.setProject(pa.getProject().getName());
-	});
+	FieldMappingUtility.importTablePageData(resultList, pageData);
 
 	return pageData;
+    }
+
+    @Override
+    public void remove(List<Long> activityIds) {
+	List<Activity> activities = JPA.createNamedQuery(Activity.QUERY_BY_IDS, Activity.class)
+		.setParameter("activityIds", activityIds)
+		.getResultList();
+
+	for (Activity activity : activities) {
+	    JPA.remove(activity);
+	}
     }
 }

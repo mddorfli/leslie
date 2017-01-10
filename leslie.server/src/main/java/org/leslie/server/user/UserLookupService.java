@@ -47,8 +47,10 @@ public class UserLookupService extends AbstractJpaEntityLookupService<Long, User
 	} else {
 	    disabledUserIds = Collections.EMPTY_LIST;
 	}
+	final Project project = lookup.getProjectId() == null ? null : JPA.find(Project.class, lookup.getProjectId());
 
 	List<ILookupRow<Long>> rowData = resultList.stream()
+		.filter(user -> project == null || project.getUserAssignments().keySet().contains(user))
 		.map(user -> UserLookupService.generateRow(user, disabledUserIds))
 		.collect(Collectors.toList());
 	return rowData;

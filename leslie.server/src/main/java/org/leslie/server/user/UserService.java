@@ -20,18 +20,14 @@ import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.Role;
 import org.leslie.server.jpa.entity.User;
-import org.leslie.server.jpa.mapping.FieldMapper;
+import org.leslie.server.jpa.mapping.FieldMappingUtility;
 import org.leslie.shared.security.permission.ReadAdministrationPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 import org.leslie.shared.security.permission.UpdateAdministrationPermission;
 import org.leslie.shared.user.IUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Bean
 public class UserService implements IUserService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public UserFormData create(UserFormData formData) throws ProcessingException {
@@ -39,7 +35,7 @@ public class UserService implements IUserService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	User user = new User();
-	FieldMapper.exportFormData(formData, user);
+	FieldMappingUtility.exportFormData(formData, user);
 	applyPassword(user, formData.getPassword().getValue());
 
 	JPA.persist(user);
@@ -51,8 +47,8 @@ public class UserService implements IUserService {
 	if (!ACCESS.check(new ReadAdministrationPermission())) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	User user = JPA.find(User.class, formData.getUserNr());
-	FieldMapper.importFormData(user, formData);
+	User user = JPA.find(User.class, formData.getUserId());
+	FieldMappingUtility.importFormData(user, formData);
 	if (user.getRoles() != null) {
 	    Set<Long> roleIds = user.getRoles().stream().map(Role::getId).collect(Collectors.toSet());
 	    formData.getRoles().setValue(roleIds);
@@ -65,8 +61,8 @@ public class UserService implements IUserService {
 	if (!ACCESS.check(new UpdateAdministrationPermission())) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	User user = JPA.find(User.class, formData.getUserNr());
-	FieldMapper.exportFormData(formData, user);
+	User user = JPA.find(User.class, formData.getUserId());
+	FieldMappingUtility.exportFormData(formData, user);
 
 	final Set<Long> selectedRoleIds = formData.getRoles().getValue();
 	if (selectedRoleIds == null || selectedRoleIds.isEmpty()) {
@@ -108,7 +104,7 @@ public class UserService implements IUserService {
 	List<User> users = new ArrayList<>(project.getUserAssignments().keySet());
 
 	final UserPageData pageData = new UserPageData();
-	FieldMapper.importTablePageData(users, pageData, (user, row) -> {
+	FieldMappingUtility.importTablePageData(users, pageData, (user, row) -> {
 	    UserRowData userRow = (UserRowData) row;
 	    userRow.setDisplayName(user.getDisplayName());
 	    userRow.setParticipationLevel(project.getUserAssignments().get(user));
@@ -126,7 +122,7 @@ public class UserService implements IUserService {
 	List<User> result = JPA.createNamedQuery(User.QUERY_ALL, User.class).getResultList();
 	final UserPageData pageData = new UserPageData();
 
-	FieldMapper.importTablePageData(result, pageData, (user, row) -> {
+	FieldMappingUtility.importTablePageData(result, pageData, (user, row) -> {
 	    ((UserRowData) row).setDisplayName(user.getDisplayName());
 	});
 

@@ -16,9 +16,9 @@ import org.eclipse.scout.rt.shared.data.page.AbstractTablePageData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FieldMapper {
+public class FieldMappingUtility {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FieldMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FieldMappingUtility.class);
 
     /**
      * Exports form data into an entity (i.e. writes to the entity).
@@ -37,8 +37,8 @@ public class FieldMapper {
 		    continue;
 		}
 
-		String mappedFieldName = annotation.formDataName().isEmpty() ? field.getName()
-			: annotation.formDataName();
+		String mappedFieldName = annotation.formFieldName().isEmpty() ? field.getName()
+			: annotation.formFieldName();
 		Object value = getProperty(fromFormData, mappedFieldName, null);
 		if (value != null && value instanceof AbstractValueFieldData) {
 		    setProperty(toEntity, field.getName(), field.getType(),
@@ -70,8 +70,8 @@ public class FieldMapper {
 		}
 
 		Object value = getProperty(fromEntity, field.getName(), field.getType());
-		String mappedFieldName = annotation.formDataName().isEmpty() ? field.getName()
-			: annotation.formDataName();
+		String mappedFieldName = annotation.formFieldName().isEmpty() ? field.getName()
+			: annotation.formFieldName();
 		Object valueField = getProperty(toFormData, mappedFieldName, null);
 
 		if (valueField != null && valueField instanceof AbstractValueFieldData) {
@@ -127,8 +127,8 @@ public class FieldMapper {
 		}
 
 		Object value = getProperty(fromEntity, field.getName(), field.getType());
-		String mappedFieldName = annotation.pageDataName().isEmpty() ? field.getName()
-			: annotation.formDataName();
+		String mappedFieldName = annotation.pageFieldName().isEmpty() ? field.getName()
+			: annotation.formFieldName();
 		setProperty(toRowData, mappedFieldName, field.getType(), value);
 	    }
 	}

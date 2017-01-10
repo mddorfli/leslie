@@ -33,25 +33,21 @@ import org.leslie.shared.user.IUserService;
 @FormData(value = UserFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
 public class UserForm extends AbstractForm {
 
-    private Long userNr;
+    private Long userId;
 
-    public UserForm() throws ProcessingException {
-	super();
+    @FormData
+    public Long getUserId() {
+	return userId;
+    }
+
+    @FormData
+    public void setUserId(Long userId) {
+	this.userId = userId;
     }
 
     @Override
     protected String getConfiguredTitle() {
 	return TEXTS.get("User");
-    }
-
-    @FormData
-    public Long getUserNr() {
-	return userNr;
-    }
-
-    @FormData
-    public void setUserNr(Long userNr) {
-	this.userNr = userNr;
     }
 
     public void startModify() throws ProcessingException {

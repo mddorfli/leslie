@@ -53,28 +53,8 @@ public class ProjectActivityTablePageData extends ActivityTablePageData {
     public static class ProjectActivityTableRowData extends ActivityTableRowData {
 
 	private static final long serialVersionUID = 1L;
-	public static final String projectId = "projectId";
-	public static final String project = "project";
 	public static final String percentage = "percentage";
-	private Long m_projectId;
-	private String m_project;
 	private BigDecimal m_percentage;
-
-	public Long getProjectId() {
-	    return m_projectId;
-	}
-
-	public void setProjectId(Long newProjectId) {
-	    m_projectId = newProjectId;
-	}
-
-	public String getProject() {
-	    return m_project;
-	}
-
-	public void setProject(String newProject) {
-	    m_project = newProject;
-	}
 
 	public BigDecimal getPercentage() {
 	    return m_percentage;

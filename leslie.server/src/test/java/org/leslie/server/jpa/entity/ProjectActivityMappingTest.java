@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.leslie.server.ServerSession;
 import org.leslie.server.jpa.JPA;
-import org.leslie.server.jpa.mapping.FieldMapper;
+import org.leslie.server.jpa.mapping.FieldMappingUtility;
 import org.leslie.shared.activity.ProjectActivityTablePageData.ProjectActivityTableRowData;
 
 @RunWithSubject("admin")
@@ -37,12 +37,10 @@ public class ProjectActivityMappingTest {
 	pa.setUser(JPA.find(User.class, 2L));
 
 	ProjectActivityTableRowData rowData = new ProjectActivityTableRowData();
-	FieldMapper.importTableRowData(pa, rowData);
+	FieldMappingUtility.importTableRowData(pa, rowData);
 
 	assertEquals(Long.valueOf(2L), rowData.getUserId());
 	assertEquals("Marco Dörfliger", rowData.getUser());
-	assertEquals("iOPCIS v2.5", rowData.getProject());
-	assertEquals(Long.valueOf(1L), rowData.getProjectId());
 	assertEquals(BigDecimal.valueOf(80.0), rowData.getPercentage());
 	assertEquals(fromDate, rowData.getFrom());
 	assertEquals(toDate, rowData.getTo());

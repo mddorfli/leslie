@@ -154,7 +154,7 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 	    @Override
 	    protected void execAction() {
 		ProjectForm form = new ProjectForm();
-		form.setId(getIdColumn().getSelectedValue());
+		form.setProjectId(getIdColumn().getSelectedValue());
 		form.startModify();
 		form.waitFor();
 		if (form.isFormStored()) {

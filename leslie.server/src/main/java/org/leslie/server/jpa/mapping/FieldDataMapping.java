@@ -20,12 +20,12 @@ public @interface FieldDataMapping {
     /**
      * @return the name of the field on the FormData this field maps to.
      */
-    String formDataName() default "";
+    String formFieldName() default "";
 
     /**
      * @return the name of the field on the PageData this field maps to.
      */
-    String pageDataName() default "";
+    String pageFieldName() default "";
 
     /**
      * @return true if this field should never be set by the formData.

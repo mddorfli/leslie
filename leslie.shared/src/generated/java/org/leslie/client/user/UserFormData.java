@@ -43,21 +43,21 @@ public class UserFormData extends AbstractFormData {
     }
 
     /**
-     * access method for property UserNr.
+     * access method for property UserId.
      */
-    public Long getUserNr() {
-	return getUserNrProperty().getValue();
+    public Long getUserId() {
+	return getUserIdProperty().getValue();
     }
 
     /**
-     * access method for property UserNr.
+     * access method for property UserId.
      */
-    public void setUserNr(Long userNr) {
-	getUserNrProperty().setValue(userNr);
+    public void setUserId(Long userId) {
+	getUserIdProperty().setValue(userId);
     }
 
-    public UserNrProperty getUserNrProperty() {
-	return getPropertyByClass(UserNrProperty.class);
+    public UserIdProperty getUserIdProperty() {
+	return getPropertyByClass(UserIdProperty.class);
     }
 
     public Username getUsername() {
@@ -94,7 +94,7 @@ public class UserFormData extends AbstractFormData {
 	private static final long serialVersionUID = 1L;
     }
 
-    public static class UserNrProperty extends AbstractPropertyData<Long> {
+    public static class UserIdProperty extends AbstractPropertyData<Long> {
 
 	private static final long serialVersionUID = 1L;
     }

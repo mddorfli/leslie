@@ -52,23 +52,23 @@ public abstract class ActivityTablePageData extends AbstractTablePageData {
     public abstract static class ActivityTableRowData extends AbstractTableRowData {
 
 	private static final long serialVersionUID = 1L;
-	public static final String id = "id";
+	public static final String activityId = "activityId";
 	public static final String userId = "userId";
 	public static final String user = "user";
 	public static final String from = "from";
 	public static final String to = "to";
-	private Long m_id;
+	private Long m_activityId;
 	private Long m_userId;
 	private String m_user;
 	private Date m_from;
 	private Date m_to;
 
-	public Long getId() {
-	    return m_id;
+	public Long getActivityId() {
+	    return m_activityId;
 	}
 
-	public void setId(Long newId) {
-	    m_id = newId;
+	public void setActivityId(Long newActivityId) {
+	    m_activityId = newActivityId;
 	}
 
 	public Long getUserId() {

@@ -13,34 +13,38 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.leslie.server.jpa.mapping.ClassDataMapping;
 import org.leslie.server.jpa.mapping.FieldDataMapping;
 
-@ClassDataMapping
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "activity_type_uid", discriminatorType = DiscriminatorType.INTEGER)
+@NamedQuery(name = Activity.QUERY_BY_IDS, query = "SELECT a FROM Activity a WHERE a.id IN :activityIds ")
+@ClassDataMapping
 public abstract class Activity {
 
-    @FieldDataMapping(readOnly = true)
+    public static final String QUERY_BY_IDS = "Activity.byIds";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @FieldDataMapping(readOnly = true, pageFieldName = "activityId", formFieldName = "activityId")
     private long id;
 
     @Column(name = "activity_type_uid")
     private int activityTypeUid;
 
-    @FieldDataMapping
     @Column(name = "from_date")
     @Temporal(TemporalType.DATE)
+    @FieldDataMapping
     private Date from;
 
-    @FieldDataMapping
     @Column(name = "to_date")
     @Temporal(TemporalType.DATE)
+    @FieldDataMapping
     private Date to;
 
     @ManyToOne

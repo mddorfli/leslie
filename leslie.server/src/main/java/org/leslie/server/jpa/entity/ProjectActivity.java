@@ -10,11 +10,11 @@ import javax.persistence.Table;
 import org.leslie.server.jpa.mapping.ClassDataMapping;
 import org.leslie.server.jpa.mapping.impl.ProjectActivityMapping;
 
-@ClassDataMapping(ProjectActivityMapping.class)
 @Entity
 @Table(name = "activity_project")
 @DiscriminatorValue(ProjectActivity.TYPE_UID)
 @PrimaryKeyJoinColumn(name = "activity_id", referencedColumnName = "id")
+@ClassDataMapping(ProjectActivityMapping.class)
 public class ProjectActivity extends Activity {
 
     protected static final String TYPE_UID = "1";

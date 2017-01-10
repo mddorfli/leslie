@@ -13,7 +13,7 @@ import org.leslie.client.user.UserFormData;
 import org.leslie.client.user.UserPageData;
 import org.leslie.client.user.UserPageData.UserRowData;
 import org.leslie.server.ServerSession;
-import org.leslie.server.jpa.mapping.FieldMapper;
+import org.leslie.server.jpa.mapping.FieldMappingUtility;
 
 @RunWithSubject("admin")
 @RunWith(ServerTestRunner.class)
@@ -31,7 +31,7 @@ public class UserMappingTest {
 
 	User user = new User();
 	user.setId(25);
-	FieldMapper.exportFormData(formData, user);
+	FieldMappingUtility.exportFormData(formData, user);
 
 	// because the id field is read only, it should not be overwritten
 	assertEquals(25L, user.getId());
@@ -53,9 +53,9 @@ public class UserMappingTest {
 	user.setLastName("lastName");
 
 	UserFormData formData = new UserFormData();
-	FieldMapper.importFormData(user, formData);
+	FieldMappingUtility.importFormData(user, formData);
 
-	assertEquals(Long.valueOf(5L), formData.getUserNr());
+	assertEquals(Long.valueOf(5L), formData.getUserId());
 	assertEquals("username", formData.getUsername().getValue());
 	assertEquals(Boolean.TRUE, formData.getBlocked().getValue());
 	assertEquals("email", formData.getEmail().getValue());
@@ -74,7 +74,7 @@ public class UserMappingTest {
 	user.setLastName("lastName");
 
 	UserPageData pageData = new UserPageData();
-	FieldMapper.importTablePageData(Collections.singletonList(user), pageData);
+	FieldMappingUtility.importTablePageData(Collections.singletonList(user), pageData);
 
 	assertEquals(1, pageData.getRowCount());
 	UserRowData row = pageData.getRows()[0];
