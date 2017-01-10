@@ -20,4 +20,4 @@ Screenshots:
 
 ![Project Resources](/resources/img/1.png "Project Resources")
 
-![Administration Outline](/resources/img/1.png "Administration Outline")
+![Administration Outline](/resources/img/2.png "Administration Outline")
