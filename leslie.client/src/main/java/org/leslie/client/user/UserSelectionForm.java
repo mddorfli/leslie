@@ -14,9 +14,9 @@ import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 import org.leslie.client.user.UserSelectionForm.MainBox.CancelButton;
 import org.leslie.client.user.UserSelectionForm.MainBox.GroupBox;
+import org.leslie.client.user.UserSelectionForm.MainBox.GroupBox.ParticiaptionField;
 import org.leslie.client.user.UserSelectionForm.MainBox.GroupBox.UserField;
 import org.leslie.client.user.UserSelectionForm.MainBox.OkButton;
-import org.leslie.client.user.UserSelectionForm.MainBox.ParticiaptionField;
 import org.leslie.shared.code.ParticipationCodeType;
 import org.leslie.shared.code.ParticipationCodeType.Participation;
 import org.leslie.shared.project.IProjectService;
@@ -105,23 +105,22 @@ public class UserSelectionForm extends AbstractForm {
 		}
 	    }
 
-	}
+	    @Order(2000)
+	    public class ParticiaptionField extends AbstractSmartField<Participation> {
+		@Override
+		protected String getConfiguredLabel() {
+		    return TEXTS.get("Participation");
+		}
 
-	@Order(2000)
-	public class ParticiaptionField extends AbstractSmartField<Participation> {
-	    @Override
-	    protected String getConfiguredLabel() {
-		return TEXTS.get("Participation");
-	    }
+		@Override
+		protected Class<? extends ICodeType<?, Participation>> getConfiguredCodeType() {
+		    return ParticipationCodeType.class;
+		}
 
-	    @Override
-	    protected Class<? extends ICodeType<?, Participation>> getConfiguredCodeType() {
-		return ParticipationCodeType.class;
-	    }
-
-	    @Override
-	    protected boolean getConfiguredMandatory() {
-		return true;
+		@Override
+		protected boolean getConfiguredMandatory() {
+		    return true;
+		}
 	    }
 	}
 
