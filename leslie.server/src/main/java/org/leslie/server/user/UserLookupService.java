@@ -25,10 +25,10 @@ public class UserLookupService extends AbstractJpaEntityLookupService<Long, User
     protected String getConfiguredJpqlSelect() {
 	return ""
 		+ "SELECT u "
-		+ "  FROM " + User.class.getSimpleName() + " u "
+		+ "  FROM User u "
 		+ "WHERE 1=1 "
 		+ "<key>AND u.id = :key</key> "
-		+ "<text>AND UPPER(u.name) LIKE UPPER(CONCAT(:text, '%'))</text> "
+		+ "<text>AND UPPER(CONCAT(u.firstName, ' ', u.lastName)) LIKE UPPER(CONCAT(:text, '%'))</text> "
 		+ "<all></all> ";
     }
 
@@ -39,7 +39,7 @@ public class UserLookupService extends AbstractJpaEntityLookupService<Long, User
 	if (lookup.getDisabledProjectId() != null) {
 	    disabledUserIds = JPA.createQuery(""
 		    + "SELECT DISTINCT KEY(pa).id "
-		    + "  FROM " + Project.class.getSimpleName() + " p "
+		    + "  FROM Project p "
 		    + "  JOIN p.userAssignments pa "
 		    + " WHERE p.id = :disabledProjectId ")
 		    .setParameter("disabledProjectId", lookup.getDisabledProjectId())
