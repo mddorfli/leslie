@@ -49,6 +49,11 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 	return nodePage;
     }
 
+    @Override
+    protected boolean getConfiguredExpanded() {
+	return true;
+    }
+
     public class Table extends AbstractTable {
 
 	public ParticipationColumn getParticipationColumn() {

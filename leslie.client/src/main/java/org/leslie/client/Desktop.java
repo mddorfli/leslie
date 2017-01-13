@@ -14,6 +14,7 @@ import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.leslie.client.outline.AdministrationOutline;
+import org.leslie.client.outline.PersonalOutline;
 import org.leslie.client.outline.ProjectOutline;
 import org.leslie.shared.Icons;
 
@@ -37,7 +38,7 @@ public class Desktop extends AbstractDesktop {
     @Override
     protected List<Class<? extends IOutline>> getConfiguredOutlines() {
 	return CollectionUtility.<Class<? extends IOutline>>arrayList(
-		ProjectOutline.class, AdministrationOutline.class);
+		PersonalOutline.class, ProjectOutline.class, AdministrationOutline.class);
     }
 
     @Override
@@ -106,6 +107,28 @@ public class Desktop extends AbstractDesktop {
 		ScoutInfoForm form = new ScoutInfoForm();
 		form.startModify();
 	    }
+	}
+    }
+
+    @Order(2000)
+    public class PersonalOutlineViewButton extends AbstractOutlineViewButton {
+
+	public PersonalOutlineViewButton() {
+	    this(PersonalOutline.class);
+	}
+
+	protected PersonalOutlineViewButton(Class<? extends PersonalOutline> outlineClass) {
+	    super(Desktop.this, outlineClass);
+	}
+
+	@Override
+	protected DisplayStyle getConfiguredDisplayStyle() {
+	    return DisplayStyle.TAB;
+	}
+
+	@Override
+	protected String getConfiguredKeyStroke() {
+	    return IKeyStroke.F2;
 	}
     }
 

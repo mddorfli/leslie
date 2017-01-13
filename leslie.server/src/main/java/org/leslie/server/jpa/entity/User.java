@@ -25,11 +25,13 @@ import org.leslie.server.jpa.mapping.impl.UserMapping;
 @Table(name = "users")
 @NamedQueries({
 	@NamedQuery(name = User.QUERY_ALL, query = "SELECT u FROM User u "),
-	@NamedQuery(name = User.QUERY_BY_ROLE, query = "SELECT u FROM User u JOIN u.roles r WHERE r = :role ")
+	@NamedQuery(name = User.QUERY_BY_USERNAME, query = "SELECT u FROM User u WHERE u.username = :username "),
+	@NamedQuery(name = User.QUERY_BY_ROLE, query = "SELECT u FROM User u JOIN u.roles r WHERE r = :role "),
 })
 public class User {
 
     public static final String QUERY_ALL = "User.all";
+    public static final String QUERY_BY_USERNAME = "User.byUsername";
     public static final String QUERY_BY_ROLE = "User.byRole";
 
     @Id

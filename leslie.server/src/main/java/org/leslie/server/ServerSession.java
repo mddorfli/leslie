@@ -2,8 +2,6 @@ package org.leslie.server;
 
 import java.util.Date;
 
-import javax.persistence.TypedQuery;
-
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.server.AbstractServerSession;
 import org.eclipse.scout.rt.server.session.ServerSessionProvider;
@@ -35,13 +33,7 @@ public class ServerSession extends AbstractServerSession {
     }
 
     public User getUser() {
-	TypedQuery<User> query = JPA.createQuery(""
-		+ "SELECT u "
-		+ "  FROM " + User.class.getSimpleName() + " u "
-		+ " WHERE u.id = :id ",
-		User.class);
-	query.setParameter("id", getUserNr());
-	return query.getSingleResult();
+	return JPA.find(User.class, getUserNr());
     }
 
     public Long getUserNr() {
@@ -54,13 +46,9 @@ public class ServerSession extends AbstractServerSession {
 
     @Override
     protected void execLoadSession() {
-	TypedQuery<User> query = JPA.createQuery(""
-		+ "SELECT u "
-		+ "  FROM " + User.class.getSimpleName() + " u "
-		+ " WHERE u.username = :username ",
-		User.class);
-	query.setParameter("username", getUserId());
-	User user = query.getResultList().stream()
+	User user = JPA.createNamedQuery(User.QUERY_BY_USERNAME, User.class)
+		.setParameter("username", getUserId())
+		.getResultList().stream()
 		.findAny()
 		.orElseThrow(() -> new SecurityException(
 			new ProcessingException("Could not find user with username {}", (Object) getUserId())));

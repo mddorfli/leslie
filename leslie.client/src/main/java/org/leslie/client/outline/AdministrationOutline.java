@@ -16,13 +16,6 @@ import org.leslie.shared.user.IUserService.UserPresentationType;
 public class AdministrationOutline extends AbstractOutline {
 
     @Override
-    protected void createChildPagesInternal(List<IPage<?>> pageList) {
-	pageList.add(new RoleTablePage());
-	pageList.add(new UserTablePage(UserPresentationType.ADMINISTRATION));
-	pageList.add(new PermissionTablePage());
-    }
-
-    @Override
     protected String getConfiguredTitle() {
 	return TEXTS.get("Administration");
     }
@@ -35,5 +28,12 @@ public class AdministrationOutline extends AbstractOutline {
     @Override
     protected boolean getConfiguredVisible() {
 	return ACCESS.check(new ReadAdministrationPermission());
+    }
+
+    @Override
+    protected void createChildPagesInternal(List<IPage<?>> pageList) {
+	pageList.add(new RoleTablePage());
+	pageList.add(new UserTablePage(UserPresentationType.ADMINISTRATION));
+	pageList.add(new PermissionTablePage());
     }
 }
