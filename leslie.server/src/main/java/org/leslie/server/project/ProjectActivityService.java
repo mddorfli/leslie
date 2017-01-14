@@ -1,17 +1,49 @@
 package org.leslie.server.project;
 
+import java.util.List;
+
 import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.shared.TEXTS;
+import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
+import org.leslie.server.activity.AbstractActivityService;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.ProjectActivity;
 import org.leslie.server.jpa.mapping.FieldMappingUtility;
+import org.leslie.shared.activity.ProjectActivityTablePageData;
 import org.leslie.shared.project.IProjectActivityService;
 import org.leslie.shared.project.ProjectActivityFormData;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 
-public class ProjectActivityService implements IProjectActivityService {
+public class ProjectActivityService extends AbstractActivityService<ProjectActivity> implements IProjectActivityService {
+
+    @Override
+    protected Class<ProjectActivity> getEntityType() {
+	return ProjectActivity.class;
+    }
+
+    @Override
+    public ProjectActivityTablePageData getProjectActivityTableData(SearchFilter filter, Long projectId) {
+	if (!ACCESS.check(new ReadProjectPermission(projectId))) {
+	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
+	}
+
+	List<ProjectActivity> resultList = JPA.createQuery(""
+		+ "SELECT pa "
+		+ "  FROM ProjectActivity pa "
+		+ "  JOIN FETCH pa.user "
+		+ "  JOIN FETCH pa.project "
+		+ " WHERE pa.project.id = :projectId ",
+		ProjectActivity.class)
+		.setParameter("projectId", projectId)
+		.getResultList();
+
+	ProjectActivityTablePageData pageData = new ProjectActivityTablePageData();
+	FieldMappingUtility.importTablePageData(resultList, pageData);
+
+	return pageData;
+    }
 
     @Override
     public ProjectActivityFormData prepareCreate(ProjectActivityFormData formData) {
@@ -51,5 +83,10 @@ public class ProjectActivityService implements IProjectActivityService {
 	ProjectActivity pa = JPA.find(ProjectActivity.class, formData.getActivityId());
 	FieldMappingUtility.exportFormData(formData, pa);
 	return formData;
+    }
+
+    @Override
+    public void remove(List<Long> activityIds) {
+	super.remove(activityIds);
     }
 }

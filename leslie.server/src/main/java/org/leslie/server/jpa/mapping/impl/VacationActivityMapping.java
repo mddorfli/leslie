@@ -1,16 +1,14 @@
 package org.leslie.server.jpa.mapping.impl;
 
-import org.eclipse.scout.rt.shared.data.form.AbstractFormData;
+import org.leslie.server.jpa.JPA;
+import org.leslie.server.jpa.entity.User;
 import org.leslie.server.jpa.entity.VacationActivity;
 import org.leslie.server.jpa.mapping.CustomDataMapping;
+import org.leslie.shared.vacation.VacationFormData;
 import org.leslie.shared.vacation.VacationTablePageData.VacationTableRowData;
 
 public class VacationActivityMapping implements
-	CustomDataMapping<VacationActivity, AbstractFormData, VacationTableRowData> {
-
-    @Override
-    public void read(VacationActivity fromEntity, AbstractFormData toForm) {
-    }
+	CustomDataMapping<VacationActivity, VacationFormData, VacationTableRowData> {
 
     @Override
     public void read(VacationActivity fromEntity, VacationTableRowData toRow) {
@@ -23,7 +21,19 @@ public class VacationActivityMapping implements
     }
 
     @Override
-    public void write(AbstractFormData fromForm, VacationActivity toEntity) {
+    public void read(VacationActivity fromEntity, VacationFormData toForm) {
+	if (fromEntity.getApprovedBy() != null) {
+	    toForm.getApprovedBy().setValue(fromEntity.getApprovedBy().getId());
+	}
+	toForm.getRequestedBy().setValue(fromEntity.getUser().getId());
+    }
+
+    @Override
+    public void write(VacationFormData fromForm, VacationActivity toEntity) {
+	toEntity.setUser(JPA.find(User.class, fromForm.getRequestedBy().getValue()));
+	if (fromForm.getApprovedBy().getValue() != null) {
+	    toEntity.setApprovedBy(JPA.find(User.class, fromForm.getApprovedBy().getValue()));
+	}
     }
 
 }

@@ -4,7 +4,6 @@ import org.eclipse.scout.rt.client.AbstractClientSession;
 import org.eclipse.scout.rt.client.IClientSession;
 import org.eclipse.scout.rt.client.session.ClientSessionProvider;
 import org.eclipse.scout.rt.shared.services.common.code.CODES;
-import org.leslie.client.Desktop;
 
 /**
  * <h3>{@link ClientSession}</h3>
@@ -28,7 +27,7 @@ public class ClientSession extends AbstractClientSession {
     @Override
     protected void execLoadSession() {
 	// pre-load all known code types
-	CODES.getAllCodeTypes("org.leslie.leslie.shared");
+	CODES.getAllCodeTypes("org.leslie.shared.code");
 
 	setDesktop(new Desktop());
     }

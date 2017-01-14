@@ -16,6 +16,7 @@ import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.user.UserFormData;
 import org.leslie.client.user.UserPageData;
 import org.leslie.client.user.UserPageData.UserRowData;
+import org.leslie.server.ServerSession;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.Role;
@@ -134,5 +135,18 @@ public class UserService implements IUserService {
 	byte[] hash = SecurityUtility.hash(Base64Utility.decode(password), salt);
 	user.setPasswordSalt(Base64Utility.encode(salt));
 	user.setPasswordHash(Base64Utility.encode(hash));
+    }
+
+    @Override
+    public Long getUserId(String username) {
+	return JPA.createNamedQuery(User.QUERY_BY_USERNAME, User.class)
+		.setParameter("username", username)
+		.getSingleResult()
+		.getId();
+    }
+
+    @Override
+    public Long getCurrentUserNr() {
+	return ServerSession.get().getUserNr();
     }
 }

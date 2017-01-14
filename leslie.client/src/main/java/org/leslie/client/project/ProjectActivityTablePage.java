@@ -19,8 +19,8 @@ import org.leslie.client.project.ProjectActivityTablePage.Table;
 import org.leslie.client.project.ProjectActivityTablePage.Table.AddResourceMenu;
 import org.leslie.client.project.ProjectActivityTablePage.Table.RemoveResourceMenu;
 import org.leslie.client.project.ProjectActivityTablePage.Table.UpdateResourceMenu;
-import org.leslie.shared.activity.IActivityService;
 import org.leslie.shared.activity.ProjectActivityTablePageData;
+import org.leslie.shared.project.IProjectActivityService;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 
@@ -60,7 +60,7 @@ public class ProjectActivityTablePage extends ActivityTablePage<Table> {
 
     @Override
     protected void execLoadData(SearchFilter filter) {
-	importPageData(BEANS.get(IActivityService.class).getProjectActivityTableData(filter, getProjectId()));
+	importPageData(BEANS.get(IProjectActivityService.class).getProjectActivityTableData(filter, getProjectId()));
     }
 
     public class Table extends ActivityTablePage<Table>.Table {
@@ -121,7 +121,7 @@ public class ProjectActivityTablePage extends ActivityTablePage<Table> {
 	    @Override
 	    protected void execAction() {
 		if (MessageBoxes.showDeleteConfirmationMessage(TEXTS.get("Resources"), null)) {
-		    BEANS.get(IActivityService.class).remove(getActivityIdColumn().getSelectedValues());
+		    BEANS.get(IProjectActivityService.class).remove(getActivityIdColumn().getSelectedValues());
 		    reloadPage();
 		}
 	    }

@@ -33,4 +33,8 @@ public interface IUserService extends IService {
     void delete(Long selectedValue) throws ProcessingException;
 
     UserPageData getProjectUserTableData(Long projectId);
+
+    Long getUserId(String username);
+
+    Long getCurrentUserNr();
 }

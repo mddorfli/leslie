@@ -56,7 +56,6 @@ public class ServerSession extends AbstractServerSession {
 	setUserNrInternal(Long.valueOf(user.getId()));
 	user.setLastLogin(new Date(System.currentTimeMillis()));
 	user.setFailedLoginAttempts(0);
-	JPA.merge(user);
 
 	LOG.info("created a new session for {}", getUserId());
     }

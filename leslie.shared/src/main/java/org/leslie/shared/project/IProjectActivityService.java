@@ -1,10 +1,16 @@
 package org.leslie.shared.project;
 
+import java.util.List;
+
 import org.eclipse.scout.rt.platform.service.IService;
 import org.eclipse.scout.rt.shared.TunnelToServer;
+import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
+import org.leslie.shared.activity.ProjectActivityTablePageData;
 
 @TunnelToServer
 public interface IProjectActivityService extends IService {
+
+    ProjectActivityTablePageData getProjectActivityTableData(SearchFilter filter, Long projectId);
 
     ProjectActivityFormData prepareCreate(ProjectActivityFormData formData);
 
@@ -13,5 +19,7 @@ public interface IProjectActivityService extends IService {
     ProjectActivityFormData load(ProjectActivityFormData formData);
 
     ProjectActivityFormData store(ProjectActivityFormData formData);
+
+    void remove(List<Long> activityIds);
 
 }
