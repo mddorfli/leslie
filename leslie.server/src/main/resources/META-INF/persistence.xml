@@ -8,6 +8,8 @@
 		<class>org.leslie.server.jpa.entity.Activity</class>
 		<class>org.leslie.server.jpa.entity.Project</class>
 		<class>org.leslie.server.jpa.entity.ProjectActivity</class>
+		<class>org.leslie.server.jpa.entity.ProjectAssignment</class>
+		<class>org.leslie.server.jpa.entity.ProjectAssignmentId</class>
 		<class>org.leslie.server.jpa.entity.Role</class>
 		<class>org.leslie.server.jpa.entity.RolePermission</class>
 		<class>org.leslie.server.jpa.entity.User</class>

@@ -1,5 +1,6 @@
 package org.leslie.server.project;
 
+import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.lookup.AbstractJpaLongLookupService;
 import org.leslie.server.jpa.lookup.LongLookupRow;
@@ -8,7 +9,7 @@ import org.leslie.shared.project.IProjectLookupService;
 public class ProjectLookupService extends AbstractJpaLongLookupService implements IProjectLookupService {
 
     @Override
-    protected String getConfiguredJpqlSelect() {
+    protected String getConfiguredJpqlSelect(ILookupCall<Long> call) {
 	return ""
 		+ "SELECT NEW " + LongLookupRow.class.getName() + "(p.id, p.name) "
 		+ "  FROM " + Project.class.getSimpleName() + " p "

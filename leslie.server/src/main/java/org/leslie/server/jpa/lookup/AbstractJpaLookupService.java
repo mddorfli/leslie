@@ -35,7 +35,7 @@ import org.eclipse.scout.rt.shared.services.lookup.LookupRow;
  */
 public abstract class AbstractJpaLookupService<K> extends AbstractLookupService<K> {
 
-    protected enum CALL_TYPE {
+    public static enum CALL_TYPE {
 	KEY, TEXT, ALL, REC
     }
 
@@ -127,6 +127,10 @@ public abstract class AbstractJpaLookupService<K> extends AbstractLookupService<
 
 	} else if (callType == CALL_TYPE.TEXT) {
 	    query.setParameter("text", call.getText());
+
+	} else if (callType == CALL_TYPE.REC) {
+	    query.setParameter("rec", call.getRec());
 	}
+
     }
 }

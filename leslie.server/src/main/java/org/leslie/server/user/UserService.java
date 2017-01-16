@@ -1,6 +1,5 @@
 package org.leslie.server.user;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,6 +18,7 @@ import org.leslie.client.user.UserPageData.UserRowData;
 import org.leslie.server.ServerSession;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Project;
+import org.leslie.server.jpa.entity.ProjectAssignment;
 import org.leslie.server.jpa.entity.Role;
 import org.leslie.server.jpa.entity.User;
 import org.leslie.server.jpa.mapping.FieldMappingUtility;
@@ -102,13 +102,20 @@ public class UserService implements IUserService {
 	}
 
 	final Project project = JPA.find(Project.class, projectId);
-	List<User> users = new ArrayList<>(project.getUserAssignments().keySet());
+	List<User> users = JPA.createNamedQuery(User.QUERY_BY_PROJECT_ID, User.class)
+		.setParameter("projectId", projectId)
+		.getResultList();
 
 	final UserPageData pageData = new UserPageData();
 	FieldMappingUtility.importTablePageData(users, pageData, (user, row) -> {
 	    UserRowData userRow = (UserRowData) row;
 	    userRow.setDisplayName(user.getDisplayName());
-	    userRow.setParticipationLevel(project.getUserAssignments().get(user));
+	    for (ProjectAssignment pa : project.getUserAssignments()) {
+		if (user.equals(pa.getUser())) {
+		    userRow.setParticipationLevel(pa.getParticipationLevel());
+		    break;
+		}
+	    }
 	});
 
 	return pageData;

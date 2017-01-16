@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.scout.rt.platform.BEANS;
@@ -78,5 +79,29 @@ public class ActivityServiceTest {
 	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
 		Optional.of(Long.valueOf(2L)), Optional.of(VacationActivity.class), Optional.of(5L), Optional.empty())
 		.isEmpty());
+    }
+
+    @Test
+    public void readUserActivityTest() {
+	List<Activity> resultList = JPA.createQuery(""
+		+ "SELECT pa "
+		+ "  FROM Activity pa "
+		+ "  JOIN pa.user pu "
+		+ " WHERE pu.username = 'mdo' "
+		+ "   AND TYPE(pa) = ProjectActivity ",
+		Activity.class).getResultList();
+
+	double percentage = 0.0;
+	for (Activity activity : resultList) {
+	    Date startTime = Date.from(LocalDate.of(2017, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
+	    Date endTime = Date.from(LocalDate.of(2017, 03, 31).atStartOfDay(ZoneId.systemDefault()).toInstant());
+	    assertEquals(startTime, activity.getFrom());
+	    assertEquals(endTime, activity.getTo());
+
+	    assertTrue(activity instanceof ProjectActivity);
+	    ProjectActivity pa = (ProjectActivity) activity;
+	    percentage += pa.getPercentage();
+	}
+	assertEquals("Project bookings for mdo should add up to 100%", 100.0, percentage, 0.1);
     }
 }

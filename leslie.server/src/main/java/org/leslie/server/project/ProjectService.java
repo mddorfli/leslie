@@ -1,10 +1,6 @@
 package org.leslie.server.project;
 
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import javax.persistence.TypedQuery;
 
 import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.VetoException;
@@ -20,6 +16,7 @@ import org.leslie.server.activity.AbstractActivityService;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.ProjectActivity;
+import org.leslie.server.jpa.entity.ProjectAssignment;
 import org.leslie.server.jpa.entity.User;
 import org.leslie.server.jpa.mapping.FieldMappingUtility;
 import org.leslie.shared.code.ParticipationCodeType.Participation;
@@ -43,23 +40,20 @@ public class ProjectService extends AbstractActivityService<ProjectActivity> imp
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 
-	final ProjectTablePageData pageData = new ProjectTablePageData();
-	TypedQuery<Project> query = JPA.createNamedQuery(Project.QUERY_ALL, Project.class);
-
 	final User user = ServerSession.get().getUser();
-	List<Project> resultList = query.getResultList().stream()
-		.filter(project -> level == ReadProjectPermission.LEVEL_ALL
-			|| level == ReadProjectPermission.LEVEL_PROJECT
-				&& project.getUserAssignments().containsKey(user))
-		.collect(Collectors.toList());
+	List<Project> resultList = JPA.createNamedQuery(Project.QUERY_BY_USER, Project.class)
+		.setParameter("user", user)
+		.getResultList();
 
+	final ProjectTablePageData pageData = new ProjectTablePageData();
 	FieldMappingUtility.importTablePageData(resultList, pageData, (project, row) -> {
 	    if (project.getUserAssignments() != null) {
-		project.getUserAssignments().entrySet().stream()
-			.filter(entry -> user.equals(entry.getKey()))
-			.map(Entry::getValue)
-			.findAny()
-			.ifPresent(parcipation -> ((ProjectTableRowData) row).setParticipation(parcipation));
+		for (ProjectAssignment pa : project.getUserAssignments()) {
+		    if (user.equals(pa.getUser())) {
+			((ProjectTableRowData) row).setParticipation(pa.getParticipationLevel());
+			break;
+		    }
+		}
 	    }
 	});
 
@@ -121,8 +115,13 @@ public class ProjectService extends AbstractActivityService<ProjectActivity> imp
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	User user = JPA.find(User.class, userId);
-	Project project = JPA.find(Project.class, projectId);
-	project.getUserAssignments().remove(user);
+	final Project project = JPA.find(Project.class, projectId);
+	ProjectAssignment assignment = user.getProjectAssignments().stream()
+		.filter(pa -> pa.getProject().equals(project))
+		.findAny().orElseThrow(() -> new VetoException("Project not found"));
+	user.getProjectAssignments().remove(assignment);
+	project.getUserAssignments().remove(assignment);
+	JPA.remove(assignment);
     }
 
     @Override
@@ -133,12 +132,22 @@ public class ProjectService extends AbstractActivityService<ProjectActivity> imp
 	Project project = JPA.find(Project.class, formData.getProjectId());
 	User user = JPA.find(User.class, formData.getUser().getValue());
 
-	project.getUserAssignments().put(user, formData.getParticiaption().getValue());
+	ProjectAssignment pa = new ProjectAssignment();
+	pa.setProject(project);
+	pa.setUser(user);
+	pa.setParticipationLevel(formData.getParticiaption().getValue());
+	JPA.persist(pa);
+	project.getUserAssignments().add(pa);
     }
 
     @Override
     public Participation getParticipationLevel(long projectId) {
 	Project project = JPA.find(Project.class, projectId);
-	return project.getUserAssignments().get(ServerSession.get().getUser());
+	User user = ServerSession.get().getUser();
+	return project.getUserAssignments().stream()
+		.filter(pa -> user.equals(pa.getUser()))
+		.map(ProjectAssignment::getParticipationLevel)
+		.findAny()
+		.orElse(null);
     }
 }

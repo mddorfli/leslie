@@ -18,7 +18,7 @@ public class RoleLookupService extends AbstractJpaEntityLookupService<Long, Role
     }
 
     @Override
-    protected String getConfiguredJpqlSelect() {
+    protected String getConfiguredJpqlSelect(ILookupCall<Long> call) {
 	return ""
 		+ "SELECT r "
 		+ "FROM " + Role.class.getSimpleName() + " r "

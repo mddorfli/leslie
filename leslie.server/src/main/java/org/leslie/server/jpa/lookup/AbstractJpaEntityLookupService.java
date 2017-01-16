@@ -12,7 +12,7 @@ public abstract class AbstractJpaEntityLookupService<K, E> extends AbstractJpaLo
 
     protected abstract Class<E> getConfiguredEntityType();
 
-    protected abstract String getConfiguredJpqlSelect();
+    protected abstract String getConfiguredJpqlSelect(ILookupCall<K> call);
 
     protected abstract List<ILookupRow<K>> execGenerateLookupRowData(ILookupCall<K> call, List<E> resultList);
 
@@ -27,7 +27,7 @@ public abstract class AbstractJpaEntityLookupService<K, E> extends AbstractJpaLo
 
     @Override
     public List<ILookupRow<K>> execGenerateRowData(ILookupCall<K> call, CALL_TYPE callType) {
-	String queryString = getConfiguredJpqlSelect();
+	String queryString = getConfiguredJpqlSelect(call);
 	TypedQuery<E> query = JPA.createQuery(filterSqlByCallType(queryString, callType), getConfiguredEntityType());
 
 	setCallQueryBinds(query, call, callType);

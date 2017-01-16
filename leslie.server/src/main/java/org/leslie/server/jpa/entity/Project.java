@@ -1,29 +1,28 @@
 package org.leslie.server.jpa.entity;
 
-import java.util.Map;
+import java.util.Collection;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 import org.leslie.server.jpa.mapping.ClassDataMapping;
 import org.leslie.server.jpa.mapping.FieldDataMapping;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
 
 @ClassDataMapping
 @Entity
-@NamedQuery(name = Project.QUERY_ALL, query = "SELECT p FROM Project p")
+@NamedQueries({
+	@NamedQuery(name = Project.QUERY_ALL, query = "SELECT p FROM Project p"),
+	@NamedQuery(name = Project.QUERY_BY_USER, query = "SELECT p FROM Project p JOIN p.userAssignments ua WHERE ua.user = :user "),
+})
 public class Project {
 
     public static final String QUERY_ALL = "Project.all";
+    public static final String QUERY_BY_USER = "Project.byUser";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,12 +32,8 @@ public class Project {
     @FieldDataMapping
     private String name;
 
-    @ElementCollection
-    @CollectionTable(name = "user_x_project")
-    @MapKeyJoinColumn(name = "user_id")
-    @Column(name = "participation_level_uid")
-    @Enumerated(EnumType.STRING)
-    private Map<User, Participation> userAssignments;
+    @OneToMany(mappedBy = "project")
+    private Collection<ProjectAssignment> userAssignments;
 
     public long getId() {
 	return id;
@@ -56,11 +51,11 @@ public class Project {
 	this.name = name;
     }
 
-    public Map<User, Participation> getUserAssignments() {
+    public Collection<ProjectAssignment> getUserAssignments() {
 	return userAssignments;
     }
 
-    public void setUserAssignments(Map<User, Participation> userAssignments) {
+    public void setUserAssignments(Collection<ProjectAssignment> userAssignments) {
 	this.userAssignments = userAssignments;
     }
 
