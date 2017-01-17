@@ -17,6 +17,7 @@ import org.leslie.client.user.UserPageData;
 import org.leslie.client.user.UserPageData.UserRowData;
 import org.leslie.server.ServerSession;
 import org.leslie.server.jpa.JPA;
+import org.leslie.server.jpa.entity.Activity;
 import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.ProjectAssignment;
 import org.leslie.server.jpa.entity.Role;
@@ -86,12 +87,21 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void delete(Long selectedValue) throws ProcessingException {
+    public void delete(Long userId) throws ProcessingException {
 	if (!ACCESS.check(new UpdateAdministrationPermission())) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	User user = JPA.find(User.class, selectedValue);
-	// TODO remove links
+	if (ServerSession.get().getUserNr().equals(userId)) {
+	    throw new VetoException(TEXTS.get("YouCantDeleteYourself"));
+	}
+	User user = JPA.find(User.class, userId);
+	List<Activity> activities = JPA
+		.createQuery("SELECT a FROM Activity a WHERE a.user.id = :userId ", Activity.class)
+		.setParameter("userId", userId)
+		.getResultList();
+	activities.forEach(JPA::remove);
+	user.getProjectAssignments().clear();
+	user.getRoles().clear();
 	JPA.remove(user);
     }
 

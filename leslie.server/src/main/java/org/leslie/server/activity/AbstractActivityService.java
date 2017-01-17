@@ -2,7 +2,6 @@ package org.leslie.server.activity;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -27,11 +26,8 @@ public abstract class AbstractActivityService<T extends Activity> {
 	}
     }
 
-    protected List<T> getCollisions(Date fromDate, Date toDate,
-	    Optional<Long> userNr, Optional<Class<? extends Activity>> entityType, Optional<Long> excludedActivityId,
-	    Optional<Predicate> whereConstraint) {
-	return AbstractActivityService.getCollisions(getEntityType(), fromDate, toDate,
-		userNr, entityType, excludedActivityId, whereConstraint);
+    protected List<T> getCollisions(Date fromDate, Date toDate, Long userNr, Long excludedActivityId) {
+	return AbstractActivityService.getCollisions(getEntityType(), fromDate, toDate, userNr, excludedActivityId);
     }
 
     /**
@@ -42,10 +38,10 @@ public abstract class AbstractActivityService<T extends Activity> {
      * 	 + " FROM Activity a "
      * 	 + " WHERE (:toDate >= a.from AND :fromDate <= a.to OR "
      * 	 + " :fromDate <= a.to AND :toDate >= a.from) "
-     * 	 + (userNr.isPresent() ? " AND a.user.id = :userNr " : "")
-     * 	 + (excludedActivityId.isPresent() ?
+     * 	 + (userNr != null ? " AND a.user.id = :userNr " : "")
+     * 	 + (excludedActivityId != null ?
      * 	 " AND a.id != :excludedActivityId " : "")
-     * 	 + (entityType.isPresent() ? " AND TYPE(a) = :entityType " : ""),
+     * 	 + (entityType != null ? " AND TYPE(a) = :entityType " : ""),
      * 	 Activity.class);
      * </code>
      * 
@@ -53,14 +49,15 @@ public abstract class AbstractActivityService<T extends Activity> {
      * @param fromDate
      * @param toDate
      * @param userNr
-     * @param entityType
      * @param excludedActivityId
      * @param whereConstraint
      * @return
      */
     static <T extends Activity> List<T> getCollisions(Class<T> clazz, Date fromDate, Date toDate,
-	    Optional<Long> userNr, Optional<Class<? extends Activity>> entityType, Optional<Long> excludedActivityId,
-	    Optional<Predicate> whereConstraint) {
+	    Long userNr, Long excludedActivityId) {
+	assert fromDate != null;
+	assert toDate != null;
+
 	CriteriaBuilder cb = JPA.getCriteriaBuilder();
 	CriteriaQuery<T> cQuery = cb.createQuery(clazz);
 	Root<T> a = cQuery.from(clazz);
@@ -72,32 +69,30 @@ public abstract class AbstractActivityService<T extends Activity> {
 	where = cb.and(where, cb.or(cb.and(p1, p2), cb.and(p3, p4)));
 
 	// optional (argument-based) parts
-	if (userNr.isPresent()) {
+	if (userNr != null) {
 	    where = cb.and(where, cb.equal(a.get("user").get("id"), cb.parameter(Long.class, "userNr")));
 	}
-	if (excludedActivityId.isPresent()) {
+	if (excludedActivityId != null) {
 	    where = cb.and(where, cb.notEqual(a.get("id"), cb.parameter(Long.class, "excludedActivityId")));
 	}
-	if (entityType.isPresent()) {
-	    where = cb.and(where, cb.equal(a.type(), cb.parameter(Class.class, "entityType")));
-	}
-	if (whereConstraint.isPresent()) {
-	    where = cb.and(where, whereConstraint.get());
-	}
+	// if (entityType != null) {
+	// where = cb.and(where, cb.equal(a.type(), cb.parameter(Class.class,
+	// "entityType")));
+	// }
 	cQuery.where(where);
 	TypedQuery<T> query = JPA.createQuery(cQuery);
 
 	query.setParameter("fromDate", fromDate);
 	query.setParameter("toDate", toDate);
-	if (userNr.isPresent()) {
-	    query.setParameter("userNr", userNr.get());
+	if (userNr != null) {
+	    query.setParameter("userNr", userNr);
 	}
-	if (excludedActivityId.isPresent()) {
-	    query.setParameter("excludedActivityId", excludedActivityId.get());
+	if (excludedActivityId != null) {
+	    query.setParameter("excludedActivityId", excludedActivityId);
 	}
-	if (entityType.isPresent()) {
-	    query.setParameter("entityType", entityType.get());
-	}
+	// if (entityType != null) {
+	// query.setParameter("entityType", entityType);
+	// }
 	return query.getResultList();
     }
 }

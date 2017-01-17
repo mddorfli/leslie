@@ -9,7 +9,6 @@ import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.testing.platform.runner.RunWithSubject;
@@ -21,7 +20,6 @@ import org.leslie.server.ServerSession;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Activity;
 import org.leslie.server.jpa.entity.ProjectActivity;
-import org.leslie.server.jpa.entity.VacationActivity;
 import org.leslie.shared.project.IProjectActivityService;
 import org.leslie.shared.project.ProjectActivityFormData;
 
@@ -57,27 +55,26 @@ public class ActivityServiceTest {
 	Date fromDate = Date.from(LocalDate.of(2017, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
 	Date toDate = Date.from(LocalDate.of(2017, 03, 31).atStartOfDay(ZoneId.systemDefault()).toInstant());
 	assertFalse(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
-		Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()).isEmpty());
+		null, null).isEmpty());
 	assertFalse(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
-		Optional.of(Long.valueOf(2L)), Optional.of(ProjectActivity.class), Optional.empty(), Optional.empty())
+		Long.valueOf(2L), null)
 		.isEmpty());
 	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
-		Optional.of(Long.valueOf(2L)), Optional.of(VacationActivity.class), Optional.empty(), Optional.empty())
+		Long.valueOf(2L), null)
 		.isEmpty());
 	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
-		Optional.of(Long.valueOf(5L)), Optional.of(ProjectActivity.class), Optional.empty(), Optional.empty())
+		Long.valueOf(5L), null)
 		.isEmpty());
 	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
-		Optional.of(Long.valueOf(3L)), Optional.of(ProjectActivity.class),
-		Optional.of(Long.valueOf(3L)), Optional.empty()).isEmpty());
+		Long.valueOf(3L), Long.valueOf(3L)).isEmpty());
 
 	fromDate = Date.from(LocalDate.of(2017, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
 	toDate = Date.from(LocalDate.of(2017, 04, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
 	assertFalse(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
-		Optional.of(Long.valueOf(2L)), Optional.of(VacationActivity.class), Optional.empty(), Optional.empty())
+		Long.valueOf(2L), null)
 		.isEmpty());
 	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
-		Optional.of(Long.valueOf(2L)), Optional.of(VacationActivity.class), Optional.of(5L), Optional.empty())
+		Long.valueOf(2L), 5L)
 		.isEmpty());
     }
 

@@ -16,7 +16,8 @@ import org.leslie.shared.project.ProjectActivityFormData;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 
-public class ProjectActivityService extends AbstractActivityService<ProjectActivity> implements IProjectActivityService {
+public class ProjectActivityService extends AbstractActivityService<ProjectActivity>
+	implements IProjectActivityService {
 
     @Override
     protected Class<ProjectActivity> getEntityType() {
@@ -29,13 +30,8 @@ public class ProjectActivityService extends AbstractActivityService<ProjectActiv
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 
-	List<ProjectActivity> resultList = JPA.createQuery(""
-		+ "SELECT pa "
-		+ "  FROM ProjectActivity pa "
-		+ "  JOIN FETCH pa.user "
-		+ "  JOIN FETCH pa.project "
-		+ " WHERE pa.project.id = :projectId ",
-		ProjectActivity.class)
+	List<ProjectActivity> resultList = JPA
+		.createNamedQuery(ProjectActivity.QUERY_BY_PROJECT_ID, ProjectActivity.class)
 		.setParameter("projectId", projectId)
 		.getResultList();
 
@@ -58,6 +54,12 @@ public class ProjectActivityService extends AbstractActivityService<ProjectActiv
 	if (!ACCESS.check(new ManageProjectPermission(formData.getProjectId()))) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
+	if (getCollisions(formData.getFrom().getValue(), formData.getTo().getValue(),
+		formData.getUser().getValue(), null).stream()
+			.anyMatch(pa -> pa.getProject().getId() == formData.getProjectId().longValue())) {
+	    throw new VetoException(TEXTS.get("ProjectBookingOverlaps"));
+	}
+
 	ProjectActivity pa = new ProjectActivity();
 	FieldMappingUtility.exportFormData(formData, pa);
 	JPA.persist(pa);
@@ -80,6 +82,12 @@ public class ProjectActivityService extends AbstractActivityService<ProjectActiv
 	if (!ACCESS.check(new ManageProjectPermission(formData.getProjectId()))) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
+	if (getCollisions(formData.getFrom().getValue(), formData.getTo().getValue(),
+		formData.getUser().getValue(), formData.getActivityId()).stream()
+			.anyMatch(pa -> pa.getProject().getId() == formData.getProjectId().longValue())) {
+	    throw new VetoException(TEXTS.get("ProjectBookingOverlaps"));
+	}
+
 	ProjectActivity pa = JPA.find(ProjectActivity.class, formData.getActivityId());
 	FieldMappingUtility.exportFormData(formData, pa);
 	return formData;

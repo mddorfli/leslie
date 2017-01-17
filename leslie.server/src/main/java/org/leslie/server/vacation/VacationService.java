@@ -1,7 +1,6 @@
 package org.leslie.server.vacation;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.shared.TEXTS;
@@ -55,10 +54,8 @@ public class VacationService extends AbstractActivityService<VacationActivity> i
 	if (!ACCESS.check(new RequestVacationPermission())) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	List<VacationActivity> collisions = super.getCollisions(formData.getFrom().getValue(),
-		formData.getTo().getValue(), Optional.of(formData.getRequestedBy().getValue()),
-		Optional.of(VacationActivity.class), Optional.empty(), Optional.empty());
-	if (!collisions.isEmpty()) {
+	if (!getCollisions(formData.getFrom().getValue(), formData.getTo().getValue(),
+		formData.getRequestedBy().getValue(), null).isEmpty()) {
 	    throw new VetoException(TEXTS.get("VacationOverlaps"));
 	}
 	VacationActivity va = new VacationActivity();
@@ -88,8 +85,8 @@ public class VacationService extends AbstractActivityService<VacationActivity> i
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	List<VacationActivity> collisions = super.getCollisions(formData.getFrom().getValue(),
-		formData.getTo().getValue(), Optional.of(formData.getRequestedBy().getValue()),
-		Optional.of(VacationActivity.class), Optional.of(formData.getActivityId()), Optional.empty());
+		formData.getTo().getValue(), formData.getRequestedBy().getValue(),
+		formData.getActivityId());
 	if (!collisions.isEmpty()) {
 	    throw new VetoException(TEXTS.get("VacationOverlaps"));
 	}
