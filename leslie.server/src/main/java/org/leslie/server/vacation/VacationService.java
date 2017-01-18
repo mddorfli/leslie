@@ -1,14 +1,22 @@
 package org.leslie.server.vacation;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.VetoException;
+import org.eclipse.scout.rt.platform.util.date.DateUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
+import org.eclipse.scout.rt.shared.services.common.calendar.CalendarAppointment;
+import org.eclipse.scout.rt.shared.services.common.calendar.ICalendarItem;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.ServerSession;
-import org.leslie.server.activity.AbstractActivityService;
+import org.leslie.server.activity.ActivityService;
 import org.leslie.server.jpa.JPA;
+import org.leslie.server.jpa.entity.Activity;
 import org.leslie.server.jpa.entity.VacationActivity;
 import org.leslie.server.jpa.mapping.FieldMappingUtility;
 import org.leslie.shared.security.permission.ApproveVacationPermission;
@@ -17,12 +25,8 @@ import org.leslie.shared.vacation.IVacationService;
 import org.leslie.shared.vacation.VacationFormData;
 import org.leslie.shared.vacation.VacationTablePageData;
 
-public class VacationService extends AbstractActivityService<VacationActivity> implements IVacationService {
-
-    @Override
-    protected Class<VacationActivity> getEntityType() {
-	return VacationActivity.class;
-    }
+@Bean
+public class VacationService implements IVacationService {
 
     @Override
     public VacationTablePageData getVacationTableData(SearchFilter filter) {
@@ -54,7 +58,8 @@ public class VacationService extends AbstractActivityService<VacationActivity> i
 	if (!ACCESS.check(new RequestVacationPermission())) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	if (!getCollisions(formData.getFrom().getValue(), formData.getTo().getValue(),
+	if (!ActivityService.getCollisions(VacationActivity.class,
+		formData.getFrom().getValue(), formData.getTo().getValue(),
 		formData.getRequestedBy().getValue(), null).isEmpty()) {
 	    throw new VetoException(TEXTS.get("VacationOverlaps"));
 	}
@@ -84,10 +89,9 @@ public class VacationService extends AbstractActivityService<VacationActivity> i
 		&& !ACCESS.check(new ApproveVacationPermission())) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	List<VacationActivity> collisions = super.getCollisions(formData.getFrom().getValue(),
-		formData.getTo().getValue(), formData.getRequestedBy().getValue(),
-		formData.getActivityId());
-	if (!collisions.isEmpty()) {
+	if (!ActivityService.getCollisions(VacationActivity.class,
+		formData.getFrom().getValue(), formData.getTo().getValue(),
+		formData.getRequestedBy().getValue(), formData.getActivityId()).isEmpty()) {
 	    throw new VetoException(TEXTS.get("VacationOverlaps"));
 	}
 	VacationActivity va = JPA.find(VacationActivity.class, formData.getActivityId());
@@ -106,6 +110,25 @@ public class VacationService extends AbstractActivityService<VacationActivity> i
 
     @Override
     public void remove(List<Long> activityIds) {
-	super.remove(activityIds);
+	ActivityService.remove(activityIds);
+    }
+
+    @Override
+    public List<ICalendarItem> getCalendarItems(Date from, Date to) {
+	Long userId = ServerSession.get().getUserNr();
+	return new ArrayList<>(JPA.createNamedQuery(Activity.QUERY_BY_USERID_TYPE_FROM_TO, VacationActivity.class)
+		.setParameter("type", VacationActivity.class)
+		.setParameter("userId", userId)
+		.setParameter("from", from)
+		.setParameter("to", to)
+		.getResultList().stream()
+		.map(va -> {
+		    // increment end date by 1 so it displays correctly
+		    return new CalendarAppointment(va.getId(), va.getUser().getDisplayName(),
+			    va.getFrom(), DateUtility.addDays(va.getTo(), 1), true, va.getDescription(),
+			    (va.getApprovedBy() == null ? TEXTS.get("PendingApproval") : TEXTS.get("Approved")),
+			    null);
+		})
+		.collect(Collectors.toList()));
     }
 }

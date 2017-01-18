@@ -18,18 +18,18 @@ import org.leslie.server.jpa.mapping.impl.ProjectActivityMapping;
 @PrimaryKeyJoinColumn(name = "activity_id", referencedColumnName = "id")
 @ClassDataMapping(ProjectActivityMapping.class)
 @NamedQueries({
-	@NamedQuery(name = ProjectActivity.QUERY_BY_PROJECT_ID, query = ""
+	@NamedQuery(name = ProjectActivity.QUERY_BY_PROJECTID, query = ""
 		+ "SELECT pa "
 		+ "  FROM ProjectActivity pa "
 		+ "  JOIN FETCH pa.user "
 		+ "  JOIN FETCH pa.project "
-		+ " WHERE pa.project.id = :projectId ")
+		+ " WHERE pa.project.id = :projectId "),
 })
 public class ProjectActivity extends Activity {
 
     protected static final String TYPE_UID = "1";
 
-    public static final String QUERY_BY_PROJECT_ID = "ProjectActivity.byProjectId";
+    public static final String QUERY_BY_PROJECTID = "ProjectActivity.byProjectId";
 
     public ProjectActivity() {
 	super.setActivityTypeUid(Integer.parseInt(TYPE_UID));

@@ -1,9 +1,11 @@
 package org.leslie.shared.project;
 
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.scout.rt.platform.service.IService;
 import org.eclipse.scout.rt.shared.TunnelToServer;
+import org.eclipse.scout.rt.shared.services.common.calendar.ICalendarItem;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.leslie.shared.activity.ProjectActivityTablePageData;
 
@@ -21,5 +23,7 @@ public interface IProjectActivityService extends IService {
     ProjectActivityFormData store(ProjectActivityFormData formData);
 
     void remove(List<Long> activityIds);
+
+    List<ICalendarItem> getCalendarItems(Date from, Date to);
 
 }

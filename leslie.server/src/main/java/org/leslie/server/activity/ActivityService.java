@@ -9,14 +9,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.eclipse.scout.rt.platform.Bean;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Activity;
 
-public abstract class AbstractActivityService<T extends Activity> {
+@Bean
+public class ActivityService {
 
-    abstract protected Class<T> getEntityType();
-
-    protected void remove(List<Long> activityIds) {
+    public static void remove(List<Long> activityIds) {
 	List<Activity> activities = JPA.createNamedQuery(Activity.QUERY_BY_IDS, Activity.class)
 		.setParameter("activityIds", activityIds)
 		.getResultList();
@@ -24,10 +24,6 @@ public abstract class AbstractActivityService<T extends Activity> {
 	for (Activity activity : activities) {
 	    JPA.remove(activity);
 	}
-    }
-
-    protected List<T> getCollisions(Date fromDate, Date toDate, Long userNr, Long excludedActivityId) {
-	return AbstractActivityService.getCollisions(getEntityType(), fromDate, toDate, userNr, excludedActivityId);
     }
 
     /**
@@ -53,7 +49,7 @@ public abstract class AbstractActivityService<T extends Activity> {
      * @param whereConstraint
      * @return
      */
-    static <T extends Activity> List<T> getCollisions(Class<T> clazz, Date fromDate, Date toDate,
+    public static <T extends Activity> List<T> getCollisions(Class<T> clazz, Date fromDate, Date toDate,
 	    Long userNr, Long excludedActivityId) {
 	assert fromDate != null;
 	assert toDate != null;

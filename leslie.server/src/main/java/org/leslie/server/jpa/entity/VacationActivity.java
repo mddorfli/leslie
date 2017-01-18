@@ -18,8 +18,13 @@ import org.leslie.server.jpa.mapping.impl.VacationActivityMapping;
 @DiscriminatorValue(VacationActivity.TYPE_UID)
 @PrimaryKeyJoinColumn(name = "activity_id", referencedColumnName = "id")
 @NamedQueries({
-	@NamedQuery(name = VacationActivity.QUERY_ALL, query = "SELECT va FROM VacationActivity va "),
-	@NamedQuery(name = VacationActivity.QUERY_BY_USER, query = "SELECT va FROM VacationActivity va WHERE va.user = :user "),
+	@NamedQuery(name = VacationActivity.QUERY_ALL, query = ""
+		+ "SELECT va "
+		+ "  FROM VacationActivity va "),
+	@NamedQuery(name = VacationActivity.QUERY_BY_USER, query = ""
+		+ "SELECT va "
+		+ "  FROM VacationActivity va "
+		+ " WHERE va.user = :user "),
 })
 @ClassDataMapping(VacationActivityMapping.class)
 public class VacationActivity extends Activity {

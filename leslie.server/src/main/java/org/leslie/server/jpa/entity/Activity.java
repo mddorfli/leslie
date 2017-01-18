@@ -13,6 +13,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,11 +24,25 @@ import org.leslie.server.jpa.mapping.FieldDataMapping;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "activity_type_uid", discriminatorType = DiscriminatorType.INTEGER)
-@NamedQuery(name = Activity.QUERY_BY_IDS, query = "SELECT a FROM Activity a WHERE a.id IN :activityIds ")
+@NamedQueries({
+	@NamedQuery(name = Activity.QUERY_BY_IDS, query = ""
+		+ "SELECT a "
+		+ "  FROM Activity a "
+		+ " WHERE a.id IN :activityIds "),
+	@NamedQuery(name = Activity.QUERY_BY_USERID_TYPE_FROM_TO, query = ""
+		+ "SELECT va "
+		+ "  FROM Activity va "
+		+ " WHERE va.user.id = :userId "
+		+ "   AND TYPE(va) = :type "
+		+ "   AND (va.from BETWEEN :from AND :to OR "
+		+ "        va.to BETWEEN :from AND :to OR "
+		+ "        va.from <= :from AND va.to >= :to)"),
+})
 @ClassDataMapping
 public abstract class Activity {
 
     public static final String QUERY_BY_IDS = "Activity.byIds";
+    public static final String QUERY_BY_USERID_TYPE_FROM_TO = "Activity.byUserIdTypeFromTo";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

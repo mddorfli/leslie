@@ -54,26 +54,26 @@ public class ActivityServiceTest {
     public void testVerifyDateOverlap() {
 	Date fromDate = Date.from(LocalDate.of(2017, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
 	Date toDate = Date.from(LocalDate.of(2017, 03, 31).atStartOfDay(ZoneId.systemDefault()).toInstant());
-	assertFalse(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
+	assertFalse(ActivityService.getCollisions(Activity.class, fromDate, toDate,
 		null, null).isEmpty());
-	assertFalse(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
+	assertFalse(ActivityService.getCollisions(Activity.class, fromDate, toDate,
 		Long.valueOf(2L), null)
 		.isEmpty());
-	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
+	assertTrue(ActivityService.getCollisions(Activity.class, fromDate, toDate,
 		Long.valueOf(2L), null)
 		.isEmpty());
-	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
+	assertTrue(ActivityService.getCollisions(Activity.class, fromDate, toDate,
 		Long.valueOf(5L), null)
 		.isEmpty());
-	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
+	assertTrue(ActivityService.getCollisions(Activity.class, fromDate, toDate,
 		Long.valueOf(3L), Long.valueOf(3L)).isEmpty());
 
 	fromDate = Date.from(LocalDate.of(2017, 01, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
 	toDate = Date.from(LocalDate.of(2017, 04, 01).atStartOfDay(ZoneId.systemDefault()).toInstant());
-	assertFalse(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
+	assertFalse(ActivityService.getCollisions(Activity.class, fromDate, toDate,
 		Long.valueOf(2L), null)
 		.isEmpty());
-	assertTrue(AbstractActivityService.getCollisions(Activity.class, fromDate, toDate,
+	assertTrue(ActivityService.getCollisions(Activity.class, fromDate, toDate,
 		Long.valueOf(2L), 5L)
 		.isEmpty());
     }

@@ -12,10 +12,8 @@ import org.leslie.client.project.ProjectTablePageData;
 import org.leslie.client.project.ProjectTablePageData.ProjectTableRowData;
 import org.leslie.client.user.UserSelectionFormData;
 import org.leslie.server.ServerSession;
-import org.leslie.server.activity.AbstractActivityService;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Project;
-import org.leslie.server.jpa.entity.ProjectActivity;
 import org.leslie.server.jpa.entity.ProjectAssignment;
 import org.leslie.server.jpa.entity.User;
 import org.leslie.server.jpa.mapping.FieldMappingUtility;
@@ -26,12 +24,7 @@ import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 
 @Bean
-public class ProjectService extends AbstractActivityService<ProjectActivity> implements IProjectService {
-
-    @Override
-    protected Class<ProjectActivity> getEntityType() {
-	return ProjectActivity.class;
-    }
+public class ProjectService implements IProjectService {
 
     @Override
     public ProjectTablePageData getProjectTableData(SearchFilter filter) {
