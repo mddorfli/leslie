@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.VetoException;
+import org.eclipse.scout.rt.platform.util.StringUtility;
 import org.eclipse.scout.rt.platform.util.date.DateUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.calendar.CalendarAppointment;
@@ -123,9 +124,11 @@ public class VacationService implements IVacationService {
 		.setParameter("to", to)
 		.getResultList().stream()
 		.map(va -> {
+		    String vacationText = TEXTS.get("Vacation")
+			    + (StringUtility.isNullOrEmpty(va.getDescription()) ? "" : " - " + va.getDescription());
 		    // increment end date by 1 so it displays correctly
 		    return new CalendarAppointment(va.getId(), va.getUser().getDisplayName(),
-			    va.getFrom(), DateUtility.addDays(va.getTo(), 1), true, va.getDescription(),
+			    va.getFrom(), DateUtility.addDays(va.getTo(), 1), true, vacationText,
 			    (va.getApprovedBy() == null ? TEXTS.get("PendingApproval") : TEXTS.get("Approved")),
 			    null);
 		})

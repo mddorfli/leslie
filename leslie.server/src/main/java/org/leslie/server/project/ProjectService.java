@@ -34,9 +34,15 @@ public class ProjectService implements IProjectService {
 	}
 
 	final User user = ServerSession.get().getUser();
-	List<Project> resultList = JPA.createNamedQuery(Project.QUERY_BY_USER, Project.class)
-		.setParameter("user", user)
-		.getResultList();
+	List<Project> resultList;
+	if (level == ReadProjectPermission.LEVEL_ALL) {
+	    resultList = JPA.createNamedQuery(Project.QUERY_ALL, Project.class)
+		    .getResultList();
+	} else {
+	    resultList = JPA.createNamedQuery(Project.QUERY_BY_USER, Project.class)
+		    .setParameter("user", user)
+		    .getResultList();
+	}
 
 	final ProjectTablePageData pageData = new ProjectTablePageData();
 	FieldMappingUtility.importTablePageData(resultList, pageData, (project, row) -> {
