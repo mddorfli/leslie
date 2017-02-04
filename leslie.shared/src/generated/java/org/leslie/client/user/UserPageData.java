@@ -6,7 +6,7 @@ import javax.annotation.Generated;
 
 import org.eclipse.scout.rt.shared.data.basic.table.AbstractTableRowData;
 import org.eclipse.scout.rt.shared.data.page.AbstractTablePageData;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 
 /**
  * <b>NOTE:</b><br>
@@ -70,7 +70,7 @@ public class UserPageData extends AbstractTablePageData {
 	private String m_firstName;
 	private String m_lastName;
 	private String m_displayName;
-	private Participation m_participationLevel;
+	private ParticipationLevel m_participationLevel;
 	private String m_email;
 	private Date m_lastLogin;
 	private Integer m_loginAttempts;
@@ -116,11 +116,11 @@ public class UserPageData extends AbstractTablePageData {
 	    m_displayName = newDisplayName;
 	}
 
-	public Participation getParticipationLevel() {
+	public ParticipationLevel getParticipationLevel() {
 	    return m_participationLevel;
 	}
 
-	public void setParticipationLevel(Participation newParticipationLevel) {
+	public void setParticipationLevel(ParticipationLevel newParticipationLevel) {
 	    m_participationLevel = newParticipationLevel;
 	}
 

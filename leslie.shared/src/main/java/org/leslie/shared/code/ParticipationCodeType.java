@@ -4,15 +4,21 @@ import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.code.AbstractCode;
 import org.eclipse.scout.rt.shared.services.common.code.AbstractCodeType;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 
-public class ParticipationCodeType extends AbstractCodeType<Long, Participation> {
+public class ParticipationCodeType extends AbstractCodeType<Long, ParticipationLevel> {
 
-    public enum Participation {
+    /**
+     * Defines the project participation levels.
+     * 
+     * @author Marco Dörfliger
+     *
+     */
+    public enum ParticipationLevel {
 	NONE,
 	VIEWER,
 	MEMBER,
-	MANAGER
+	MANAGER;
     }
 
     private static final long serialVersionUID = 1L;
@@ -24,9 +30,9 @@ public class ParticipationCodeType extends AbstractCodeType<Long, Participation>
     }
 
     @Order(1000)
-    public static class ViewerCode extends AbstractCode<Participation> {
+    public static class ViewerCode extends AbstractCode<ParticipationLevel> {
 	private static final long serialVersionUID = 1L;
-	public static final Participation ID = Participation.VIEWER;
+	public static final ParticipationLevel ID = ParticipationLevel.VIEWER;
 
 	@Override
 	protected String getConfiguredText() {
@@ -34,15 +40,15 @@ public class ParticipationCodeType extends AbstractCodeType<Long, Participation>
 	}
 
 	@Override
-	public ParticipationCodeType.Participation getId() {
+	public ParticipationCodeType.ParticipationLevel getId() {
 	    return ID;
 	}
     }
 
     @Order(2000)
-    public static class MemberCode extends AbstractCode<Participation> {
+    public static class MemberCode extends AbstractCode<ParticipationLevel> {
 	private static final long serialVersionUID = 1L;
-	public static final Participation ID = Participation.MEMBER;
+	public static final ParticipationLevel ID = ParticipationLevel.MEMBER;
 
 	@Override
 	protected String getConfiguredText() {
@@ -50,15 +56,15 @@ public class ParticipationCodeType extends AbstractCodeType<Long, Participation>
 	}
 
 	@Override
-	public Participation getId() {
+	public ParticipationLevel getId() {
 	    return ID;
 	}
     }
 
     @Order(3000)
-    public static class ManagerCode extends AbstractCode<Participation> {
+    public static class ManagerCode extends AbstractCode<ParticipationLevel> {
 	private static final long serialVersionUID = 1L;
-	public static final Participation ID = Participation.MANAGER;
+	public static final ParticipationLevel ID = ParticipationLevel.MANAGER;
 
 	@Override
 	protected String getConfiguredText() {
@@ -66,7 +72,7 @@ public class ParticipationCodeType extends AbstractCodeType<Long, Participation>
 	}
 
 	@Override
-	public Participation getId() {
+	public ParticipationLevel getId() {
 	    return ID;
 	}
     }

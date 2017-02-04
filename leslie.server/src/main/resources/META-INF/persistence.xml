@@ -5,16 +5,16 @@
 	
 	<persistence-unit name="leslie" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>org.leslie.server.jpa.entity.Activity</class>
-		<class>org.leslie.server.jpa.entity.Project</class>
-		<class>org.leslie.server.jpa.entity.ProjectActivity</class>
-		<class>org.leslie.server.jpa.entity.ProjectAssignment</class>
-		<class>org.leslie.server.jpa.entity.ProjectAssignmentId</class>
-		<class>org.leslie.server.jpa.entity.Role</class>
-		<class>org.leslie.server.jpa.entity.RolePermission</class>
-		<class>org.leslie.server.jpa.entity.User</class>
-		<class>org.leslie.server.jpa.entity.VacationActivity</class>
-		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+<!-- 		<class>org.leslie.server.jpa.entity.Activity</class> -->
+<!-- 		<class>org.leslie.server.jpa.entity.Project</class> -->
+<!-- 		<class>org.leslie.server.jpa.entity.ProjectActivity</class> -->
+<!-- 		<class>org.leslie.server.jpa.entity.ProjectAssignment</class> -->
+<!-- 		<class>org.leslie.server.jpa.entity.ProjectAssignmentId</class> -->
+<!-- 		<class>org.leslie.server.jpa.entity.Role</class> -->
+<!-- 		<class>org.leslie.server.jpa.entity.RolePermission</class> -->
+<!-- 		<class>org.leslie.server.jpa.entity.User</class> -->
+<!-- 		<class>org.leslie.server.jpa.entity.VacationActivity</class> -->
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/leslie" />

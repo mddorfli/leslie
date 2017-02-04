@@ -105,7 +105,7 @@ public class ProjectActivityService implements IProjectActivityService {
     }
 
     @Override
-    public List<ICalendarItem> getCalendarItems(Date from, Date to) {
+    public List<ICalendarItem> getCurrentUserCalendarItems(Date from, Date to) {
 	return new ArrayList<>(JPA.createNamedQuery(Activity.QUERY_BY_USERID_TYPE_FROM_TO, ProjectActivity.class)
 		.setParameter("type", ProjectActivity.class)
 		.setParameter("userId", ServerSession.get().getUserNr())

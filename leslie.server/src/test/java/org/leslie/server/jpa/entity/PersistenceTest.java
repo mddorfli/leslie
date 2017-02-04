@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.eclipse.scout.rt.testing.platform.runner.RunWithSubject;
 import org.eclipse.scout.rt.testing.server.runner.RunWithServerSession;
 import org.eclipse.scout.rt.testing.server.runner.ServerTestRunner;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.leslie.server.ServerSession;
@@ -20,6 +21,11 @@ import org.slf4j.LoggerFactory;
 public class PersistenceTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(PersistenceTest.class);
+
+    @After
+    public void tearDown() {
+	JPA.getTransaction().rollback();
+    }
 
     @Test
     public void testUpdateUserProjectRelation() {
@@ -40,7 +46,11 @@ public class PersistenceTest {
 	project = JPA.find(Project.class, 2L);
 
 	LOG.info("Removing user {} from project {}", user.getUsername(), project.getName());
-	project.getUserAssignments().remove(user);
+	ProjectAssignment assignment = JPA.find(ProjectAssignment.class,
+		new ProjectAssignmentId(user.getId(), project.getId()));
+	user.getProjectAssignments().remove(assignment);
+	project.getUserAssignments().remove(assignment);
+	JPA.remove(assignment);
 
 	LOG.info("Project {} now has users {}.", project.getName(),
 		project.getUserAssignments().stream()
@@ -60,7 +70,5 @@ public class PersistenceTest {
 			.map(ProjectAssignment::getUser)
 			.map(User::getUsername)
 			.noneMatch(username -> "mdo".equals(username)));
-
-	JPA.getTransaction().setRollbackOnly();
     }
 }

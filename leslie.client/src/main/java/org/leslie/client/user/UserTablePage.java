@@ -34,7 +34,7 @@ import org.leslie.client.user.UserTablePage.Table.EditUserMenu;
 import org.leslie.client.user.UserTablePage.Table.NewUserMenu;
 import org.leslie.client.user.UserTablePage.Table.RemoveUserMenu;
 import org.leslie.shared.code.ParticipationCodeType;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.UpdateAdministrationPermission;
@@ -73,7 +73,6 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 
 	case PROJECT:
 	    boolean pmEnabled = ACCESS.check(new ManageProjectPermission(getProjectId()));
-	    getTable().setTitle(TEXTS.get("Members"));
 	    getTable().getUsernameColumn().setDisplayable(false);
 	    getTable().getFirstNameColumn().setDisplayable(false);
 	    getTable().getLastNameColumn().setDisplayable(false);
@@ -110,7 +109,13 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 
     @Override
     protected String getConfiguredTitle() {
-	return TEXTS.get("Users");
+	switch (presentationType) {
+	case ADMINISTRATION:
+	default:
+	    return TEXTS.get("Users");
+	case PROJECT:
+	    return TEXTS.get("Members");
+	}
     }
 
     @Order(10.0)
@@ -234,7 +239,7 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	}
 
 	@Order(47)
-	public class ParticipationLevelColumn extends AbstractSmartColumn<Participation> {
+	public class ParticipationLevelColumn extends AbstractSmartColumn<ParticipationLevel> {
 
 	    @Override
 	    protected String getConfiguredHeaderText() {
@@ -242,7 +247,7 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	    }
 
 	    @Override
-	    protected Class<? extends ICodeType<?, Participation>> getConfiguredCodeType() {
+	    protected Class<? extends ICodeType<?, ParticipationLevel>> getConfiguredCodeType() {
 		return ParticipationCodeType.class;
 	    }
 

@@ -1,15 +1,14 @@
 package org.leslie.server.jpa.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 
 @Entity
 @Table(name = "user_x_project")
@@ -24,9 +23,9 @@ public class ProjectAssignment {
     @ManyToOne
     private Project project;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "participation_level_uid")
-    private Participation participationLevel;
+    @Convert(converter = ParticipationIntegerConverter.class)
+    private ParticipationLevel participationLevel;
 
     public User getUser() {
 	return user;
@@ -44,11 +43,11 @@ public class ProjectAssignment {
 	this.project = project;
     }
 
-    public Participation getParticipationLevel() {
+    public ParticipationLevel getParticipationLevel() {
 	return participationLevel;
     }
 
-    public void setParticipationLevel(Participation participationLevel) {
+    public void setParticipationLevel(ParticipationLevel participationLevel) {
 	this.participationLevel = participationLevel;
     }
 

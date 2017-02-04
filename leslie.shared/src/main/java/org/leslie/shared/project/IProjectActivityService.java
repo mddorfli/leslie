@@ -24,6 +24,6 @@ public interface IProjectActivityService extends IService {
 
     void remove(List<Long> activityIds);
 
-    List<ICalendarItem> getCalendarItems(Date from, Date to);
+    List<ICalendarItem> getCurrentUserCalendarItems(Date from, Date to);
 
 }

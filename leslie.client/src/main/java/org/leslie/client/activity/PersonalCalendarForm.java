@@ -39,6 +39,11 @@ public class PersonalCalendarForm extends AbstractForm {
 	return getFieldByClass(CalendarField.class);
     }
 
+    @Override
+    protected int getConfiguredDisplayHint() {
+	return DISPLAY_HINT_VIEW;
+    }
+
     @Order(1000)
     public class MainBox extends AbstractGroupBox {
 
@@ -113,8 +118,8 @@ public class PersonalCalendarForm extends AbstractForm {
 		public class ProjectCalendarItemProvider extends AbstractCalendarItemProvider {
 		    @Override
 		    protected void execLoadItems(Date minDate, Date maxDate, Set<ICalendarItem> result) {
-			List<ICalendarItem> items = BEANS.get(IProjectActivityService.class).getCalendarItems(
-				minDate, maxDate);
+			IProjectActivityService service = BEANS.get(IProjectActivityService.class);
+			List<ICalendarItem> items = service.getCurrentUserCalendarItems(minDate, maxDate);
 			result.addAll(items);
 		    }
 		}

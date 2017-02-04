@@ -23,7 +23,7 @@ import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.project.ProjectTablePage.Table;
 import org.leslie.shared.code.ParticipationCodeType;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.CreateProjectPermission;
 import org.leslie.shared.security.permission.ManageProjectPermission;
@@ -92,7 +92,7 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 	}
 
 	@Order(3000)
-	public class ParticipationColumn extends AbstractSmartColumn<Participation> {
+	public class ParticipationColumn extends AbstractSmartColumn<ParticipationLevel> {
 	    @Override
 	    protected String getConfiguredHeaderText() {
 		return TEXTS.get("Participation");
@@ -104,7 +104,7 @@ public class ProjectTablePage extends AbstractPageWithTable<Table> {
 	    }
 
 	    @Override
-	    protected Class<? extends ICodeType<?, Participation>> getConfiguredCodeType() {
+	    protected Class<? extends ICodeType<?, ParticipationLevel>> getConfiguredCodeType() {
 		return ParticipationCodeType.class;
 	    }
 	}

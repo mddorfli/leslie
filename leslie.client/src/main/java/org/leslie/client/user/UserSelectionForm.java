@@ -18,7 +18,7 @@ import org.leslie.client.user.UserSelectionForm.MainBox.GroupBox.ParticiaptionFi
 import org.leslie.client.user.UserSelectionForm.MainBox.GroupBox.UserField;
 import org.leslie.client.user.UserSelectionForm.MainBox.OkButton;
 import org.leslie.shared.code.ParticipationCodeType;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.user.UserLookupCall;
 
@@ -106,14 +106,14 @@ public class UserSelectionForm extends AbstractForm {
 	    }
 
 	    @Order(2000)
-	    public class ParticiaptionField extends AbstractSmartField<Participation> {
+	    public class ParticiaptionField extends AbstractSmartField<ParticipationLevel> {
 		@Override
 		protected String getConfiguredLabel() {
 		    return TEXTS.get("Participation");
 		}
 
 		@Override
-		protected Class<? extends ICodeType<?, Participation>> getConfiguredCodeType() {
+		protected Class<? extends ICodeType<?, ParticipationLevel>> getConfiguredCodeType() {
 		    return ParticipationCodeType.class;
 		}
 

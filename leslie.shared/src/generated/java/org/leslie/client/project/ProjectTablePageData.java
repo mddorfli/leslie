@@ -4,7 +4,7 @@ import javax.annotation.Generated;
 
 import org.eclipse.scout.rt.shared.data.basic.table.AbstractTableRowData;
 import org.eclipse.scout.rt.shared.data.page.AbstractTablePageData;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 
 /**
  * <b>NOTE:</b><br>
@@ -58,7 +58,7 @@ public class ProjectTablePageData extends AbstractTablePageData {
 	public static final String participation = "participation";
 	private Long m_id;
 	private String m_name;
-	private Participation m_participation;
+	private ParticipationLevel m_participation;
 
 	public Long getId() {
 	    return m_id;
@@ -76,11 +76,11 @@ public class ProjectTablePageData extends AbstractTablePageData {
 	    m_name = newName;
 	}
 
-	public Participation getParticipation() {
+	public ParticipationLevel getParticipation() {
 	    return m_participation;
 	}
 
-	public void setParticipation(Participation newParticipation) {
+	public void setParticipation(ParticipationLevel newParticipation) {
 	    m_participation = newParticipation;
 	}
     }

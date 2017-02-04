@@ -29,6 +29,7 @@ public class ProjectActivityTablePage extends ActivityTablePage<Table> {
 
     private Long projectId;
 
+    @FormData
     public Long getProjectId() {
 	return projectId;
     }
@@ -40,7 +41,7 @@ public class ProjectActivityTablePage extends ActivityTablePage<Table> {
 
     @Override
     protected String getConfiguredTitle() {
-	return TEXTS.get("Resources");
+	return TEXTS.get("ResourcePlanning");
     }
 
     @Override

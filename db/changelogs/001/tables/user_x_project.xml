@@ -17,7 +17,7 @@
 		<column name="project_id" type="java.sql.Types.BIGINT">
 			<constraints nullable="false"/>
 		</column>
-		<column name="participation_level_uid" type="java.sql.Types.VARCHAR(7)" remarks="may be VIEWER, MEMBER or MANAGER">
+		<column name="participation_level_uid" type="java.sql.Types.INTEGER" remarks="mapped by Participation enum">
 			<constraints nullable="false"/>
 		</column>
 	</createTable>

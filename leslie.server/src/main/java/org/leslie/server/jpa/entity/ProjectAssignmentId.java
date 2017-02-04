@@ -10,6 +10,14 @@ public class ProjectAssignmentId implements Serializable {
 
     private long project;
 
+    public ProjectAssignmentId() {
+    }
+
+    public ProjectAssignmentId(long userId, long projectId) {
+	user = userId;
+	project = projectId;
+    }
+
     public long getUser() {
 	return user;
     }

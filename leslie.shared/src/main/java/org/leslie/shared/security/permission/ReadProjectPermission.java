@@ -2,7 +2,7 @@ package org.leslie.shared.security.permission;
 
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.shared.security.BasicHierarchyPermission;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 import org.leslie.shared.project.IProjectService;
 
 public class ReadProjectPermission extends BasicHierarchyPermission {
@@ -31,8 +31,8 @@ public class ReadProjectPermission extends BasicHierarchyPermission {
 	int result = LEVEL_ALL;
 	if (other instanceof ReadProjectPermission) {
 	    long projectNr = ((ReadProjectPermission) other).getProjectId();
-	    Participation level = BEANS.get(IProjectService.class).getParticipationLevel(projectNr);
-	    if (level != null && level.ordinal() >= Participation.VIEWER.ordinal()) {
+	    ParticipationLevel level = BEANS.get(IProjectService.class).getParticipationLevel(projectNr);
+	    if (level != null && level.ordinal() >= ParticipationLevel.VIEWER.ordinal()) {
 		result = LEVEL_PROJECT;
 	    }
 	}

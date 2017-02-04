@@ -17,7 +17,7 @@ import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.ProjectAssignment;
 import org.leslie.server.jpa.entity.User;
 import org.leslie.server.jpa.mapping.FieldMappingUtility;
-import org.leslie.shared.code.ParticipationCodeType.Participation;
+import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.CreateProjectPermission;
 import org.leslie.shared.security.permission.ManageProjectPermission;
@@ -140,7 +140,7 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public Participation getParticipationLevel(long projectId) {
+    public ParticipationLevel getParticipationLevel(long projectId) {
 	Project project = JPA.find(Project.class, projectId);
 	User user = ServerSession.get().getUser();
 	return project.getUserAssignments().stream()
