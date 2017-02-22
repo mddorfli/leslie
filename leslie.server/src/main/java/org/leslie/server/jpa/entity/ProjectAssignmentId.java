@@ -1,10 +1,11 @@
 package org.leslie.server.jpa.entity;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class ProjectAssignmentId implements Serializable {
 
-    private static final long serialVersionUID = -5627449679048798001L;
+    private static final long serialVersionUID = 1L;
 
     private long user;
 
@@ -34,4 +35,17 @@ public class ProjectAssignmentId implements Serializable {
 	this.project = project;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+	if (obj == null || !(obj instanceof ProjectAssignmentId)) {
+	    return false;
+	}
+	ProjectAssignmentId other = (ProjectAssignmentId) obj;
+	return other.getProject() == getProject() && other.getUser() == getUser();
+    }
+
+    @Override
+    public int hashCode() {
+	return Arrays.hashCode(new long[] { user, project });
+    }
 }
