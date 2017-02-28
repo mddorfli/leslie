@@ -6,13 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
 
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.platform.service.IService;
@@ -43,44 +36,6 @@ public class EntityManagerService implements IService {
     private void destroy() {
 	m_entityManager.close();
 	m_entityManagerFactory.close();
-    }
-
-    @PrePersist
-    void onPrePersist(Object o) throws ProcessingException {
-	getOrStartTransaction();
-	logger.debug("onPrePersist - starting transaction: {}", o);
-    }
-
-    @PostPersist
-    void onPostPersist(Object o) {
-	logger.debug("onPostPersist");
-    }
-
-    @PostLoad
-    void onPostLoad(Object o) {
-	logger.debug("onPostLoad");
-    }
-
-    @PreUpdate
-    void onPreUpdate(Object o) throws ProcessingException {
-	getOrStartTransaction();
-	logger.debug("onPreUpdate - starting transaction: {}", o);
-    }
-
-    @PostUpdate
-    void onPostUpdate(Object o) {
-	logger.debug("onPostUpdate");
-    }
-
-    @PreRemove
-    void onPreRemove(Object o) throws ProcessingException {
-	getOrStartTransaction();
-	logger.debug("onPreRemove - starting transaction: {}", o);
-    }
-
-    @PostRemove
-    void onPostRemove(Object o) {
-	logger.debug("onPostRemove");
     }
 
     public EntityManager getEntityManager() {

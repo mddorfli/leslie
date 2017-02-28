@@ -200,4 +200,14 @@ public class User {
     public void setRoles(Collection<Role> roles) {
 	this.roles = roles;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+	return obj != null && getId() == ((User) obj).getId();
+    }
+
+    @Override
+    public int hashCode() {
+	return Long.hashCode(getId());
+    }
 }

@@ -7,11 +7,11 @@ import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.ProjectActivity;
 import org.leslie.server.jpa.entity.User;
 import org.leslie.server.jpa.mapping.CustomDataMapping;
-import org.leslie.shared.activity.ProjectActivityTablePageData.ProjectActivityTableRowData;
+import org.leslie.shared.activity.ProjectResourcesTablePageData.ProjectResourcesTableRowData;
 import org.leslie.shared.project.ProjectActivityFormData;
 
 public class ProjectActivityMapping
-	implements CustomDataMapping<ProjectActivity, ProjectActivityFormData, ProjectActivityTableRowData> {
+	implements CustomDataMapping<ProjectActivity, ProjectActivityFormData, ProjectResourcesTableRowData> {
 
     @Override
     public void read(ProjectActivity fromEntity, ProjectActivityFormData toForm) {
@@ -20,7 +20,7 @@ public class ProjectActivityMapping
     }
 
     @Override
-    public void read(ProjectActivity fromEntity, ProjectActivityTableRowData toRow) {
+    public void read(ProjectActivity fromEntity, ProjectResourcesTableRowData toRow) {
 	toRow.setUserId(fromEntity.getUser().getId());
 	toRow.setUser(fromEntity.getUser().getDisplayName());
 	toRow.setPercentage(BigDecimal.valueOf(fromEntity.getPercentage()));

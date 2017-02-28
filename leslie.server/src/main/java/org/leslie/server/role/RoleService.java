@@ -78,7 +78,6 @@ public class RoleService implements IRoleService {
 	}
 	Role role = JPA.find(Role.class, formData.getRoleNr());
 	mapFields(formData, role);
-	JPA.merge(role);
 	return formData;
     }
 
@@ -101,7 +100,6 @@ public class RoleService implements IRoleService {
 		.getResultList()
 		.forEach(user -> {
 		    user.getRoles().removeIf(userRole -> userRole.getId() == roleId);
-		    JPA.merge(user);
 		});
 
 	JPA.remove(role);
@@ -158,6 +156,5 @@ public class RoleService implements IRoleService {
 	Role role = JPA.find(Role.class, roleId);
 	role.getRolePermissions().removeIf(
 		rolePermission -> permissions.contains(rolePermission.getPermissionName()));
-	JPA.merge(role);
     }
 }

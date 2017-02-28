@@ -419,14 +419,6 @@ public final class JPA {
     }
 
     /**
-     * 
-     * @see javax.persistence.EntityManager#close()
-     */
-    public static void close() {
-	getEntityManager().close();
-    }
-
-    /**
      * @return
      * @see javax.persistence.EntityManager#isOpen()
      */
@@ -501,5 +493,4 @@ public final class JPA {
     public static <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
 	return getEntityManager().getEntityGraphs(entityClass);
     }
-
 }

@@ -15,17 +15,17 @@ import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.leslie.client.activity.ActivityTablePage;
-import org.leslie.client.project.ProjectActivityTablePage.Table;
-import org.leslie.client.project.ProjectActivityTablePage.Table.AddResourceMenu;
-import org.leslie.client.project.ProjectActivityTablePage.Table.RemoveResourceMenu;
-import org.leslie.client.project.ProjectActivityTablePage.Table.UpdateResourceMenu;
-import org.leslie.shared.activity.ProjectActivityTablePageData;
+import org.leslie.client.project.ProjectResourcesTablePage.Table;
+import org.leslie.client.project.ProjectResourcesTablePage.Table.AddResourceMenu;
+import org.leslie.client.project.ProjectResourcesTablePage.Table.RemoveResourceMenu;
+import org.leslie.client.project.ProjectResourcesTablePage.Table.UpdateResourceMenu;
+import org.leslie.shared.activity.ProjectResourcesTablePageData;
 import org.leslie.shared.project.IProjectActivityService;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 
-@Data(ProjectActivityTablePageData.class)
-public class ProjectActivityTablePage extends ActivityTablePage<Table> {
+@Data(ProjectResourcesTablePageData.class)
+public class ProjectResourcesTablePage extends ActivityTablePage<Table> {
 
     private Long projectId;
 
@@ -41,7 +41,7 @@ public class ProjectActivityTablePage extends ActivityTablePage<Table> {
 
     @Override
     protected String getConfiguredTitle() {
-	return TEXTS.get("ResourcePlanning");
+	return TEXTS.get("Resources");
     }
 
     @Override

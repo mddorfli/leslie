@@ -31,9 +31,13 @@ public class ProjectNodePage extends AbstractPageWithNodes {
 	userPage.setProjectId(projectId);
 	pageList.add(userPage);
 
-	ProjectActivityTablePage resourcePage = new ProjectActivityTablePage();
+	ProjectResourcesTablePage resourcePage = new ProjectResourcesTablePage();
 	resourcePage.setProjectId(projectId);
 	pageList.add(resourcePage);
+
+	ProjectResourcePlanTablePage resourcePlanPage = new ProjectResourcePlanTablePage();
+	resourcePlanPage.setProjectId(projectId);
+	pageList.add(resourcePlanPage);
 
     }
 }

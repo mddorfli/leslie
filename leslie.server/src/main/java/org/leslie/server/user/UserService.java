@@ -82,7 +82,6 @@ public class UserService implements IUserService {
 	if (!StringUtility.isNullOrEmpty(formData.getPassword().getValue())) {
 	    applyPassword(user, formData.getPassword().getValue());
 	}
-	JPA.merge(user);
 	return formData;
     }
 
@@ -100,6 +99,7 @@ public class UserService implements IUserService {
 		.setParameter("userId", userId)
 		.getResultList();
 	activities.forEach(JPA::remove);
+	user.getProjectAssignments().forEach(JPA::remove);
 	user.getProjectAssignments().clear();
 	user.getRoles().clear();
 	JPA.remove(user);
