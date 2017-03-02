@@ -69,7 +69,7 @@ public class EntityManagerService implements IService {
 
 	public JpaTransactionMember(String transactionId) {
 	    super(transactionId);
-	    logger.debug("JPA transaction begun.");
+	    logger.trace("JPA transaction begun.");
 	    tx = m_entityManager.getTransaction();
 	    tx.begin();
 	}
@@ -86,13 +86,13 @@ public class EntityManagerService implements IService {
 
 	@Override
 	public void commitPhase2() {
-	    logger.debug("JPA transaction committed.");
+	    logger.trace("JPA transaction committed.");
 	    tx.commit();
 	}
 
 	@Override
 	public void rollback() {
-	    logger.debug("JPA transaction rolled back.");
+	    logger.trace("JPA transaction rolled back.");
 	    tx.rollback();
 	}
 

@@ -24,12 +24,19 @@ import org.leslie.server.jpa.mapping.impl.ProjectActivityMapping;
 		+ "  JOIN FETCH pa.user "
 		+ "  JOIN FETCH pa.project "
 		+ " WHERE pa.project.id = :projectId "),
+	@NamedQuery(name = ProjectActivity.QUERY_BY_PROJECTID_FETCH_USER_SORTED, query = ""
+		+ "SELECT pa "
+		+ "  FROM ProjectActivity pa "
+		+ "  JOIN FETCH pa.user "
+		+ " WHERE pa.project.id = :projectId "
+		+ " ORDER BY pa.from, pa.user.id "),
 })
 public class ProjectActivity extends Activity {
 
     protected static final String TYPE_UID = "1";
 
     public static final String QUERY_BY_PROJECTID_FETCH_USER_PROJECT = "ProjectActivity.byProjectIdFetchUserProject";
+    public static final String QUERY_BY_PROJECTID_FETCH_USER_SORTED = "ProjectActivity.byProjectIdFetchUserSorted";
 
     public ProjectActivity() {
 	super.setActivityTypeUid(Integer.parseInt(TYPE_UID));

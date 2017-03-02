@@ -55,7 +55,7 @@ public class ProjectResourcePlanTablePage extends AbstractPageWithTable<Table> {
 
 	injectedColumns = new ArrayList<>();
 	Object[] headers = data[0];
-	for (int i = 1; i < headers.length; i++) {
+	for (int i = 2; i < headers.length; i++) {
 	    final String columnId = String.valueOf(i);
 	    final String headerText = (String) headers[i];
 	    IColumn<?> column = new AbstractBigDecimalColumn() {
@@ -87,7 +87,17 @@ public class ProjectResourcePlanTablePage extends AbstractPageWithTable<Table> {
 	}
     }
 
+    @Override
+    protected void execInitSearchForm() {
+	ProjectResourcePlanSearchForm searchForm = (ProjectResourcePlanSearchForm) getSearchFormInternal();
+	searchForm.startSearch();
+    }
+
     public class Table extends AbstractTable {
+
+	public ResourcesColumn getResourcesColumn() {
+	    return getColumnSet().getColumnByClass(ResourcesColumn.class);
+	}
 
 	public DateColumn getDateColumn() {
 	    return getColumnSet().getColumnByClass(DateColumn.class);
@@ -98,6 +108,25 @@ public class ProjectResourcePlanTablePage extends AbstractPageWithTable<Table> {
 	    @Override
 	    protected String getConfiguredHeaderText() {
 		return TEXTS.get("Date");
+	    }
+
+	    @Override
+	    protected int getConfiguredWidth() {
+		return 100;
+	    }
+
+	    @Override
+	    protected int getConfiguredSortIndex() {
+		return 0;
+	    }
+	}
+
+	@Order(2000)
+	public class ResourcesColumn extends AbstractBigDecimalColumn {
+
+	    @Override
+	    protected String getConfiguredHeaderText() {
+		return TEXTS.get("Resources");
 	    }
 
 	    @Override

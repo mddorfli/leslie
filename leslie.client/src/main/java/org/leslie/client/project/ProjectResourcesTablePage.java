@@ -81,6 +81,16 @@ public class ProjectResourcesTablePage extends ActivityTablePage<Table> {
 	    protected int getConfiguredWidth() {
 		return 100;
 	    }
+
+	    @Override
+	    protected int getConfiguredMultiplier() {
+		return 100;
+	    }
+
+	    @Override
+	    protected boolean getConfiguredPercent() {
+		return true;
+	    }
 	}
 
 	@Order(1000)

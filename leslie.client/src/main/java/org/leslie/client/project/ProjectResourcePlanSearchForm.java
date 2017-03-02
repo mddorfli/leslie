@@ -11,10 +11,12 @@ import org.eclipse.scout.rt.client.ui.form.fields.datefield.AbstractDateField;
 import org.eclipse.scout.rt.client.ui.form.fields.groupbox.AbstractGroupBox;
 import org.eclipse.scout.rt.client.ui.form.fields.sequencebox.AbstractSequenceBox;
 import org.eclipse.scout.rt.platform.Order;
+import org.eclipse.scout.rt.platform.util.date.DateUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
-import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.DateRangeBox;
-import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.DateRangeBox.FromField;
-import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.DateRangeBox.ToField;
+import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.GroupBox;
+import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.GroupBox.DateRangeBox;
+import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.GroupBox.DateRangeBox.FromField;
+import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.GroupBox.DateRangeBox.ToField;
 import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.ResetButton;
 import org.leslie.client.project.ProjectResourcePlanSearchForm.MainBox.SearchButton;
 import org.leslie.shared.project.ProjectResourcePlanSearchFormData;
@@ -39,6 +41,10 @@ public class ProjectResourcePlanSearchForm extends AbstractSearchForm {
 	return getFieldByClass(ToField.class);
     }
 
+    public GroupBox getGroupBox() {
+	return getFieldByClass(GroupBox.class);
+    }
+
     public ResetButton getResetButton() {
 	return getFieldByClass(ResetButton.class);
     }
@@ -51,37 +57,45 @@ public class ProjectResourcePlanSearchForm extends AbstractSearchForm {
 	return getFieldByClass(SearchButton.class);
     }
 
+    public void startSearch() {
+	startInternal(new SearchHandler());
+    }
+
     @Order(1000)
     public class MainBox extends AbstractGroupBox {
 
 	@Order(1000)
-	public class DateRangeBox extends AbstractSequenceBox {
-	    @Override
-	    protected String getConfiguredLabel() {
-		return TEXTS.get("Date");
-	    }
-
-	    @Override
-	    protected boolean getConfiguredAutoCheckFromTo() {
-		return true;
-	    }
+	public class GroupBox extends AbstractGroupBox {
 
 	    @Order(1000)
-	    public class FromField extends AbstractDateField {
+	    public class DateRangeBox extends AbstractSequenceBox {
 		@Override
 		protected String getConfiguredLabel() {
-		    return TEXTS.get("From");
+		    return TEXTS.get("Date");
 		}
-	    }
 
-	    @Order(2000)
-	    public class ToField extends AbstractDateField {
 		@Override
-		protected String getConfiguredLabel() {
-		    return TEXTS.get("To");
+		protected boolean getConfiguredAutoCheckFromTo() {
+		    return true;
 		}
-	    }
 
+		@Order(1000)
+		public class FromField extends AbstractDateField {
+		    @Override
+		    protected String getConfiguredLabel() {
+			return TEXTS.get("From");
+		    }
+		}
+
+		@Order(2000)
+		public class ToField extends AbstractDateField {
+		    @Override
+		    protected String getConfiguredLabel() {
+			return TEXTS.get("To");
+		    }
+		}
+
+	    }
 	}
 
 	@Order(100000)
@@ -96,7 +110,7 @@ public class ProjectResourcePlanSearchForm extends AbstractSearchForm {
     public class SearchHandler extends AbstractFormHandler {
 	@Override
 	protected void execLoad() {
-	    getFromField().setValue(new Date());
+	    getFromField().setValue(DateUtility.truncDate(new Date()));
 	}
 
 	@Override

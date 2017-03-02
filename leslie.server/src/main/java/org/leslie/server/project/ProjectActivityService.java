@@ -1,9 +1,5 @@
 package org.leslie.server.project;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,12 +10,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import javax.persistence.TemporalType;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.VetoException;
@@ -143,45 +133,33 @@ public class ProjectActivityService implements IProjectActivityService {
 	if (!ACCESS.check(new ReadProjectPermission(projectId))) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	Date searchFrom = searchForm.getFrom().getValue();
-	Date searchTo = searchForm.getTo().getValue();
+	Date searchFrom = DateUtility.truncDate(searchForm.getFrom().getValue());
+	Date searchTo = DateUtility.truncDate(searchForm.getTo().getValue());
 
-	CriteriaBuilder cb = JPA.getCriteriaBuilder();
-	CriteriaQuery<ProjectActivity> q = cb.createQuery(ProjectActivity.class);
-	Root<ProjectActivity> pa = q.from(ProjectActivity.class);
-	pa.fetch("user");
-	q.select(pa);
-	q.where(cb.equal(pa.get("project").get("id"), cb.parameter(String.class, "projectId")));
-	q.orderBy(cb.desc(pa.get("from")), cb.desc(pa.get("user").get("id")));
-	if (searchFrom != null) {
-	    q.where(cb.greaterThanOrEqualTo(pa.get("from"), cb.parameter(Date.class, "from")));
-	}
-	if (searchTo != null) {
-	    q.where(cb.lessThan(pa.get("to"), cb.parameter(Date.class, "to")));
-	}
-	TypedQuery<ProjectActivity> query = JPA.createQuery(q);
+	List<ProjectActivity> resultList = JPA.createNamedQuery(
+		ProjectActivity.QUERY_BY_PROJECTID_FETCH_USER_SORTED, ProjectActivity.class)
+		.setParameter("projectId", projectId)
+		.getResultList();
 
-	query.setParameter("projectId", projectId);
-	if (searchForm != null) {
-	    query.setParameter("from", searchFrom, TemporalType.DATE);
-	}
-	if (searchTo != null) {
-	    query.setParameter("to", searchTo, TemporalType.DATE);
-	}
-
-	SortedMap<LocalDate, HashMap<User, Double>> data = new TreeMap<>();
+	SortedMap<Date, HashMap<User, Double>> data = new TreeMap<>();
 	SortedSet<User> users = new TreeSet<>((a, b) -> {
 	    return a.getDisplayName().compareTo(b.getDisplayName());
 	});
-	for (ProjectActivity entry : query.getResultList()) {
-	    LocalDate to = LocalDateTime.ofInstant(entry.getTo().toInstant(), ZoneId.systemDefault()).toLocalDate();
-	    LocalDate from = LocalDateTime.ofInstant(entry.getFrom().toInstant(), ZoneId.systemDefault()).toLocalDate();
-	    assert from.isBefore(to);
-	    users.add(entry.getUser());
-	    for (LocalDate day = from; !day.isAfter(to); day = day.plusDays(1)) {
-		if (day.getDayOfWeek() == DayOfWeek.SATURDAY || day.getDayOfWeek() == DayOfWeek.SUNDAY) {
+	for (ProjectActivity entry : resultList) {
+	    Date from = DateUtility.truncDate(entry.getFrom());
+	    Date to = DateUtility.truncDate(entry.getTo());
+	    assert from.before(to);
+	    if (!users.contains(entry.getUser())) {
+		users.add(entry.getUser());
+	    }
+	    for (Date day = from; !day.after(to); day = DateUtility.addDays(day, 1)) {
+		// filtering
+		if (DateUtility.isWeekend(day)
+			|| searchFrom != null && day.before(searchFrom)
+			|| searchTo != null && day.after(searchTo)) {
 		    continue;
 		}
+
 		HashMap<User, Double> dayData = data.getOrDefault(day, new HashMap<>());
 		dayData.put(entry.getUser(), entry.getPercentage());
 		data.putIfAbsent(day, dayData);
@@ -192,20 +170,26 @@ public class ProjectActivityService implements IProjectActivityService {
 
 	// add the header row (first cell is empty)
 	User[] userColumns = users.toArray(new User[users.size()]);
-	String[] headerRow = new String[userColumns.length + 1];
+	String[] headerRow = new String[userColumns.length + 2];
 	for (int i = 0; i < userColumns.length; i++) {
-	    headerRow[i + 1] = userColumns[i].getDisplayName();
+	    headerRow[i + 2] = userColumns[i].getDisplayName();
 	}
 	rowData.add(headerRow);
 
 	// collate the data rows
-	for (Entry<LocalDate, HashMap<User, Double>> dayData : data.entrySet()) {
-	    Object[] row = new Object[userColumns.length + 1];
-	    row[0] = Date.from(dayData.getKey().atStartOfDay(ZoneId.systemDefault()).toInstant());
+	for (Entry<Date, HashMap<User, Double>> dayData : data.entrySet()) {
+	    Object[] row = new Object[userColumns.length + 2];
+	    row[0] = dayData.getKey();
 	    HashMap<User, Double> value = dayData.getValue();
+	    double total = 0.0;
 	    for (int i = 0; i < userColumns.length; i++) {
-		row[i + 1] = value.get(userColumns[i]);
+		Double resourcePercent = value.get(userColumns[i]);
+		row[i + 2] = resourcePercent;
+		if (resourcePercent != null) {
+		    total += resourcePercent.doubleValue();
+		}
 	    }
+	    row[1] = total;
 	    rowData.add(row);
 	}
 

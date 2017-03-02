@@ -216,6 +216,11 @@ public class ProjectActivityForm extends AbstractForm {
 		}
 
 		@Override
+		protected int getConfiguredMultiplier() {
+		    return 100;
+		}
+
+		@Override
 		protected boolean getConfiguredPercent() {
 		    return true;
 		}
