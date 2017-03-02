@@ -122,15 +122,15 @@ public class RoleService implements IRoleService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	final Role role = JPA.find(Role.class, roleId);
-	for (String permissionClassName : permissions) {
+	for (String permissionName : permissions) {
 	    Optional<RolePermission> existing = JPA.createQuery(""
 		    + "SELECT rp "
 		    + "  FROM " + RolePermission.class.getSimpleName() + " rp "
 		    + " WHERE rp.role = :role "
-		    + "   AND rp.permissionClassName = :permissionClassName ",
+		    + "   AND rp.permissionName = :permissionName ",
 		    RolePermission.class)
 		    .setParameter("role", role)
-		    .setParameter("permissionClassName", permissionClassName)
+		    .setParameter("permissionName", permissionName)
 		    .getResultList()
 		    .stream().findAny();
 	    if (existing.isPresent()) {
@@ -141,7 +141,7 @@ public class RoleService implements IRoleService {
 		// insert
 		RolePermission rp = new RolePermission();
 		rp.setRole(role);
-		rp.setPermissionName(permissionClassName);
+		rp.setPermissionName(permissionName);
 		rp.setLevelUid(level);
 		JPA.persist(rp);
 	    }
