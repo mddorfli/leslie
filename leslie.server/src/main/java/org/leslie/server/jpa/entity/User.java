@@ -21,33 +21,33 @@ import org.leslie.server.jpa.mapping.ClassDataMapping;
 import org.leslie.server.jpa.mapping.FieldDataMapping;
 import org.leslie.server.jpa.mapping.impl.UserMapping;
 
-@ClassDataMapping(UserMapping.class)
 @Entity
 @Table(name = "users")
 @NamedQueries({
 	@NamedQuery(name = User.QUERY_ALL, query = ""
 		+ "SELECT u "
-		+ "FROM User u "),
+		+ "  FROM User u "),
 	@NamedQuery(name = User.QUERY_BY_USERNAME, query = ""
 		+ "SELECT u "
-		+ "FROM User u "
-		+ "WHERE u.username = :username "),
-	@NamedQuery(name = User.QUERY_BY_ROLE, query = ""
+		+ "  FROM User u "
+		+ " WHERE u.username = :username "),
+	@NamedQuery(name = User.QUERY_BY_ROLE_ID, query = ""
 		+ "SELECT u "
-		+ "FROM User u "
-		+ "JOIN u.roles r "
-		+ "WHERE r = :role "),
+		+ "  FROM User u "
+		+ "  JOIN u.roles r "
+		+ " WHERE r.id = :roleId "),
 	@NamedQuery(name = User.QUERY_BY_PROJECT_ID, query = ""
 		+ "SELECT DISTINCT u "
-		+ "FROM User u "
-		+ "JOIN u.projectAssignments pa "
-		+ "WHERE pa.project.id = :projectId"),
+		+ "  FROM User u "
+		+ "  JOIN u.projectAssignments pa "
+		+ " WHERE pa.project.id = :projectId"),
 })
+@ClassDataMapping(UserMapping.class)
 public class User {
 
     public static final String QUERY_ALL = "User.all";
     public static final String QUERY_BY_USERNAME = "User.byUsername";
-    public static final String QUERY_BY_ROLE = "User.byRole";
+    public static final String QUERY_BY_ROLE_ID = "User.byRoleId";
     public static final String QUERY_BY_PROJECT_ID = "User.byProjectId";
 
     @Id

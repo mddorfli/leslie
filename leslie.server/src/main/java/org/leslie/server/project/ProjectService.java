@@ -1,5 +1,6 @@
 package org.leslie.server.project;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.scout.rt.platform.Bean;
@@ -74,7 +75,17 @@ public class ProjectService implements IProjectService {
 	}
 	Project project = new Project();
 	FieldMappingUtility.exportFormData(formData, project);
+
+	// set current user as manager by default
+	ProjectAssignment assignment = new ProjectAssignment();
+	assignment.setProject(project);
+	assignment.setParticipationLevel(ParticipationLevel.MANAGER);
+	assignment.setUser(ServerSession.get().getUser());
+	project.setUserAssignments(Collections.singletonList(assignment));
+
 	JPA.persist(project);
+	JPA.persist(assignment);
+
 	return formData;
     }
 

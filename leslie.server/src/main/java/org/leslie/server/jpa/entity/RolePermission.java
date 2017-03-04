@@ -6,15 +6,27 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "role_x_permission")
-@NamedQuery(name = RolePermission.QUERY_BY_ROLE_ID, query = "SELECT rp FROM RolePermission rp WHERE rp.role.id = :roleId")
+@NamedQueries({
+	@NamedQuery(name = RolePermission.QUERY_BY_ROLE_ID, query = ""
+		+ "SELECT rp "
+		+ "  FROM RolePermission rp "
+		+ " WHERE rp.role.id = :roleId"),
+	@NamedQuery(name = RolePermission.QUERY_BY_ROLE_ID_AND_PERMISSION_NAME, query = ""
+		+ "SELECT rp "
+		+ "  FROM RolePermission rp "
+		+ " WHERE rp.role.id = :roleId "
+		+ "   AND rp.permissionName = :permissionName "),
+})
 public class RolePermission {
 
     public static final String QUERY_BY_ROLE_ID = "RolePermission.byRoleId";
+    public static final String QUERY_BY_ROLE_ID_AND_PERMISSION_NAME = "RolePermission.byRoleIdAndPermissionName";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -88,15 +88,14 @@ public class RoleService implements IRoleService {
 	}
 	Role role = JPA.find(Role.class, roleId.longValue());
 	// remove all permissions from the role
-	JPA.createQuery(""
-		+ "DELETE FROM " + RolePermission.class.getSimpleName() + " c "
-		+ " WHERE c.role = :role ",
-		RolePermission.class)
-		.setParameter("role", role);
+	JPA.createNamedQuery(RolePermission.QUERY_BY_ROLE_ID, RolePermission.class)
+		.setParameter("roleId", role.getId())
+		.getResultList()
+		.forEach(JPA::remove);
 
 	// remove this role from all users
-	JPA.createNamedQuery(User.QUERY_BY_ROLE, User.class)
-		.setParameter("role", role)
+	JPA.createNamedQuery(User.QUERY_BY_ROLE_ID, User.class)
+		.setParameter("roleId", role.getId())
 		.getResultList()
 		.forEach(user -> {
 		    user.getRoles().removeIf(userRole -> userRole.getId() == roleId);
@@ -123,20 +122,15 @@ public class RoleService implements IRoleService {
 	}
 	final Role role = JPA.find(Role.class, roleId);
 	for (String permissionName : permissions) {
-	    Optional<RolePermission> existing = JPA.createQuery(""
-		    + "SELECT rp "
-		    + "  FROM " + RolePermission.class.getSimpleName() + " rp "
-		    + " WHERE rp.role = :role "
-		    + "   AND rp.permissionName = :permissionName ",
-		    RolePermission.class)
-		    .setParameter("role", role)
+	    Optional<RolePermission> existing = JPA.createNamedQuery(
+		    RolePermission.QUERY_BY_ROLE_ID_AND_PERMISSION_NAME, RolePermission.class)
+		    .setParameter("roleId", role.getId())
 		    .setParameter("permissionName", permissionName)
 		    .getResultList()
 		    .stream().findAny();
 	    if (existing.isPresent()) {
 		// update
 		existing.get().setLevelUid(level);
-		JPA.merge(existing.get());
 	    } else {
 		// insert
 		RolePermission rp = new RolePermission();

@@ -98,7 +98,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 		    BasicHierarchyPermission permissionInstance = (BasicHierarchyPermission) clazz.newInstance();
 		    List<Integer> levelList = permissionInstance.getValidLevels();
 		    Integer[] levels = levelList != null ? levelList.toArray(new Integer[] {}) : new Integer[] {};
-		    validLevels.put(permissionInstance.getName(), levels);
+		    validLevels.put(permissionInstance.getClass().getSimpleName(), levels);
 		} catch (InstantiationException | IllegalAccessException e) {
 		    LOG.warn("Could not instantiate permission of type {}", clazz);
 		}
