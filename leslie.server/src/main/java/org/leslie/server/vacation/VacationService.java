@@ -19,7 +19,7 @@ import org.leslie.server.activity.ActivityService;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Activity;
 import org.leslie.server.jpa.entity.VacationActivity;
-import org.leslie.server.jpa.mapping.FieldMappingUtility;
+import org.leslie.server.jpa.mapping.MappingUtility;
 import org.leslie.shared.security.permission.ApproveVacationPermission;
 import org.leslie.shared.security.permission.RequestVacationPermission;
 import org.leslie.shared.vacation.IVacationService;
@@ -41,7 +41,7 @@ public class VacationService implements IVacationService {
 		    .setParameter("user", ServerSession.get().getUser())
 		    .getResultList();
 	}
-	FieldMappingUtility.importTablePageData(vacations, pageData);
+	MappingUtility.importTablePageData(vacations, pageData);
 	return pageData;
     }
 
@@ -65,7 +65,7 @@ public class VacationService implements IVacationService {
 	    throw new VetoException(TEXTS.get("VacationOverlaps"));
 	}
 	VacationActivity va = new VacationActivity();
-	FieldMappingUtility.exportFormData(formData, va);
+	MappingUtility.exportFormData(formData, va);
 	JPA.persist(va);
 	return formData;
     }
@@ -79,7 +79,7 @@ public class VacationService implements IVacationService {
 		|| ACCESS.check(new ApproveVacationPermission()))) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	FieldMappingUtility.importFormData(va, formData);
+	MappingUtility.importFormData(va, formData);
 	return formData;
     }
 
@@ -96,7 +96,7 @@ public class VacationService implements IVacationService {
 	    throw new VetoException(TEXTS.get("VacationOverlaps"));
 	}
 	VacationActivity va = JPA.find(VacationActivity.class, formData.getActivityId());
-	FieldMappingUtility.exportFormData(formData, va);
+	MappingUtility.exportFormData(formData, va);
 	return formData;
     }
 

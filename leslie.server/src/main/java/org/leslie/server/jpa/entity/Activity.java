@@ -18,92 +18,85 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.leslie.server.jpa.mapping.ClassDataMapping;
-import org.leslie.server.jpa.mapping.FieldDataMapping;
+import org.leslie.server.jpa.mapping.MappedClass;
+import org.leslie.server.jpa.mapping.MappedField;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "activity_type_uid", discriminatorType = DiscriminatorType.INTEGER)
 @NamedQueries({
-	@NamedQuery(name = Activity.QUERY_BY_IDS, query = ""
-		+ "SELECT a "
-		+ "  FROM Activity a "
-		+ " WHERE a.id IN :activityIds "),
-	@NamedQuery(name = Activity.QUERY_BY_USERID_TYPE_FROM_TO, query = ""
-		+ "SELECT va "
-		+ "  FROM Activity va "
-		+ " WHERE va.user.id = :userId "
-		+ "   AND TYPE(va) = :type "
-		+ "   AND (va.from BETWEEN :from AND :to OR "
-		+ "        va.to BETWEEN :from AND :to OR "
-		+ "        va.from <= :from AND va.to >= :to)"),
-})
-@ClassDataMapping
+		@NamedQuery(name = Activity.QUERY_BY_IDS, query = "" + "SELECT a " + "  FROM Activity a "
+				+ " WHERE a.id IN :activityIds "),
+		@NamedQuery(name = Activity.QUERY_BY_USERID_TYPE_FROM_TO, query = "" + "SELECT va " + "  FROM Activity va "
+				+ " WHERE va.user.id = :userId " + "   AND TYPE(va) = :type "
+				+ "   AND (va.from BETWEEN :from AND :to OR " + "        va.to BETWEEN :from AND :to OR "
+				+ "        va.from <= :from AND va.to >= :to)"), })
+@MappedClass
 public abstract class Activity {
 
-    public static final String QUERY_BY_IDS = "Activity.byIds";
-    public static final String QUERY_BY_USERID_TYPE_FROM_TO = "Activity.byUserIdTypeFromTo";
+	public static final String QUERY_BY_IDS = "Activity.byIds";
+	public static final String QUERY_BY_USERID_TYPE_FROM_TO = "Activity.byUserIdTypeFromTo";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @FieldDataMapping(readOnly = true, pageFieldName = "activityId", formFieldName = "activityId")
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@MappedField(readOnly = true, pageFieldName = "activityId", formFieldName = "activityId")
+	private long id;
 
-    @Column(name = "activity_type_uid")
-    private int activityTypeUid;
+	@Column(name = "activity_type_uid")
+	private int activityTypeUid;
 
-    @Column(name = "from_date")
-    @Temporal(TemporalType.DATE)
-    @FieldDataMapping
-    private Date from;
+	@Column(name = "from_date")
+	@Temporal(TemporalType.DATE)
+	@MappedField
+	private Date from;
 
-    @Column(name = "to_date")
-    @Temporal(TemporalType.DATE)
-    @FieldDataMapping
-    private Date to;
+	@Column(name = "to_date")
+	@Temporal(TemporalType.DATE)
+	@MappedField
+	private Date to;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
-    public long getId() {
-	return id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    void setId(long id) {
-	this.id = id;
-    }
+	void setId(long id) {
+		this.id = id;
+	}
 
-    public User getUser() {
-	return user;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public void setUser(User user) {
-	this.user = user;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    public int getActivityTypeUid() {
-	return activityTypeUid;
-    }
+	public int getActivityTypeUid() {
+		return activityTypeUid;
+	}
 
-    public void setActivityTypeUid(int activityTypeUid) {
-	this.activityTypeUid = activityTypeUid;
-    }
+	public void setActivityTypeUid(int activityTypeUid) {
+		this.activityTypeUid = activityTypeUid;
+	}
 
-    public Date getFrom() {
-	return from;
-    }
+	public Date getFrom() {
+		return from;
+	}
 
-    public void setFrom(Date from) {
-	this.from = from;
-    }
+	public void setFrom(Date from) {
+		this.from = from;
+	}
 
-    public Date getTo() {
-	return to;
-    }
+	public Date getTo() {
+		return to;
+	}
 
-    public void setTo(Date to) {
-	this.to = to;
-    }
+	public void setTo(Date to) {
+		this.to = to;
+	}
 
 }

@@ -25,7 +25,7 @@ import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Activity;
 import org.leslie.server.jpa.entity.ProjectActivity;
 import org.leslie.server.jpa.entity.User;
-import org.leslie.server.jpa.mapping.FieldMappingUtility;
+import org.leslie.server.jpa.mapping.MappingUtility;
 import org.leslie.shared.activity.ProjectResourcesTablePageData;
 import org.leslie.shared.project.IProjectActivityService;
 import org.leslie.shared.project.ProjectActivityFormData;
@@ -48,7 +48,7 @@ public class ProjectActivityService implements IProjectActivityService {
 		.getResultList();
 
 	ProjectResourcesTablePageData pageData = new ProjectResourcesTablePageData();
-	FieldMappingUtility.importTablePageData(resultList, pageData);
+	MappingUtility.importTablePageData(resultList, pageData);
 
 	return pageData;
     }
@@ -74,7 +74,7 @@ public class ProjectActivityService implements IProjectActivityService {
 	}
 
 	ProjectActivity pa = new ProjectActivity();
-	FieldMappingUtility.exportFormData(formData, pa);
+	MappingUtility.exportFormData(formData, pa);
 	JPA.persist(pa);
 
 	return formData;
@@ -86,7 +86,7 @@ public class ProjectActivityService implements IProjectActivityService {
 	if (!ACCESS.check(new ReadProjectPermission(pa.getProject().getId()))) {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
-	FieldMappingUtility.importFormData(pa, formData);
+	MappingUtility.importFormData(pa, formData);
 	return formData;
     }
 
@@ -103,7 +103,7 @@ public class ProjectActivityService implements IProjectActivityService {
 	}
 
 	ProjectActivity pa = JPA.find(ProjectActivity.class, formData.getActivityId());
-	FieldMappingUtility.exportFormData(formData, pa);
+	MappingUtility.exportFormData(formData, pa);
 	return formData;
     }
 

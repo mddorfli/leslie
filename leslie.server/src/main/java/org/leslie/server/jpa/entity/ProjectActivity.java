@@ -9,14 +9,14 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import org.leslie.server.jpa.mapping.ClassDataMapping;
+import org.leslie.server.jpa.mapping.MappedClass;
 import org.leslie.server.jpa.mapping.impl.ProjectActivityMapping;
 
 @Entity
 @Table(name = "activity_project")
 @DiscriminatorValue(ProjectActivity.TYPE_UID)
 @PrimaryKeyJoinColumn(name = "activity_id", referencedColumnName = "id")
-@ClassDataMapping(ProjectActivityMapping.class)
+@MappedClass(ProjectActivityMapping.class)
 @NamedQueries({
 	@NamedQuery(name = ProjectActivity.QUERY_BY_PROJECTID_FETCH_USER_PROJECT, query = ""
 		+ "SELECT pa "

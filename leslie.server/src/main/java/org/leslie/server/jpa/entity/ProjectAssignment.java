@@ -24,7 +24,7 @@ public class ProjectAssignment {
     private Project project;
 
     @Column(name = "participation_level_uid")
-    @Convert(converter = ParticipationIntegerConverter.class)
+    @Convert(converter = ParticipationValueConverter.class)
     private ParticipationLevel participationLevel;
 
     public User getUser() {

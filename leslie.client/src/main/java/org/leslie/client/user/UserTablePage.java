@@ -39,16 +39,16 @@ import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.UpdateAdministrationPermission;
 import org.leslie.shared.user.IUserService;
-import org.leslie.shared.user.IUserService.UserPresentationType;
+import org.leslie.shared.user.IUserService.UserPresentation;
 
 @PageData(UserPageData.class)
 public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 
-    private UserPresentationType presentationType;
+    private UserPresentation presentationType;
 
     private Long projectId;
 
-    public UserTablePage(UserPresentationType presentationType) {
+    public UserTablePage(UserPresentation presentationType) {
 	this.presentationType = presentationType;
     }
 

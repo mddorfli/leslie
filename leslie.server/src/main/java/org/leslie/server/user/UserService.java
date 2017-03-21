@@ -22,7 +22,7 @@ import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.ProjectAssignment;
 import org.leslie.server.jpa.entity.Role;
 import org.leslie.server.jpa.entity.User;
-import org.leslie.server.jpa.mapping.FieldMappingUtility;
+import org.leslie.server.jpa.mapping.MappingUtility;
 import org.leslie.shared.security.permission.ReadAdministrationPermission;
 import org.leslie.shared.security.permission.ReadProjectPermission;
 import org.leslie.shared.security.permission.UpdateAdministrationPermission;
@@ -37,7 +37,7 @@ public class UserService implements IUserService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	User user = new User();
-	FieldMappingUtility.exportFormData(formData, user);
+	MappingUtility.exportFormData(formData, user);
 	applyPassword(user, formData.getPassword().getValue());
 
 	JPA.persist(user);
@@ -50,7 +50,7 @@ public class UserService implements IUserService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	User user = JPA.find(User.class, formData.getUserId());
-	FieldMappingUtility.importFormData(user, formData);
+	MappingUtility.importFormData(user, formData);
 	if (user.getRoles() != null) {
 	    Set<Long> roleIds = user.getRoles().stream().map(Role::getId).collect(Collectors.toSet());
 	    formData.getRoles().setValue(roleIds);
@@ -64,7 +64,7 @@ public class UserService implements IUserService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	User user = JPA.find(User.class, formData.getUserId());
-	FieldMappingUtility.exportFormData(formData, user);
+	MappingUtility.exportFormData(formData, user);
 
 	final Set<Long> selectedRoleIds = formData.getRoles().getValue();
 	if (selectedRoleIds == null || selectedRoleIds.isEmpty()) {
@@ -117,7 +117,7 @@ public class UserService implements IUserService {
 		.getResultList();
 
 	final UserPageData pageData = new UserPageData();
-	FieldMappingUtility.importTablePageData(users, pageData, (user, row) -> {
+	MappingUtility.importTablePageData(users, pageData, (user, row) -> {
 	    UserRowData userRow = (UserRowData) row;
 	    userRow.setDisplayName(user.getDisplayName());
 	    for (ProjectAssignment pa : project.getUserAssignments()) {
@@ -140,7 +140,7 @@ public class UserService implements IUserService {
 	List<User> result = JPA.createNamedQuery(User.QUERY_ALL, User.class).getResultList();
 	final UserPageData pageData = new UserPageData();
 
-	FieldMappingUtility.importTablePageData(result, pageData, (user, row) -> {
+	MappingUtility.importTablePageData(result, pageData, (user, row) -> {
 	    ((UserRowData) row).setDisplayName(user.getDisplayName());
 	});
 

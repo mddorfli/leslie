@@ -12,47 +12,45 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
-@NamedQueries({
-	@NamedQuery(name = Role.QUERY_ALL, query = "SELECT r FROM Role r"),
-	@NamedQuery(name = Role.QUERY_BY_IDS, query = "SELECT r FROM Role r WHERE r.id IN :roleIds")
-})
+@NamedQueries({ @NamedQuery(name = Role.QUERY_ALL, query = "SELECT r FROM Role r"),
+		@NamedQuery(name = Role.QUERY_BY_IDS, query = "SELECT r FROM Role r WHERE r.id IN :roleIds") })
 public class Role {
 
-    public static final String QUERY_ALL = "Role.all";
-    public static final String QUERY_BY_IDS = "Role.byIds";
+	public static final String QUERY_ALL = "Role.all";
+	public static final String QUERY_BY_IDS = "Role.byIds";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
-    private String name;
+	private String name;
 
-    @OneToMany
-    @JoinColumn(name = "role_id")
-    private Collection<RolePermission> rolePermissions;
+	@OneToMany
+	@JoinColumn(name = "role_id")
+	private Collection<RolePermission> rolePermissions;
 
-    public long getId() {
-	return id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public void setId(long id) {
-	this.id = id;
-    }
+	void setId(long id) {
+		this.id = id;
+	}
 
-    public String getName() {
-	return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-	this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Collection<RolePermission> getRolePermissions() {
-	return rolePermissions;
-    }
+	public Collection<RolePermission> getRolePermissions() {
+		return rolePermissions;
+	}
 
-    public void setRolePermissions(Collection<RolePermission> rolePermissions) {
-	this.rolePermissions = rolePermissions;
-    }
+	public void setRolePermissions(Collection<RolePermission> rolePermissions) {
+		this.rolePermissions = rolePermissions;
+	}
 
 }

@@ -10,10 +10,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-import org.leslie.server.jpa.mapping.ClassDataMapping;
-import org.leslie.server.jpa.mapping.FieldDataMapping;
+import org.leslie.server.jpa.mapping.MappedClass;
+import org.leslie.server.jpa.mapping.MappedField;
 
-@ClassDataMapping
+@MappedClass
 @Entity
 @NamedQueries({
 	@NamedQuery(name = Project.QUERY_ALL, query = "SELECT p FROM Project p"),
@@ -26,10 +26,10 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @FieldDataMapping(readOnly = true, formFieldName = "projectId")
+    @MappedField(readOnly = true, formFieldName = "projectId")
     private long id;
 
-    @FieldDataMapping
+    @MappedField
     private String name;
 
     @OneToMany(mappedBy = "project")

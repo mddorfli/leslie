@@ -9,7 +9,7 @@ import org.leslie.client.user.UserPageData;
 @TunnelToServer
 public interface IUserService extends IService {
 
-    enum UserPresentationType {
+    enum UserPresentation {
 	/**
 	 * Shows all users and all columns. <br>
 	 * Enables menus for CRUD operations on users.

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
-        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 <changeSet id="10" author="kiwi">
 	<comment>Always insert an admin user (id should be 1). Default password is 'manager'.</comment>
@@ -42,6 +36,12 @@
 </changeSet>
 <changeSet id="220" author="kiwi" context="DEV">
 	<loadData tableName="activity_vacation" file="changelogs/001/data/dev/activity_vacation.csv"/>
+</changeSet>
+<changeSet id="300" author="kiwi" context="DEV">
+	<loadData tableName="skill_category" file="changelogs/001/data/dev/skill_category.csv"/>
+</changeSet>
+<changeSet id="310" author="kiwi" context="DEV">
+	<loadData tableName="skill" file="changelogs/001/data/dev/skill.csv"/>
 </changeSet>
 
 </databaseChangeLog>

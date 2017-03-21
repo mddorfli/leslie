@@ -6,7 +6,7 @@ import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithNode
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.IPage;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.leslie.client.user.UserTablePage;
-import org.leslie.shared.user.IUserService.UserPresentationType;
+import org.leslie.shared.user.IUserService.UserPresentation;
 
 public class ProjectNodePage extends AbstractPageWithNodes {
 
@@ -27,7 +27,7 @@ public class ProjectNodePage extends AbstractPageWithNodes {
 
     @Override
     protected void execCreateChildPages(List<IPage<?>> pageList) {
-	UserTablePage userPage = new UserTablePage(UserPresentationType.PROJECT);
+	UserTablePage userPage = new UserTablePage(UserPresentation.PROJECT);
 	userPage.setProjectId(projectId);
 	pageList.add(userPage);
 

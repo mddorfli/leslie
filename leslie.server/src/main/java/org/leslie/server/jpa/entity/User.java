@@ -17,197 +17,185 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.eclipse.scout.rt.platform.util.StringUtility;
-import org.leslie.server.jpa.mapping.ClassDataMapping;
-import org.leslie.server.jpa.mapping.FieldDataMapping;
+import org.leslie.server.jpa.mapping.MappedClass;
+import org.leslie.server.jpa.mapping.MappedField;
 import org.leslie.server.jpa.mapping.impl.UserMapping;
 
 @Entity
 @Table(name = "users")
-@NamedQueries({
-	@NamedQuery(name = User.QUERY_ALL, query = ""
-		+ "SELECT u "
-		+ "  FROM User u "),
-	@NamedQuery(name = User.QUERY_BY_USERNAME, query = ""
-		+ "SELECT u "
-		+ "  FROM User u "
-		+ " WHERE u.username = :username "),
-	@NamedQuery(name = User.QUERY_BY_ROLE_ID, query = ""
-		+ "SELECT u "
-		+ "  FROM User u "
-		+ "  JOIN u.roles r "
-		+ " WHERE r.id = :roleId "),
-	@NamedQuery(name = User.QUERY_BY_PROJECT_ID, query = ""
-		+ "SELECT DISTINCT u "
-		+ "  FROM User u "
-		+ "  JOIN u.projectAssignments pa "
-		+ " WHERE pa.project.id = :projectId"),
-})
-@ClassDataMapping(UserMapping.class)
+@NamedQueries({ @NamedQuery(name = User.QUERY_ALL, query = "" + "SELECT u " + "  FROM User u "),
+		@NamedQuery(name = User.QUERY_BY_USERNAME, query = "" + "SELECT u " + "  FROM User u "
+				+ " WHERE u.username = :username "),
+		@NamedQuery(name = User.QUERY_BY_ROLE_ID, query = "" + "SELECT u " + "  FROM User u " + "  JOIN u.roles r "
+				+ " WHERE r.id = :roleId "),
+		@NamedQuery(name = User.QUERY_BY_PROJECT_ID, query = "" + "SELECT DISTINCT u " + "  FROM User u "
+				+ "  JOIN u.projectAssignments pa " + " WHERE pa.project.id = :projectId"), })
+@MappedClass(UserMapping.class)
 public class User {
 
-    public static final String QUERY_ALL = "User.all";
-    public static final String QUERY_BY_USERNAME = "User.byUsername";
-    public static final String QUERY_BY_ROLE_ID = "User.byRoleId";
-    public static final String QUERY_BY_PROJECT_ID = "User.byProjectId";
+	public static final String QUERY_ALL = "User.all";
+	public static final String QUERY_BY_USERNAME = "User.byUsername";
+	public static final String QUERY_BY_ROLE_ID = "User.byRoleId";
+	public static final String QUERY_BY_PROJECT_ID = "User.byProjectId";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @FieldDataMapping(formFieldName = "userId", readOnly = true)
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@MappedField(formFieldName = "userId", readOnly = true)
+	private long id;
 
-    @FieldDataMapping
-    private String username;
+	@MappedField
+	private String username;
 
-    @Column(name = "first_name")
-    @FieldDataMapping
-    private String firstName;
+	@Column(name = "first_name")
+	@MappedField
+	private String firstName;
 
-    @Column(name = "last_name")
-    @FieldDataMapping
-    private String lastName;
+	@Column(name = "last_name")
+	@MappedField
+	private String lastName;
 
-    @FieldDataMapping
-    private String email;
+	@MappedField
+	private String email;
 
-    @Column(name = "failed_login_attempts")
-    private int failedLoginAttempts;
+	@Column(name = "failed_login_attempts")
+	private int failedLoginAttempts;
 
-    @FieldDataMapping
-    private boolean blocked;
+	@MappedField
+	private boolean blocked;
 
-    @Column(name = "last_login")
-    @FieldDataMapping(ignoreFormData = true)
-    private Date lastLogin;
+	@Column(name = "last_login")
+	@MappedField(ignoreFormData = true)
+	private Date lastLogin;
 
-    @Column(name = "pw_salt")
-    private String passwordSalt;
+	@Column(name = "pw_salt")
+	private String passwordSalt;
 
-    @Column(name = "pw_hash")
-    private String passwordHash;
+	@Column(name = "pw_hash")
+	private String passwordHash;
 
-    @ManyToMany
-    @JoinTable(name = "user_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
+	@ManyToMany
+	@JoinTable(name = "user_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	private Collection<Role> roles;
 
-    @OneToMany(mappedBy = "user")
-    private Collection<ProjectAssignment> projectAssignments;
+	@OneToMany(mappedBy = "user")
+	private Collection<ProjectAssignment> projectAssignments;
 
-    public long getId() {
-	return id;
-    }
-
-    public void setId(long id) {
-	this.id = id;
-    }
-
-    public String getUsername() {
-	return username;
-    }
-
-    public void setUsername(String username) {
-	this.username = username;
-    }
-
-    public String getFirstName() {
-	return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-	this.firstName = firstName;
-    }
-
-    public String getLastName() {
-	return lastName;
-    }
-
-    public void setLastName(String lastName) {
-	this.lastName = lastName;
-    }
-
-    public String getDisplayName() {
-	StringBuilder sb = new StringBuilder();
-	sb.append(StringUtility.emptyIfNull(getFirstName()));
-	if (sb.length() > 0) {
-	    sb.append(" ");
+	public long getId() {
+		return id;
 	}
-	sb.append(StringUtility.emptyIfNull(getLastName()));
-	if (sb.length() == 0) {
-	    sb.append(getUsername());
+
+	void setId(long id) {
+		this.id = id;
 	}
-	return sb.toString();
-    }
 
-    public String getEmail() {
-	return email;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setEmail(String email) {
-	this.email = email;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public int getFailedLoginAttempts() {
-	return failedLoginAttempts;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public void setFailedLoginAttempts(int failedLoginAttempts) {
-	this.failedLoginAttempts = failedLoginAttempts;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public boolean isBlocked() {
-	return blocked;
-    }
+	public String getLastName() {
+		return lastName;
+	}
 
-    public void setBlocked(boolean blocked) {
-	this.blocked = blocked;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    public Date getLastLogin() {
-	return lastLogin;
-    }
+	public String getDisplayName() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(StringUtility.emptyIfNull(getFirstName()));
+		if (sb.length() > 0) {
+			sb.append(" ");
+		}
+		sb.append(StringUtility.emptyIfNull(getLastName()));
+		if (sb.length() == 0) {
+			sb.append(getUsername());
+		}
+		return sb.toString();
+	}
 
-    public void setLastLogin(Date lastLogin) {
-	this.lastLogin = lastLogin;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPasswordSalt() {
-	return passwordSalt;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setPasswordSalt(String passwordSalt) {
-	this.passwordSalt = passwordSalt;
-    }
+	public int getFailedLoginAttempts() {
+		return failedLoginAttempts;
+	}
 
-    public String getPasswordHash() {
-	return passwordHash;
-    }
+	public void setFailedLoginAttempts(int failedLoginAttempts) {
+		this.failedLoginAttempts = failedLoginAttempts;
+	}
 
-    public void setPasswordHash(String passwordHash) {
-	this.passwordHash = passwordHash;
-    }
+	public boolean isBlocked() {
+		return blocked;
+	}
 
-    public Collection<Role> getRoles() {
-	return roles;
-    }
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
 
-    public Collection<ProjectAssignment> getProjectAssignments() {
-	return projectAssignments;
-    }
+	public Date getLastLogin() {
+		return lastLogin;
+	}
 
-    public void setProjectAssignments(Collection<ProjectAssignment> projectAssignments) {
-	this.projectAssignments = projectAssignments;
-    }
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
+	}
 
-    public void setRoles(Collection<Role> roles) {
-	this.roles = roles;
-    }
+	public String getPasswordSalt() {
+		return passwordSalt;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-	return obj != null && getId() == ((User) obj).getId();
-    }
+	public void setPasswordSalt(String passwordSalt) {
+		this.passwordSalt = passwordSalt;
+	}
 
-    @Override
-    public int hashCode() {
-	return Long.hashCode(getId());
-    }
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+
+	public Collection<Role> getRoles() {
+		return roles;
+	}
+
+	public Collection<ProjectAssignment> getProjectAssignments() {
+		return projectAssignments;
+	}
+
+	public void setProjectAssignments(Collection<ProjectAssignment> projectAssignments) {
+		this.projectAssignments = projectAssignments;
+	}
+
+	public void setRoles(Collection<Role> roles) {
+		this.roles = roles;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj != null && getId() == ((User) obj).getId();
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getId());
+	}
 }

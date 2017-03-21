@@ -17,7 +17,7 @@ import org.leslie.server.jpa.JPA;
 import org.leslie.server.jpa.entity.Project;
 import org.leslie.server.jpa.entity.ProjectAssignment;
 import org.leslie.server.jpa.entity.User;
-import org.leslie.server.jpa.mapping.FieldMappingUtility;
+import org.leslie.server.jpa.mapping.MappingUtility;
 import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.CreateProjectPermission;
@@ -46,7 +46,7 @@ public class ProjectService implements IProjectService {
 	}
 
 	final ProjectTablePageData pageData = new ProjectTablePageData();
-	FieldMappingUtility.importTablePageData(resultList, pageData, (project, row) -> {
+	MappingUtility.importTablePageData(resultList, pageData, (project, row) -> {
 	    if (project.getUserAssignments() != null) {
 		for (ProjectAssignment pa : project.getUserAssignments()) {
 		    if (user.equals(pa.getUser())) {
@@ -74,7 +74,7 @@ public class ProjectService implements IProjectService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	Project project = new Project();
-	FieldMappingUtility.exportFormData(formData, project);
+	MappingUtility.exportFormData(formData, project);
 
 	// set current user as manager by default
 	ProjectAssignment assignment = new ProjectAssignment();
@@ -95,7 +95,7 @@ public class ProjectService implements IProjectService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	Project project = JPA.find(Project.class, formData.getProjectId());
-	FieldMappingUtility.importFormData(project, formData);
+	MappingUtility.importFormData(project, formData);
 	return formData;
     }
 
@@ -105,7 +105,7 @@ public class ProjectService implements IProjectService {
 	    throw new VetoException(TEXTS.get("AuthorizationFailed"));
 	}
 	Project project = JPA.find(Project.class, formData.getProjectId());
-	FieldMappingUtility.exportFormData(formData, project);
+	MappingUtility.exportFormData(formData, project);
 
 	return formData;
     }
