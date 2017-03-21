@@ -124,7 +124,7 @@ public class ProjectActivityService implements IProjectActivityService {
 		    // increment end date by 1 so it displays correctly
 		    return new CalendarAppointment(pa.getId(), pa.getUser().getDisplayName(),
 			    pa.getFrom(), DateUtility.addDays(pa.getTo(), 1), true, pa.getProject().getName(),
-			    String.format("%.0f%%", pa.getPercentage()), null);
+			    String.format("%.0f%%", pa.getPercentage()*100.0), null);
 		}).collect(Collectors.toList()));
     }
 

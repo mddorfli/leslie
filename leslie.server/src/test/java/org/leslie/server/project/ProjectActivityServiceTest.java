@@ -15,11 +15,11 @@ import org.leslie.shared.project.ProjectActivityFormData;
 @RunWithServerSession(ServerSession.class)
 public class ProjectActivityServiceTest {
 
-    @Test
-    public void testLoad() {
-	ProjectActivityFormData formData = new ProjectActivityFormData();
-	formData.setActivityId(Long.valueOf(1L));
-	BEANS.get(IProjectActivityService.class).load(formData);
-    }
+	@Test
+	public void testLoad() {
+		ProjectActivityFormData formData = new ProjectActivityFormData();
+		formData.setActivityId(Long.valueOf(1L));
+		BEANS.get(IProjectActivityService.class).load(formData);
+	}
 
 }

@@ -40,7 +40,7 @@ public class ProjectActivityMappingTest {
 	FieldMappingUtility.importTableRowData(pa, rowData);
 
 	assertEquals(Long.valueOf(2L), rowData.getUserId());
-	assertEquals("Marco Dörfliger", rowData.getUser());
+	assertEquals("Maroc Villager", rowData.getUser());
 	assertEquals(BigDecimal.valueOf(80.0), rowData.getPercentage());
 	assertEquals(fromDate, rowData.getFrom());
 	assertEquals(toDate, rowData.getTo());
