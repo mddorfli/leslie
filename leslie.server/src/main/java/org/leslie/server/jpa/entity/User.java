@@ -24,6 +24,9 @@ import org.leslie.server.jpa.mapping.impl.UserMapping;
 @Entity
 @Table(name = "users")
 @NamedQueries({ @NamedQuery(name = User.QUERY_ALL, query = "" + "SELECT u " + "  FROM User u "),
+		@NamedQuery(name = User.QUERY_ALL_FETCH_PERMISSIONS, query = "" + "SELECT u " + "  FROM User u "
+				+ "  LEFT OUTER JOIN FETCH u.roles r " + "  LEFT OUTER JOIN FETCH r.rolePermissions rp "
+				+ " WHERE u.username = :username "),
 		@NamedQuery(name = User.QUERY_BY_USERNAME, query = "" + "SELECT u " + "  FROM User u "
 				+ " WHERE u.username = :username "),
 		@NamedQuery(name = User.QUERY_BY_ROLE_ID, query = "" + "SELECT u " + "  FROM User u " + "  JOIN u.roles r "
@@ -34,6 +37,7 @@ import org.leslie.server.jpa.mapping.impl.UserMapping;
 public class User {
 
 	public static final String QUERY_ALL = "User.all";
+	public static final String QUERY_ALL_FETCH_PERMISSIONS = "User.allFetchPermissions";
 	public static final String QUERY_BY_USERNAME = "User.byUsername";
 	public static final String QUERY_BY_ROLE_ID = "User.byRoleId";
 	public static final String QUERY_BY_PROJECT_ID = "User.byProjectId";
@@ -74,7 +78,7 @@ public class User {
 	private String passwordHash;
 
 	@ManyToMany
-	@JoinTable(name = "user_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	@JoinTable(name = "users_x_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Collection<Role> roles;
 
 	@OneToMany(mappedBy = "user")
@@ -189,13 +193,13 @@ public class User {
 		this.roles = roles;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		return obj != null && getId() == ((User) obj).getId();
-	}
-
-	@Override
-	public int hashCode() {
-		return Long.hashCode(getId());
-	}
+//	@Override
+//	public boolean equals(Object obj) {
+//		return obj != null && getId() == ((User) obj).getId();
+//	}
+//
+//	@Override
+//	public int hashCode() {
+//		return Long.hashCode(getId());
+//	}
 }

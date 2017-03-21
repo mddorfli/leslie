@@ -6,12 +6,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-<changeSet id="10" author="kiwi">
+<changeSet id="10" author="mddorfli">
 	<addForeignKeyConstraint constraintName="fk_role_x_permission_role" 
 		baseTableName="role_x_permission" baseColumnNames="role_id" 
 		referencedTableName="role" referencedColumnNames="id"/>
 </changeSet>
-<changeSet id="20" author="kiwi">
+<changeSet id="20" author="mddorfli">
 	<addUniqueConstraint tableName="role_x_permission" columnNames="role_id,permission_name"/>
 </changeSet>
 

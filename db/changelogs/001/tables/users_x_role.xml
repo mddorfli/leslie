@@ -2,9 +2,10 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 <changeSet id="1" author="mddorfli">
-	<addForeignKeyConstraint  constraintName="fk_skill_skill_category" 
-		baseTableName="skill" baseColumnNames="category_id" 
-		referencedTableName="skill_category" referencedColumnNames="id"/>
+	<createTable tableName="users_x_role">
+		<column name="user_id" type="java.sql.Types.BIGINT"/>
+		<column name="role_id" type="java.sql.Types.BIGINT"/>
+	</createTable>
 </changeSet>
 
 </databaseChangeLog>

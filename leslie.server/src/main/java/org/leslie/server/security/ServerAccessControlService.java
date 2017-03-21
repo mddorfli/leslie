@@ -41,13 +41,7 @@ public class ServerAccessControlService extends AccessControlService {
 	// calling services is allowed
 	permissions.add(new RemoteServiceAccessPermission("*.shared.*", "*"));
 
-	TypedQuery<User> query = JPA.createQuery(""
-		+ "SELECT u "
-		+ "  FROM " + User.class.getSimpleName() + " u "
-		+ "  LEFT OUTER JOIN FETCH u.roles r "
-		+ "  LEFT OUTER JOIN FETCH r.rolePermissions rp "
-		+ " WHERE u.username = :username ",
-		User.class);
+	TypedQuery<User> query = JPA.createNamedQuery(User.QUERY_ALL_FETCH_PERMISSIONS, User.class);
 	query.setParameter("username", userId);
 	User user = query.getResultList().stream()
 		.findAny()

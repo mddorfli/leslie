@@ -2,11 +2,21 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 <changeSet id="1" author="mddorfli">
-	<createTable tableName="role">
+	<createTable tableName="users_x_skill">
 		<column name="id" type="java.sql.Types.BIGINT" autoIncrement="true">
 			<constraints primaryKey="true"/>
 		</column>
-		<column name="name" type="java.sql.Types.VARCHAR(80)">
+		<column name="user_id" type="java.sql.Types.BIGINT">
+			<constraints nullable="false"/>
+		</column>
+		<column name="skill_id" type="java.sql.Types.BIGINT">
+			<constraints nullable="false"/>
+		</column>
+		<column name="self_assessment" type="java.sql.Types.DOUBLE"/>
+		<column name="self_affinity" type="java.sql.Types.DOUBLE"/>
+		<column name="assessment" type="java.sql.Types.DOUBLE"/>
+		<column name="assessed_by" type="java.sql.Types.BIGINT"/>
+		<column name="last_modified" type="java.sql.Types.TIMESTAMP">
 			<constraints nullable="false"/>
 		</column>
 	</createTable>

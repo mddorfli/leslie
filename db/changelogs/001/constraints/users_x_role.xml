@@ -6,16 +6,15 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-
 <changeSet id="10" author="mddorfli">
-	<addForeignKeyConstraint constraintName="fk_activity_vacation_activity" 
-		baseTableName="activity_vacation" baseColumnNames="activity_id" 
-		referencedTableName="activity" referencedColumnNames="id"/>
+	<addForeignKeyConstraint constraintName="fk_users_x_role_user" 
+		baseTableName="users_x_role" baseColumnNames="user_id" 
+		referencedTableName="users" referencedColumnNames="id"/>
 </changeSet>
 <changeSet id="20" author="mddorfli">
-	<addForeignKeyConstraint constraintName="fk_activity_vacation_approvedby" 
-		baseTableName="activity_vacation" baseColumnNames="approved_by_user_id" 
-		referencedTableName="users" referencedColumnNames="id"/>
+	<addForeignKeyConstraint constraintName="fk_users_x_role_role" 
+		baseTableName="users_x_role" baseColumnNames="role_id" 
+		referencedTableName="role" referencedColumnNames="id"/>
 </changeSet>
 
 </databaseChangeLog>

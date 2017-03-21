@@ -7,12 +7,12 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 
-<changeSet id="10" author="kiwi">
+<changeSet id="10" author="mddorfli">
 	<addForeignKeyConstraint constraintName="fk_activity_project_activity" 
 		baseTableName="activity_project" baseColumnNames="activity_id" 
 		referencedTableName="activity" referencedColumnNames="id"/>
 </changeSet>
-<changeSet id="20" author="kiwi">
+<changeSet id="20" author="mddorfli">
 	<addForeignKeyConstraint constraintName="fk_activity_project_project" 
 		baseTableName="activity_project" baseColumnNames="project_id" 
 		referencedTableName="project" referencedColumnNames="id"/>

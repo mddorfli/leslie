@@ -12,7 +12,6 @@ import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.leslie.client.skill.SkillCategoryTablePage.Table;
-import org.leslie.client.skill.SkillCategoryTablePage.Table.IdColumn;
 import org.leslie.shared.skill.ISkillCategoryService;
 import org.leslie.shared.skill.ISkillService.SkillPresentation;
 import org.leslie.shared.skill.SkillCategoryTablePageData;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+<changeSet id="10" author="mddorfli">
+	<addForeignKeyConstraint constraintName="fk_users_x_skill_user" 
+		baseTableName="users_x_skill" baseColumnNames="user_id" 
+		referencedTableName="users" referencedColumnNames="id"/>
+</changeSet>
+<changeSet id="20" author="mddorfli">
+	<addForeignKeyConstraint constraintName="fk_users_x_skill_skill" 
+		baseTableName="users_x_skill" baseColumnNames="skill_id" 
+		referencedTableName="skill" referencedColumnNames="id"/>
+</changeSet>
+<changeSet id="30" author="mddorfli">
+	<addForeignKeyConstraint constraintName="fk_users_x_skill_assessed_by" 
+		baseTableName="users_x_skill" baseColumnNames="assessed_by" 
+		referencedTableName="users" referencedColumnNames="id"/>
+</changeSet>
+
+</databaseChangeLog>

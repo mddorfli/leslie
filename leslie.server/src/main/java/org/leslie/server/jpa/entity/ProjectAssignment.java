@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 
 @Entity
-@Table(name = "user_x_project")
+@Table(name = "users_x_project")
 @IdClass(ProjectAssignmentId.class)
 public class ProjectAssignment {
 
