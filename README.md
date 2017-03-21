@@ -2,19 +2,18 @@
 Leslie - ERP for software projects
 
 Current features:
-* Database authentication
-* User administration
-* Permission & role administration
-* Fine-grained (per-project)  authentication
+* Strong database authentication (salted SHA-512 encrypted passwords)
+* User, permission and role administration
+* Fine-grained (per-project) authorization & authentication
 * Projects & membership assignment
 * Project resource assignment
 
 Architecture:
-* Eclipse Scout (Neon.1a)
+* Eclipse Scout (Neon.2)
 * JPA (Eclipselink)
+* PostgreSQL database (is portable)
+* Liquibase (DB definition and test DB setup - also portable)
 * Custom-built Entity/form/page data mapping
-* PostgreSQL database (is theoretically portable)
-* Liquibase (DB definition and test DB setup)
 
 Screenshots:
 
