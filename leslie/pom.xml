@@ -18,7 +18,7 @@
   <name>Leslie Parent Module</name>
 
   <properties>
-    <org.leslie.leslie.version>${project.version}</org.leslie.leslie.version>
+    <org.leslie.version>${project.version}</org.leslie.version>
     <jdk.source.version>1.8</jdk.source.version>
     <org.eclipse.scout.rt.version>6.0.100.RC4</org.eclipse.scout.rt.version>
   </properties>
@@ -47,22 +47,22 @@
       <dependency>
         <groupId>org.leslie</groupId>
         <artifactId>leslie.client</artifactId>
-        <version>${org.leslie.leslie.version}</version>
+        <version>${org.leslie.version}</version>
       </dependency>
       <dependency>
         <groupId>org.leslie</groupId>
         <artifactId>leslie.shared</artifactId>
-        <version>${org.leslie.leslie.version}</version>
+        <version>${org.leslie.version}</version>
       </dependency>
       <dependency>
         <groupId>org.leslie</groupId>
         <artifactId>leslie.server</artifactId>
-        <version>${org.leslie.leslie.version}</version>
+        <version>${org.leslie.version}</version>
       </dependency>
       <dependency>
         <groupId>org.leslie</groupId>
         <artifactId>leslie.ui.html</artifactId>
-        <version>${org.leslie.leslie.version}</version>
+        <version>${org.leslie.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

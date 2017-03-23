@@ -16,7 +16,7 @@
   <name>Leslie HTML UI WAR</name>
 
   <build>
-      <finalName>org.leslie.leslie.ui.html</finalName>
+      <finalName>org.leslie.ui.html</finalName>
   </build>
 
   <dependencies>

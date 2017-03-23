@@ -9,9 +9,9 @@
 
   <appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="FILE">
     <!-- Sample for Tomcat Log Folder -->
-    <file>${catalina.base}/logs/org.leslie.leslie.html.ui.log</file>
+    <file>${catalina.base}/logs/org.leslie.html.ui.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${catalina.base}/logs/org.leslie.leslie.html.ui-%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>${catalina.base}/logs/org.leslie.html.ui-%d{yyyy-MM-dd}.log</fileNamePattern>
       <maxHistory>100</maxHistory>
     </rollingPolicy>
     <encoder>
@@ -19,7 +19,7 @@
     </encoder>
   </appender>
 
-  <root level="INFO">
+  <root level="DEBUG">
     <appender-ref ref="FILE" />
   </root>
 

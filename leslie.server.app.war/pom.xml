@@ -16,7 +16,7 @@
   <name>Leslie Server WAR</name>
 
   <build>
-      <finalName>org.leslie.leslie.server</finalName>
+      <finalName>org.leslie.server</finalName>
   </build>
 
   <dependencies>
