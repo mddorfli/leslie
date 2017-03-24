@@ -56,7 +56,7 @@ public class SkillService implements ISkillService {
 
 	@Override
 	public SkillFormData create(SkillFormData formData) throws ProcessingException {
-		if (ACCESS.getLevel(new CreateSkillPermission()) < CreateSkillPermission.LEVEL_ALL) {
+		if (!ACCESS.check(new CreateSkillPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 
@@ -70,7 +70,7 @@ public class SkillService implements ISkillService {
 
 	@Override
 	public SkillFormData store(SkillFormData formData) throws ProcessingException {
-		if (ACCESS.check(new UpdateSkillPermission())) {
+		if (!ACCESS.check(new UpdateSkillPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 		Skill skill = JPA.find(Skill.class, formData.getSkillId());
@@ -81,7 +81,7 @@ public class SkillService implements ISkillService {
 
 	@Override
 	public void delete(List<Long> skillIds) throws ProcessingException {
-		if (ACCESS.check(new UpdateSkillPermission())) {
+		if (!ACCESS.check(new UpdateSkillPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 
