@@ -25,7 +25,7 @@ public class Role {
 
 	private String name;
 
-	@OneToMany
+	@OneToMany(orphanRemoval = true)
 	@JoinColumn(name = "role_id")
 	private Collection<RolePermission> rolePermissions;
 

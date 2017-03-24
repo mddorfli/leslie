@@ -11,8 +11,8 @@ public class SkillMapping implements CustomDataMapping<Skill, SkillFormData, Ski
 
 	@Override
 	public void read(Skill fromEntity, SkillTableRowData toRow) {
-		toRow.setCategoryId(fromEntity.getCategory().getId());
-		toRow.setCategory(fromEntity.getCategory().getName());
+		toRow.setCategoryId(fromEntity.getCategory() == null ? null : fromEntity.getCategory().getId());
+		toRow.setCategory(fromEntity.getCategory() == null ? null : fromEntity.getCategory().getName());
 	}
 
 	@Override

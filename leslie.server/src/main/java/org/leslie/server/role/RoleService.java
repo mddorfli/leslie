@@ -151,13 +151,12 @@ public class RoleService implements IRoleService {
 	}
 
 	@Override
-	public void revokePermissions(Long roleId, List<String> permissions) throws ProcessingException {
+	public void revokePermissions(Long roleId, List<String> permissionNames) throws ProcessingException {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 		Role role = JPA.find(Role.class, roleId);
-		role.getRolePermissions().removeIf(
-				rolePermission -> permissions.contains(rolePermission.getPermissionName()));
+		role.getRolePermissions().removeIf(permission -> permissionNames.contains(permission.getPermissionName()));
 
 		BEANS.get(IAccessControlService.class).clearCache();
 	}

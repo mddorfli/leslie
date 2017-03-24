@@ -20,7 +20,7 @@ import org.leslie.server.jpa.mapping.impl.SkillMapping;
 @Entity
 @NamedQueries({
 		@NamedQuery(name = Skill.QUERY_ALL, query = "SELECT s FROM Skill s"),
-		@NamedQuery(name = Skill.QUERY_ALL_FETCH_CATEGORY, query = "SELECT s FROM Skill s JOIN FETCH s.category "),
+		@NamedQuery(name = Skill.QUERY_ALL_FETCH_CATEGORY, query = "SELECT s FROM Skill s LEFT JOIN FETCH s.category "),
 		@NamedQuery(name = Skill.QUERY_IN_CATEGORY_IDS, query = "SELECT s FROM Skill s JOIN s.category c WHERE c.id IN :categoryIds "),
 })
 @MappedClass(SkillMapping.class)

@@ -13,10 +13,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "role_x_permission")
 @NamedQueries({
-		@NamedQuery(name = RolePermission.QUERY_BY_ROLE_ID, query = "" + "SELECT rp " + "  FROM RolePermission rp "
+		@NamedQuery(name = RolePermission.QUERY_BY_ROLE_ID, query = ""
+				+ "SELECT rp "
+				+ "  FROM RolePermission rp "
 				+ " WHERE rp.role.id = :roleId"),
-		@NamedQuery(name = RolePermission.QUERY_BY_ROLE_ID_AND_PERMISSION_NAME, query = "" + "SELECT rp "
-				+ "  FROM RolePermission rp " + " WHERE rp.role.id = :roleId "
+		@NamedQuery(name = RolePermission.QUERY_BY_ROLE_ID_AND_PERMISSION_NAME, query = ""
+				+ "SELECT rp "
+				+ "  FROM RolePermission rp "
+				+ " WHERE rp.role.id = :roleId "
 				+ "   AND rp.permissionName = :permissionName "), })
 public class RolePermission {
 
