@@ -11,16 +11,16 @@ import org.leslie.server.jpa.mapping.MappedClass;
 import org.leslie.server.jpa.mapping.MappedField;
 
 @Entity
-@Table(name="skill_category")
-@NamedQuery(name=SkillCategory.QUERY_ALL, query="SELECT c FROM SkillCategory c")
+@Table(name = "skill_category")
+@NamedQuery(name = SkillCategory.QUERY_ALL, query = "SELECT c FROM SkillCategory c")
 @MappedClass
 public class SkillCategory {
-	
+
 	public static final String QUERY_ALL = "SkillCategory.all";
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@MappedField(readOnly=true)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@MappedField(readOnly = true, formFieldName = "categoryId")
 	private long id;
 
 	@MappedField

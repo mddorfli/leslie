@@ -25,16 +25,25 @@ import org.leslie.server.jpa.mapping.MappedField;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "activity_type_uid", discriminatorType = DiscriminatorType.INTEGER)
 @NamedQueries({
-		@NamedQuery(name = Activity.QUERY_BY_IDS, query = "" + "SELECT a " + "  FROM Activity a "
+		@NamedQuery(name = Activity.QUERY_BY_IDS, query = ""
+				+ "SELECT a "
+				+ "  FROM Activity a "
 				+ " WHERE a.id IN :activityIds "),
-		@NamedQuery(name = Activity.QUERY_BY_USERID_TYPE_FROM_TO, query = "" + "SELECT va " + "  FROM Activity va "
-				+ " WHERE va.user.id = :userId " + "   AND TYPE(va) = :type "
-				+ "   AND (va.from BETWEEN :from AND :to OR " + "        va.to BETWEEN :from AND :to OR "
-				+ "        va.from <= :from AND va.to >= :to)"), })
+		@NamedQuery(name = Activity.QUERY_BY_USERID, query = "SELECT a FROM Activity a WHERE a.user.id = :userId"),
+		@NamedQuery(name = Activity.QUERY_BY_USERID_TYPE_FROM_TO, query = ""
+				+ "SELECT a "
+				+ "  FROM Activity a "
+				+ " WHERE a.user.id = :userId "
+				+ "   AND TYPE(a) = :type "
+				+ "   AND (a.from BETWEEN :from AND :to OR "
+				+ "        a.to BETWEEN :from AND :to OR "
+				+ "        a.from <= :from AND a.to >= :to)"),
+})
 @MappedClass
 public abstract class Activity {
 
 	public static final String QUERY_BY_IDS = "Activity.byIds";
+	public static final String QUERY_BY_USERID = "Activity.byUserId";
 	public static final String QUERY_BY_USERID_TYPE_FROM_TO = "Activity.byUserIdTypeFromTo";
 
 	@Id

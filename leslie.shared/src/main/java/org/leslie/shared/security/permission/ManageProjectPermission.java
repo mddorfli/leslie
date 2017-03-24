@@ -7,33 +7,33 @@ import org.leslie.shared.project.IProjectService;
 
 public class ManageProjectPermission extends BasicHierarchyPermission {
 
-    private static final long serialVersionUID = 1L;
-    public static final int LEVEL_PROJECT = 10;
-    private long projectId;
+	private static final long serialVersionUID = 1L;
+	public static final int LEVEL_PROJECT = 20;
+	private long projectId;
 
-    public ManageProjectPermission() {
-	super(ManageProjectPermission.class.getSimpleName() + ".*", LEVEL_PROJECT);
-    }
-
-    public ManageProjectPermission(long projectId) {
-	super(ManageProjectPermission.class.getSimpleName() + "." + projectId, LEVEL_UNDEFINED);
-	this.projectId = projectId;
-    }
-
-    public long getProjectId() {
-	return projectId;
-    }
-
-    @Override
-    protected int execCalculateLevel(BasicHierarchyPermission other) {
-	int result = LEVEL_ALL;
-	if (other instanceof ManageProjectPermission) {
-	    long projectNr = ((ManageProjectPermission) other).getProjectId();
-	    ParticipationLevel level = BEANS.get(IProjectService.class).getParticipationLevel(projectNr);
-	    if (level == ParticipationLevel.MANAGER) {
-		result = LEVEL_PROJECT;
-	    }
+	public ManageProjectPermission() {
+		super(ManageProjectPermission.class.getSimpleName() + ".*", LEVEL_PROJECT);
 	}
-	return result;
-    }
+
+	public ManageProjectPermission(long projectId) {
+		super(ManageProjectPermission.class.getSimpleName() + "." + projectId, LEVEL_UNDEFINED);
+		this.projectId = projectId;
+	}
+
+	public long getProjectId() {
+		return projectId;
+	}
+
+	@Override
+	protected int execCalculateLevel(BasicHierarchyPermission other) {
+		int result = LEVEL_ALL;
+		if (other instanceof ManageProjectPermission) {
+			long projectNr = ((ManageProjectPermission) other).getProjectId();
+			ParticipationLevel level = BEANS.get(IProjectService.class).getParticipationLevel(projectNr);
+			if (level == ParticipationLevel.MANAGER) {
+				result = LEVEL_PROJECT;
+			}
+		}
+		return result;
+	}
 }

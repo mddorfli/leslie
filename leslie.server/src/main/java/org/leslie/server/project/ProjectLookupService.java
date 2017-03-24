@@ -8,14 +8,14 @@ import org.leslie.shared.project.IProjectLookupService;
 
 public class ProjectLookupService extends AbstractJpaLongLookupService implements IProjectLookupService {
 
-    @Override
-    protected String getConfiguredJpqlSelect(ILookupCall<Long> call) {
-	return ""
-		+ "SELECT NEW " + LongLookupRow.class.getName() + "(p.id, p.name) "
-		+ "  FROM " + Project.class.getSimpleName() + " p "
-		+ " WHERE 1=1 "
-		+ "<key>AND p.id = :key</key> "
-		+ "<text>AND UPPER(p.name) LIKE UPPER(CONCAT(:text, '%'))</text> "
-		+ "<all></all> ";
-    }
+	@Override
+	protected String getConfiguredJpqlSelect(ILookupCall<Long> call) {
+		return ""
+				+ "SELECT NEW " + LongLookupRow.class.getName() + "(p.id, p.name) "
+				+ "  FROM " + Project.class.getSimpleName() + " p "
+				+ " WHERE 1=1 "
+				+ "<key>AND p.id = :key</key> "
+				+ "<text>AND UPPER(p.name) LIKE UPPER(CONCAT(:text, '%'))</text> "
+				+ "<all></all> ";
+	}
 }

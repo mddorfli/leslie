@@ -36,7 +36,7 @@ public abstract class AbstractJpaLongLookupService extends AbstractJpaLookupServ
     }
 
     @Override
-    protected final List<LongLookupRow> execGenerateRowData(ILookupCall<Long> call, CALL_TYPE callType) {
+    protected final List<LongLookupRow> execGenerateRowData(ILookupCall<Long> call, LookupCallType callType) {
 	String queryString = getConfiguredJpqlSelect(call);
 	TypedQuery<LongLookupRow> query = JPA.createQuery(
 		filterSqlByCallType(queryString, callType), LongLookupRow.class);

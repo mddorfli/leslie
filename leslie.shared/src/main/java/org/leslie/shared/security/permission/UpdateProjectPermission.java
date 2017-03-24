@@ -8,7 +8,7 @@ import org.leslie.shared.project.IProjectService;
 public class UpdateProjectPermission extends BasicHierarchyPermission {
 
     private static final long serialVersionUID = 1L;
-    public static final int LEVEL_PROJECT = 10;
+    public static final int LEVEL_PROJECT = 20;
     private long projectId;
 
     public UpdateProjectPermission() {

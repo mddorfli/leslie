@@ -1,7 +1,6 @@
 package org.leslie.client.skill;
 
 import org.eclipse.scout.rt.client.dto.Data;
-import org.leslie.shared.skill.ISkillService.SkillPresentation;
 import org.eclipse.scout.rt.client.ui.basic.table.AbstractTable;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
@@ -12,6 +11,7 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.leslie.client.skill.SkillTablePage.Table;
 import org.leslie.shared.skill.ISkillService;
+import org.leslie.shared.skill.ISkillService.SkillPresentation;
 import org.leslie.shared.skill.SkillTablePageData;
 
 @Data(SkillTablePageData.class)
@@ -41,7 +41,7 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 	@Override
 	protected void execLoadData(SearchFilter filter) {
 		SkillTablePageData pageData;
-		switch(presentationType) {
+		switch (presentationType) {
 		case ADMIN_CATEGORY:
 			pageData = BEANS.get(ISkillService.class).getSkillTableData(getCategoryId());
 			break;
@@ -50,7 +50,7 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			pageData = BEANS.get(ISkillService.class).getSkillTableData();
 			break;
 		}
-		
+
 		importPageData(pageData);
 	}
 
@@ -61,7 +61,7 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 
 	@Override
 	protected void execInitPage() {
-		switch(presentationType) {
+		switch (presentationType) {
 		case ADMIN:
 			break;
 		case ADMIN_CATEGORY:
@@ -69,10 +69,10 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			break;
 		default:
 			break;
-		
+
 		}
 	}
-	
+
 	public class Table extends AbstractTable {
 
 		public CategoryIdColumn getCategoryIdColumn() {
@@ -149,6 +149,5 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 				return 500;
 			}
 		}
-
 	}
 }

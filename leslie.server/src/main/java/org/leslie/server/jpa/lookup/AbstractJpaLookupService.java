@@ -35,102 +35,124 @@ import org.eclipse.scout.rt.shared.services.lookup.LookupRow;
  */
 public abstract class AbstractJpaLookupService<K> extends AbstractLookupService<K> {
 
-    public static enum CALL_TYPE {
-	KEY, TEXT, ALL, REC
-    }
+	public static enum LookupCallType {
+		/**
+		 * Lookup by id (primary key).
+		 */
+		KEY,
 
-    protected abstract List<? extends ILookupRow<K>> execGenerateRowData(ILookupCall<K> call, CALL_TYPE callType);
+		/**
+		 * Lookup by text.
+		 */
+		TEXT,
 
-    /**
-     * Process xml tags.<br>
-     * Keep content of "key" tag.<br>
-     * Remove text,all,rec tags.
-     */
-    protected String filterSqlByKey(String sqlSelect) {
-	return StringUtility.removeTagBounds(StringUtility.removeTags(sqlSelect, new String[] { "text", "all", "rec" }),
-		"key");
-    }
+		/**
+		 * Select all.
+		 */
+		ALL,
 
-    /**
-     * Process xml tags.<br>
-     * Keep content of "text" tag.<br>
-     * Remove key,all,rec tags.
-     */
-    protected String filterSqlByText(String sqlSelect) {
-	return StringUtility.removeTagBounds(StringUtility.removeTags(sqlSelect, new String[] { "key", "all", "rec" }),
-		"text");
-    }
-
-    /**
-     * Process xml tags.<br>
-     * Keep content of "all" tag.<br>
-     * Remove key,text,rec tags.
-     */
-    protected String filterSqlByAll(String sqlSelect) {
-	return StringUtility.removeTagBounds(StringUtility.removeTags(sqlSelect, new String[] { "key", "text", "rec" }),
-		"all");
-    }
-
-    /**
-     * Process xml tags.<br>
-     * Keep content of "rec" tag.<br>
-     * Remove key,text,all tags.
-     */
-    protected String filterSqlByRec(String sqlSelect) {
-	return StringUtility.removeTagBounds(StringUtility.removeTags(sqlSelect, new String[] { "key", "text", "all" }),
-		"rec");
-    }
-
-    @Override
-    public List<? extends ILookupRow<K>> getDataByKey(ILookupCall<K> call) {
-	return execGenerateRowData(call, CALL_TYPE.KEY);
-    }
-
-    @Override
-    public List<? extends ILookupRow<K>> getDataByText(ILookupCall<K> call) {
-	return execGenerateRowData(call, CALL_TYPE.TEXT);
-    }
-
-    @Override
-    public List<? extends ILookupRow<K>> getDataByAll(ILookupCall<K> call) {
-	return execGenerateRowData(call, CALL_TYPE.ALL);
-    }
-
-    @Override
-    public List<? extends ILookupRow<K>> getDataByRec(ILookupCall<K> call) {
-	return execGenerateRowData(call, CALL_TYPE.REC);
-    }
-
-    protected String filterSqlByCallType(String sqlSelect, CALL_TYPE callType) {
-	String modifiedQueryString;
-	switch (callType) {
-	default:
-	case ALL:
-	    modifiedQueryString = filterSqlByAll(sqlSelect);
-	    break;
-	case KEY:
-	    modifiedQueryString = filterSqlByKey(sqlSelect);
-	    break;
-	case REC:
-	    modifiedQueryString = filterSqlByRec(sqlSelect);
-	    break;
-	case TEXT:
-	    modifiedQueryString = filterSqlByText(sqlSelect);
-	    break;
-	}
-	return modifiedQueryString;
-    }
-
-    protected void setCallQueryBinds(Query query, ILookupCall<K> call, CALL_TYPE callType) {
-	if (callType == CALL_TYPE.KEY) {
-	    query.setParameter("key", call.getKey());
-
-	} else if (callType == CALL_TYPE.TEXT) {
-	    query.setParameter("text", call.getText());
-
-	} else if (callType == CALL_TYPE.REC) {
-	    query.setParameter("rec", call.getRec());
+		/**
+		 * Recursive lookup (by parent).
+		 */
+		REC
 	}
 
-    }
+	protected abstract List<? extends ILookupRow<K>> execGenerateRowData(ILookupCall<K> call, LookupCallType callType);
+
+	/**
+	 * Process xml tags.<br>
+	 * Keep content of "key" tag.<br>
+	 * Remove text,all,rec tags.
+	 */
+	protected String filterSqlByKey(String sqlSelect) {
+		return StringUtility.removeTagBounds(StringUtility.removeTags(sqlSelect, new String[] { "text", "all", "rec" }),
+				"key");
+	}
+
+	/**
+	 * Process xml tags.<br>
+	 * Keep content of "text" tag.<br>
+	 * Remove key,all,rec tags.
+	 */
+	protected String filterSqlByText(String sqlSelect) {
+		return StringUtility.removeTagBounds(StringUtility.removeTags(sqlSelect, new String[] { "key", "all", "rec" }),
+				"text");
+	}
+
+	/**
+	 * Process xml tags.<br>
+	 * Keep content of "all" tag.<br>
+	 * Remove key,text,rec tags.
+	 */
+	protected String filterSqlByAll(String sqlSelect) {
+		return StringUtility.removeTagBounds(StringUtility.removeTags(sqlSelect, new String[] { "key", "text", "rec" }),
+				"all");
+	}
+
+	/**
+	 * Process xml tags.<br>
+	 * Keep content of "rec" tag.<br>
+	 * Remove key,text,all tags.
+	 */
+	protected String filterSqlByRec(String sqlSelect) {
+		return StringUtility.removeTagBounds(StringUtility.removeTags(sqlSelect, new String[] { "key", "text", "all" }),
+				"rec");
+	}
+
+	@Override
+	public List<? extends ILookupRow<K>> getDataByKey(ILookupCall<K> call) {
+		return execGenerateRowData(call, LookupCallType.KEY);
+	}
+
+	@Override
+	public List<? extends ILookupRow<K>> getDataByText(ILookupCall<K> call) {
+		return execGenerateRowData(call, LookupCallType.TEXT);
+	}
+
+	@Override
+	public List<? extends ILookupRow<K>> getDataByAll(ILookupCall<K> call) {
+		return execGenerateRowData(call, LookupCallType.ALL);
+	}
+
+	@Override
+	public List<? extends ILookupRow<K>> getDataByRec(ILookupCall<K> call) {
+		return execGenerateRowData(call, LookupCallType.REC);
+	}
+
+	protected String filterSqlByCallType(String sqlSelect, LookupCallType callType) {
+		String modifiedQueryString;
+		switch (callType) {
+		default:
+		case ALL:
+			modifiedQueryString = filterSqlByAll(sqlSelect);
+			break;
+		case KEY:
+			modifiedQueryString = filterSqlByKey(sqlSelect);
+			break;
+		case REC:
+			modifiedQueryString = filterSqlByRec(sqlSelect);
+			break;
+		case TEXT:
+			modifiedQueryString = filterSqlByText(sqlSelect);
+			break;
+		}
+		return modifiedQueryString;
+	}
+
+	protected void setCallQueryBinds(Query query, ILookupCall<K> call, LookupCallType callType) {
+		switch (callType) {
+		case KEY:
+			query.setParameter("key", call.getKey());
+			break;
+		case TEXT:
+			query.setParameter("text", call.getText());
+			break;
+		case REC:
+			query.setParameter("rec", call.getRec());
+			break;
+		case ALL:
+		default:
+			break;
+		}
+	}
 }

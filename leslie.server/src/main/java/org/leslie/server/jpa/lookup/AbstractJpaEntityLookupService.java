@@ -26,7 +26,7 @@ public abstract class AbstractJpaEntityLookupService<K, E> extends AbstractJpaLo
     }
 
     @Override
-    public List<ILookupRow<K>> execGenerateRowData(ILookupCall<K> call, CALL_TYPE callType) {
+    public List<ILookupRow<K>> execGenerateRowData(ILookupCall<K> call, LookupCallType callType) {
 	String queryString = getConfiguredJpqlSelect(call);
 	TypedQuery<E> query = JPA.createQuery(filterSqlByCallType(queryString, callType), getConfiguredEntityType());
 

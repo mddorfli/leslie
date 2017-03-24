@@ -9,7 +9,7 @@ public class ReadProjectPermission extends BasicHierarchyPermission {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int LEVEL_PROJECT = 10;
+    public static final int LEVEL_PROJECT = 20;
 
     private long projectId;
 
