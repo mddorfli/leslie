@@ -6,6 +6,7 @@ import javax.persistence.TypedQuery;
 
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 import org.leslie.server.jpa.JPA;
+import org.leslie.shared.lookup.LongLookupRow;
 
 /**
  * @author Marco Dörfliger

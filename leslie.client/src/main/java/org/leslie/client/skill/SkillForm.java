@@ -120,8 +120,13 @@ public class SkillForm extends AbstractForm {
 				}
 
 				@Override
+				protected boolean getConfiguredMultilineText() {
+					return true;
+				}
+
+				@Override
 				protected int getConfiguredGridH() {
-					return 4;
+					return 3;
 				}
 			}
 		}
@@ -141,7 +146,7 @@ public class SkillForm extends AbstractForm {
 		protected void execLoad() {
 			ISkillService service = BEANS.get(ISkillService.class);
 			SkillFormData formData = new SkillFormData();
-			importFormData(formData);
+			exportFormData(formData);
 			formData = service.load(formData);
 			importFormData(formData);
 

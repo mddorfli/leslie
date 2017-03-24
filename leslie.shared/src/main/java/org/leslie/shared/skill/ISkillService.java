@@ -33,4 +33,10 @@ public interface ISkillService extends IService {
 
 	void delete(List<Long> categoryIds) throws ProcessingException;
 
+	/**
+	 * @param skillId
+	 * @return true if the current user has this skill
+	 */
+	boolean currentUserHasSkill(long skillId);
+
 }

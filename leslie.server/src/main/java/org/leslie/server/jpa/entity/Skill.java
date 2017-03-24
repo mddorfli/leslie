@@ -1,5 +1,7 @@
 package org.leslie.server.jpa.entity;
 
+import java.util.Collection;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 import org.leslie.server.jpa.mapping.MappedClass;
 import org.leslie.server.jpa.mapping.MappedField;
@@ -42,6 +45,9 @@ public class Skill {
 	@MappedField
 	private String description;
 
+	@OneToMany(mappedBy = "skill", orphanRemoval = true)
+	private Collection<SkillAssessment> assessments;
+
 	public long getId() {
 		return id;
 	}
@@ -72,6 +78,14 @@ public class Skill {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Collection<SkillAssessment> getAssessments() {
+		return assessments;
+	}
+
+	public void setAssessments(Collection<SkillAssessment> assessments) {
+		this.assessments = assessments;
 	}
 
 }

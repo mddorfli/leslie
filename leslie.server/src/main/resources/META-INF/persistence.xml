@@ -19,6 +19,8 @@
 		<class>org.leslie.server.jpa.entity.VacationActivity</class>
 		<class>org.leslie.server.jpa.entity.Skill</class>
 		<class>org.leslie.server.jpa.entity.SkillCategory</class>
+		<class>org.leslie.server.jpa.entity.SkillAssessment</class>
+		<class>org.leslie.server.jpa.entity.SkillAssessmentId</class>
 		
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		

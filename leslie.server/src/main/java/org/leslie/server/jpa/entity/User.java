@@ -23,16 +23,28 @@ import org.leslie.server.jpa.mapping.impl.UserMapping;
 
 @Entity
 @Table(name = "users")
-@NamedQueries({ @NamedQuery(name = User.QUERY_ALL, query = "" + "SELECT u " + "  FROM User u "),
-		@NamedQuery(name = User.QUERY_ALL_FETCH_PERMISSIONS, query = "" + "SELECT u " + "  FROM User u "
-				+ "  LEFT OUTER JOIN FETCH u.roles r " + "  LEFT OUTER JOIN FETCH r.rolePermissions rp "
+@NamedQueries({
+		@NamedQuery(name = User.QUERY_ALL, query = "SELECT u FROM User u "),
+		@NamedQuery(name = User.QUERY_ALL_FETCH_PERMISSIONS, query = ""
+				+ "SELECT u "
+				+ "  FROM User u "
+				+ "  LEFT OUTER JOIN FETCH u.roles r "
+				+ "  LEFT OUTER JOIN FETCH r.rolePermissions rp "
 				+ " WHERE u.username = :username "),
-		@NamedQuery(name = User.QUERY_BY_USERNAME, query = "" + "SELECT u " + "  FROM User u "
+		@NamedQuery(name = User.QUERY_BY_USERNAME, query = ""
+				+ "SELECT u "
+				+ "  FROM User u "
 				+ " WHERE u.username = :username "),
-		@NamedQuery(name = User.QUERY_BY_ROLE_ID, query = "" + "SELECT u " + "  FROM User u " + "  JOIN u.roles r "
+		@NamedQuery(name = User.QUERY_BY_ROLE_ID, query = ""
+				+ "SELECT u "
+				+ "  FROM User u "
+				+ "  JOIN u.roles r "
 				+ " WHERE r.id = :roleId "),
-		@NamedQuery(name = User.QUERY_BY_PROJECT_ID, query = "" + "SELECT DISTINCT u " + "  FROM User u "
-				+ "  JOIN u.projectAssignments pa " + " WHERE pa.project.id = :projectId"), })
+		@NamedQuery(name = User.QUERY_BY_PROJECT_ID, query = ""
+				+ "SELECT DISTINCT u "
+				+ "  FROM User u "
+				+ "  JOIN u.projectAssignments pa "
+				+ " WHERE pa.project.id = :projectId"), })
 @MappedClass(UserMapping.class)
 public class User {
 
@@ -84,6 +96,9 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private Collection<ProjectAssignment> projectAssignments;
 
+	@OneToMany(mappedBy = "user")
+	private Collection<SkillAssessment> skills;
+
 	public long getId() {
 		return id;
 	}
@@ -116,6 +131,9 @@ public class User {
 		this.lastName = lastName;
 	}
 
+	/**
+	 * @return a displayable name like "Firstname Lastname"
+	 */
 	public String getDisplayName() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(StringUtility.emptyIfNull(getFirstName()));
@@ -193,13 +211,11 @@ public class User {
 		this.roles = roles;
 	}
 
-//	@Override
-//	public boolean equals(Object obj) {
-//		return obj != null && getId() == ((User) obj).getId();
-//	}
-//
-//	@Override
-//	public int hashCode() {
-//		return Long.hashCode(getId());
-//	}
+	public Collection<SkillAssessment> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(Collection<SkillAssessment> skills) {
+		this.skills = skills;
+	}
 }

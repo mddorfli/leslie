@@ -7,33 +7,33 @@ import org.leslie.shared.project.IProjectService;
 
 public class UpdateProjectPermission extends BasicHierarchyPermission {
 
-    private static final long serialVersionUID = 1L;
-    public static final int LEVEL_PROJECT = 20;
-    private long projectId;
+	private static final long serialVersionUID = 1L;
+	public static final int LEVEL_PROJECT = 20;
+	private long projectId;
 
-    public UpdateProjectPermission() {
-	super(UpdateProjectPermission.class.getSimpleName() + ".*", LEVEL_PROJECT);
-    }
-
-    public UpdateProjectPermission(long projectId) {
-	super(UpdateProjectPermission.class.getSimpleName() + "." + projectId, LEVEL_UNDEFINED);
-	this.projectId = projectId;
-    }
-
-    public long getProjectId() {
-	return projectId;
-    }
-
-    @Override
-    protected int execCalculateLevel(BasicHierarchyPermission other) {
-	int result = LEVEL_ALL;
-	if (other instanceof UpdateProjectPermission) {
-	    long projectNr = ((UpdateProjectPermission) other).getProjectId();
-	    ParticipationLevel level = BEANS.get(IProjectService.class).getParticipationLevel(projectNr);
-	    if (level != null && level.ordinal() >= ParticipationLevel.MEMBER.ordinal()) {
-		result = LEVEL_PROJECT;
-	    }
+	public UpdateProjectPermission() {
+		super(UpdateProjectPermission.class.getSimpleName() + ".*", LEVEL_PROJECT);
 	}
-	return result;
-    }
+
+	public UpdateProjectPermission(long projectId) {
+		super(UpdateProjectPermission.class.getSimpleName() + "." + projectId, LEVEL_UNDEFINED);
+		this.projectId = projectId;
+	}
+
+	public long getProjectId() {
+		return projectId;
+	}
+
+	@Override
+	protected int execCalculateLevel(BasicHierarchyPermission other) {
+		int result = LEVEL_ALL;
+		if (other instanceof UpdateProjectPermission) {
+			long projectNr = ((UpdateProjectPermission) other).getProjectId();
+			ParticipationLevel level = BEANS.get(IProjectService.class).getParticipationLevel(projectNr);
+			if (level != null && level.ordinal() >= ParticipationLevel.MEMBER.ordinal()) {
+				result = LEVEL_PROJECT;
+			}
+		}
+		return result;
+	}
 }
