@@ -27,7 +27,12 @@ import org.leslie.server.mapping.MappedField;
 				+ "  FROM Skill s "
 				+ "  LEFT JOIN FETCH s.category "
 				+ "  JOIN s.assessments a "
-				+ " WHERE a.user.id = :userId ")
+				+ " WHERE a.user.id = :userId "),
+		@NamedQuery(name = Skill.QUERY_UNASSESSED_BY_USER_ID, query = ""
+				+ "SELECT DISTINCT s "
+				+ "  FROM Skill s "
+				+ "  LEFT JOIN FETCH s.category "
+				+ " WHERE s NOT IN (SELECT a.skill FROM SkillAssessment a WHERE a.user.id = :userId) ")
 })
 @MappedClass(SkillMapping.class)
 public class Skill {
@@ -36,6 +41,7 @@ public class Skill {
 	public static final String QUERY_ALL_FETCH_CATEGORY = "Skill.allFetchCategory";
 	public static final String QUERY_IN_CATEGORY_IDS = "Skill.inCategoryIds";
 	public static final String QUERY_BY_USER_ID_FETCH_CATEGORY = "Skill.byUserId";
+	public static final String QUERY_UNASSESSED_BY_USER_ID = "Skill.unassessedByUserId";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

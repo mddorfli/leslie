@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -20,7 +19,6 @@ import org.leslie.server.mapping.MappedField;
 
 @Entity
 @Table(name = "users_x_skill")
-@IdClass(SkillAssessmentId.class)
 @NamedQueries({
 		@NamedQuery(name = SkillAssessment.QUERY_LATEST_BY_USER_FETCH_ALL, query = ""
 				+ "SELECT DISTINCT sa "
@@ -29,7 +27,7 @@ import org.leslie.server.mapping.MappedField;
 				+ "  LEFT JOIN FETCH sa.skill "
 				+ "  LEFT JOIN FETCH sa.assessedBy "
 				+ " WHERE sa.user.id = :userId "
-				+ "   AND sa.lastModified IN (SELECT MAX(sqsa.lastModified) FROM SkillAssessment sqsa GROUP BY sqsa.user, sqsa.skill)"),
+				+ "   AND sa.id IN (SELECT MAX(sqsa.id) FROM SkillAssessment sqsa GROUP BY sqsa.user, sqsa.skill)"),
 })
 @MappedClass(value = SkillAssessmentMapping.class)
 public class SkillAssessment {
@@ -37,9 +35,15 @@ public class SkillAssessment {
 	public static final String QUERY_LATEST_BY_USER_FETCH_ALL = "SkillAssessment.latestByUserFetchAll";
 
 	@Id
+	@MappedField(readOnly = true, pageFieldName = "assessmentId")
+	private long id;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	private User user;
 
-	@Id
+	@ManyToOne
+	@JoinColumn(name = "skill_id")
 	private Skill skill;
 
 	@Column(name = "self_assessment")
@@ -61,6 +65,14 @@ public class SkillAssessment {
 	@Temporal(TemporalType.TIMESTAMP)
 	@MappedField
 	private Date lastModified;
+
+	public long getId() {
+		return id;
+	}
+
+	void setId(long id) {
+		this.id = id;
+	}
 
 	public User getUser() {
 		return user;

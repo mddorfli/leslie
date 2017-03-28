@@ -20,9 +20,11 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.skill.SkillTablePage.Table;
+import org.leslie.client.skill.SkillTablePage.Table.AddSelfAssessmentMenu;
 import org.leslie.client.skill.SkillTablePage.Table.DeleteSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.EditSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.NewSkillMenu;
+import org.leslie.shared.security.permission.AssessSkillPermission;
 import org.leslie.shared.security.permission.CreateSkillPermission;
 import org.leslie.shared.security.permission.UpdateSkillPermission;
 import org.leslie.shared.skill.ISkillService;
@@ -92,13 +94,14 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 	protected void execInitPage() {
 		switch (presentationType) {
 		case PERSONAL:
+			getTable().getDescriptionColumn().setDisplayable(false);
 			getTable().getMenuByClass(EditSkillMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(NewSkillMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(DeleteSkillMenu.class).setVisibleGranted(false);
-			getTable().getDescriptionColumn().setDisplayable(false);
 			break;
 		case ADMIN_CATEGORY:
 			getTable().getCategoryColumn().setDisplayable(false);
+			getTable().getMenuByClass(AddSelfAssessmentMenu.class).setVisibleGranted(false);
 		case ADMIN:
 		default:
 			getTable().getAffinityColumn().setDisplayable(false);
@@ -106,6 +109,7 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			getTable().getAssessmentColumn().setDisplayable(false);
 			getTable().getAssessedByColumn().setDisplayable(false);
 			getTable().getLastModifiedColumn().setDisplayable(false);
+			getTable().getMenuByClass(AddSelfAssessmentMenu.class).setVisibleGranted(false);
 			break;
 		}
 	}
@@ -148,6 +152,10 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			return getColumnSet().getColumnByClass(AssessedByIdColumn.class);
 		}
 
+		public AssessmentIdColumn getAssessmentIdColumn() {
+			return getColumnSet().getColumnByClass(AssessmentIdColumn.class);
+		}
+
 		public NameColumn getNameColumn() {
 			return getColumnSet().getColumnByClass(NameColumn.class);
 		}
@@ -158,6 +166,14 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 
 		@Order(1000)
 		public class IdColumn extends AbstractLongColumn {
+			@Override
+			protected boolean getConfiguredDisplayable() {
+				return false;
+			}
+		}
+
+		@Order(1500)
+		public class AssessmentIdColumn extends AbstractLongColumn {
 			@Override
 			protected boolean getConfiguredDisplayable() {
 				return false;
@@ -369,5 +385,36 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 				}
 			}
 		}
+
+		@Order(4000)
+		public class AddSelfAssessmentMenu extends AbstractMenu {
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("AddSelfAssessment_");
+			}
+
+			@Override
+			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+				return CollectionUtility.hashSet(TableMenuType.SingleSelection);
+			}
+
+			@Override
+			protected boolean getConfiguredVisible() {
+				return ACCESS.check(new AssessSkillPermission());
+			}
+
+			@Override
+			protected void execAction() {
+				SkillAssessmentForm form = new SkillAssessmentForm();
+				form.setSkillId(getIdColumn().getSelectedValue());
+				form.setSkillAssessmentId(getAssessmentIdColumn().getSelectedValue());
+				form.startNew();
+				form.waitFor();
+				if (form.isFormStored()) {
+					reloadPage();
+				}
+			}
+		}
+
 	}
 }

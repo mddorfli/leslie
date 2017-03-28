@@ -56,6 +56,7 @@ public class SkillTablePageData extends AbstractTablePageData {
 
 		private static final long serialVersionUID = 1L;
 		public static final String id = "id";
+		public static final String assessmentId = "assessmentId";
 		public static final String categoryId = "categoryId";
 		public static final String category = "category";
 		public static final String name = "name";
@@ -67,6 +68,7 @@ public class SkillTablePageData extends AbstractTablePageData {
 		public static final String assessedBy = "assessedBy";
 		public static final String lastModified = "lastModified";
 		private Long m_id;
+		private Long m_assessmentId;
 		private Long m_categoryId;
 		private String m_category;
 		private String m_name;
@@ -84,6 +86,14 @@ public class SkillTablePageData extends AbstractTablePageData {
 
 		public void setId(Long newId) {
 			m_id = newId;
+		}
+
+		public Long getAssessmentId() {
+			return m_assessmentId;
+		}
+
+		public void setAssessmentId(Long newAssessmentId) {
+			m_assessmentId = newAssessmentId;
 		}
 
 		public Long getCategoryId() {

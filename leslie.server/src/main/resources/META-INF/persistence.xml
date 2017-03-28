@@ -12,7 +12,6 @@
 		<class>org.leslie.server.entity.Project</class>
 		<class>org.leslie.server.entity.ProjectActivity</class>
 		<class>org.leslie.server.entity.ProjectAssignment</class>
-		<class>org.leslie.server.entity.ProjectAssignmentId</class>
 		<class>org.leslie.server.entity.Role</class>
 		<class>org.leslie.server.entity.RolePermission</class>
 		<class>org.leslie.server.entity.User</class>

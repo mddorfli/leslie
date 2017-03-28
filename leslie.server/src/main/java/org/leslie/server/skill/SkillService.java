@@ -3,6 +3,7 @@ package org.leslie.server.skill;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.shared.TEXTS;
@@ -20,6 +21,7 @@ import org.leslie.shared.skill.ISkillService;
 import org.leslie.shared.skill.SkillFormData;
 import org.leslie.shared.skill.SkillTablePageData;
 
+@Bean
 public class SkillService implements ISkillService {
 
 	@Override
@@ -53,13 +55,18 @@ public class SkillService implements ISkillService {
 		if (!ACCESS.check(new AssessSkillPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
+		SkillTablePageData pageData = new SkillTablePageData();
 		List<SkillAssessment> assessments = JPA.createNamedQuery(
 				SkillAssessment.QUERY_LATEST_BY_USER_FETCH_ALL, SkillAssessment.class)
 				.setParameter("userId", ServerSession.get().getUserNr())
 				.getResultList();
-
-		SkillTablePageData pageData = new SkillTablePageData();
 		MappingUtility.importTablePageData(assessments, pageData);
+
+		List<Skill> remainingSkills = JPA.createNamedQuery(Skill.QUERY_UNASSESSED_BY_USER_ID, Skill.class)
+				.setParameter("userId", ServerSession.get().getUserNr())
+				.getResultList();
+		MappingUtility.importTablePageData(remainingSkills, pageData);
+
 		return pageData;
 	}
 

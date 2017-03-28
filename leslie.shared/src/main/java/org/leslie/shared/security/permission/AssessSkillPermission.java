@@ -21,7 +21,7 @@ public class AssessSkillPermission extends BasicHierarchyPermission {
 	private long skillId;
 
 	public AssessSkillPermission() {
-		super(AssessSkillPermission.class.getSimpleName(), LEVEL_OWN);
+		super(AssessSkillPermission.class.getSimpleName() + ".*", LEVEL_OWN);
 	}
 
 	public AssessSkillPermission(long skillId) {
