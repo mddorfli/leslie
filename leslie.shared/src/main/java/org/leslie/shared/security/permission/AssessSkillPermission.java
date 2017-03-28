@@ -40,7 +40,7 @@ public class AssessSkillPermission extends BasicHierarchyPermission {
 		if (other instanceof AssessSkillPermission) {
 			AssessSkillPermission otherPermission = (AssessSkillPermission) other;
 			ISkillService service = BEANS.get(ISkillService.class);
-			if (service.currentUserHasSkill(otherPermission.getSkillId())) {
+			if (service.checkCurrentUserHasSkill(otherPermission.getSkillId())) {
 				// if the user is the owner, LEVEL_OWN is sufficient.
 				result = LEVEL_OWN;
 			}

@@ -21,111 +21,111 @@ import org.leslie.shared.security.permission.UpdateAdministrationPermission;
 @FormData(value = RoleFormData.class, sdkCommand = FormData.SdkCommand.CREATE)
 public class RoleForm extends AbstractForm {
 
-    private Long roleNr;
+	private Long roleId;
 
-    public RoleForm() throws ProcessingException {
-	super();
-    }
-
-    public CancelButton getCancelButton() {
-	return getFieldByClass(CancelButton.class);
-    }
-
-    @Override
-    protected String getConfiguredTitle() {
-	return TEXTS.get("Role");
-    }
-
-    public GroupBox getGroupBox() {
-	return getFieldByClass(GroupBox.class);
-    }
-
-    public MainBox getMainBox() {
-	return getFieldByClass(MainBox.class);
-    }
-
-    public NameField getNameField() {
-	return getFieldByClass(NameField.class);
-    }
-
-    public OkButton getOkButton() {
-	return getFieldByClass(OkButton.class);
-    }
-
-    @FormData
-    public Long getRoleNr() {
-	return roleNr;
-    }
-
-    @FormData
-    public void setRoleNr(Long roleNr) {
-	this.roleNr = roleNr;
-    }
-
-    public void startModify() throws ProcessingException {
-	startInternal(new ModifyHandler());
-    }
-
-    public void startNew() throws ProcessingException {
-	startInternal(new NewHandler());
-    }
-
-    @Order(10.0)
-    public class MainBox extends AbstractGroupBox {
-
-	@Override
-	protected int getConfiguredGridColumnCount() {
-	    return 1;
+	public RoleForm() throws ProcessingException {
+		super();
 	}
 
-	@Order(30.0)
-	public class CancelButton extends AbstractCancelButton {
+	@FormData
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	@FormData
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+
+	public CancelButton getCancelButton() {
+		return getFieldByClass(CancelButton.class);
+	}
+
+	@Override
+	protected String getConfiguredTitle() {
+		return TEXTS.get("Role");
+	}
+
+	public GroupBox getGroupBox() {
+		return getFieldByClass(GroupBox.class);
+	}
+
+	public MainBox getMainBox() {
+		return getFieldByClass(MainBox.class);
+	}
+
+	public NameField getNameField() {
+		return getFieldByClass(NameField.class);
+	}
+
+	public OkButton getOkButton() {
+		return getFieldByClass(OkButton.class);
+	}
+
+	public void startModify() throws ProcessingException {
+		startInternal(new ModifyHandler());
+	}
+
+	public void startNew() throws ProcessingException {
+		startInternal(new NewHandler());
 	}
 
 	@Order(10.0)
-	public class GroupBox extends AbstractGroupBox {
-
-	    @Order(10.0)
-	    public class NameField extends AbstractStringField {
+	public class MainBox extends AbstractGroupBox {
 
 		@Override
-		protected String getConfiguredLabel() {
-		    return TEXTS.get("Name");
+		protected int getConfiguredGridColumnCount() {
+			return 1;
 		}
-	    }
+
+		@Order(30.0)
+		public class CancelButton extends AbstractCancelButton {
+		}
+
+		@Order(10.0)
+		public class GroupBox extends AbstractGroupBox {
+
+			@Order(10.0)
+			public class NameField extends AbstractStringField {
+
+				@Override
+				protected String getConfiguredLabel() {
+					return TEXTS.get("Name");
+				}
+			}
+		}
+
+		@Order(20.0)
+		public class OkButton extends AbstractOkButton {
+		}
 	}
 
-	@Order(20.0)
-	public class OkButton extends AbstractOkButton {
+	public class ModifyHandler extends AbstractFormHandler {
+
+		@Override
+		public void execLoad() throws ProcessingException {
+			RoleFormData formData = new RoleFormData();
+			importFormData(formData);
+			setEnabledPermission(new UpdateAdministrationPermission());
+		}
+
+		@Override
+		public void execStore() throws ProcessingException {
+			IRoleService service = BEANS.get(IRoleService.class);
+			RoleFormData formData = new RoleFormData();
+			exportFormData(formData);
+			formData = service.store(formData);
+		}
 	}
-    }
 
-    public class ModifyHandler extends AbstractFormHandler {
+	public class NewHandler extends AbstractFormHandler {
 
-	@Override
-	public void execLoad() throws ProcessingException {
-	    RoleFormData formData = new RoleFormData();
-	    importFormData(formData);
-	    setEnabledPermission(new UpdateAdministrationPermission());
+		@Override
+		public void execStore() throws ProcessingException {
+			IRoleService service = BEANS.get(IRoleService.class);
+			RoleFormData formData = new RoleFormData();
+			exportFormData(formData);
+			formData = service.create(formData);
+		}
 	}
-
-	@Override
-	public void execStore() throws ProcessingException {
-	    IRoleService service = BEANS.get(IRoleService.class);
-	    RoleFormData formData = new RoleFormData();
-	    exportFormData(formData);
-	    formData = service.store(formData);
-	}
-    }
-
-    public class NewHandler extends AbstractFormHandler {
-
-	@Override
-	public void execStore() throws ProcessingException {
-	    IRoleService service = BEANS.get(IRoleService.class);
-	    RoleFormData formData = new RoleFormData();
-	    exportFormData(formData);
-	    formData = service.create(formData);
-	}
-    }
 }

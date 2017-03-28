@@ -14,9 +14,9 @@ import javax.persistence.criteria.Root;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
 import org.eclipse.scout.rt.shared.services.lookup.ILookupRow;
 import org.eclipse.scout.rt.shared.services.lookup.LookupRow;
+import org.leslie.server.entity.User;
+import org.leslie.server.jpa.AbstractJpaLookupService;
 import org.leslie.server.jpa.JPA;
-import org.leslie.server.jpa.entity.User;
-import org.leslie.server.jpa.lookup.AbstractJpaLookupService;
 import org.leslie.shared.user.IUserLookupService;
 import org.leslie.shared.user.UserLookupCall;
 

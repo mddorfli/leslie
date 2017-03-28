@@ -28,136 +28,136 @@ import org.leslie.shared.security.permission.UpdateAdministrationPermission;
 @PageData(RolePageData.class)
 public class RoleTablePage extends AbstractPageWithTable<RoleTablePage.Table> {
 
-    @Override
-    protected String getConfiguredTitle() {
-	return TEXTS.get("Roles");
-    }
-
-    @Override
-    protected IPage<?> execCreateChildPage(ITableRow row) throws ProcessingException {
-	PermissionTablePage childPage = new PermissionTablePage();
-	childPage.setRoleNr(getTable().getRoleNrColumn().getValue(row));
-	childPage.setLeaf(true);
-	return childPage;
-    }
-
-    @Override
-    protected void execLoadData(SearchFilter filter) {
-	importPageData(BEANS.get(IRoleService.class).getRoleTableData());
-    }
-
-    @Order(10.0)
-    public class Table extends AbstractTable {
+	@Override
+	protected String getConfiguredTitle() {
+		return TEXTS.get("Roles");
+	}
 
 	@Override
-	protected boolean getConfiguredAutoResizeColumns() {
-	    return true;
+	protected IPage<?> execCreateChildPage(ITableRow row) throws ProcessingException {
+		PermissionTablePage childPage = new PermissionTablePage();
+		childPage.setRoleNr(getTable().getIdColumn().getValue(row));
+		childPage.setLeaf(true);
+		return childPage;
 	}
 
-	public RoleNameColumn getRoleNameColumn() {
-	    return getColumnSet().getColumnByClass(RoleNameColumn.class);
-	}
-
-	public RoleNrColumn getRoleNrColumn() {
-	    return getColumnSet().getColumnByClass(RoleNrColumn.class);
-	}
-
-	@Order(10.0)
-	public class RoleNrColumn extends AbstractLongColumn {
-
-	    @Override
-	    protected boolean getConfiguredDisplayable() {
-		return false;
-	    }
-	}
-
-	@Order(20.0)
-	public class RoleNameColumn extends AbstractStringColumn {
-
-	    @Override
-	    protected String getConfiguredHeaderText() {
-		return TEXTS.get("Roles");
-	    }
+	@Override
+	protected void execLoadData(SearchFilter filter) {
+		importPageData(BEANS.get(IRoleService.class).getRoleTableData());
 	}
 
 	@Order(10.0)
-	public class NewRoleMenu extends AbstractMenu {
+	public class Table extends AbstractTable {
 
-	    @Override
-	    protected String getConfiguredText() {
-		return TEXTS.get("NewRole_");
-	    }
-
-	    @Override
-	    protected void execAction() throws ProcessingException {
-		RoleForm form = new RoleForm();
-		form.startNew();
-		form.waitFor();
-		if (form.isFormStored()) {
-		    reloadPage();
-		    ClientSession.get().getDesktop().dataChanged(DataType.ROLE);
+		@Override
+		protected boolean getConfiguredAutoResizeColumns() {
+			return true;
 		}
-	    }
 
-	    @Override
-	    protected void execInitAction() throws ProcessingException {
-		setVisiblePermission(new UpdateAdministrationPermission());
-	    }
-
-	    @Override
-	    protected Set<? extends IMenuType> getConfiguredMenuTypes() {
-		return CollectionUtility.<IMenuType>hashSet(TableMenuType.EmptySpace);
-	    }
-	}
-
-	@Order(20.0)
-	public class EditRoleMenu extends AbstractMenu {
-
-	    @Override
-	    protected String getConfiguredText() {
-		return TEXTS.get("EditRole_");
-	    }
-
-	    @Override
-	    protected void execAction() throws ProcessingException {
-		RoleForm form = new RoleForm();
-		form.setRoleNr(getTable().getRoleNrColumn().getSelectedValue());
-		form.getNameField().setValue(getTable().getRoleNameColumn().getSelectedValue());
-		form.startModify();
-		form.waitFor();
-		if (form.isFormStored()) {
-		    reloadPage();
-		    ClientSession.get().getDesktop().dataChanged(DataType.ROLE);
+		public IdColumn getIdColumn() {
+			return getColumnSet().getColumnByClass(IdColumn.class);
 		}
-	    }
 
-	    @Override
-	    protected void execInitAction() throws ProcessingException {
-		setVisiblePermission(new UpdateAdministrationPermission());
-	    }
-	}
-
-	@Order(30.0)
-	public class DeleteRoleMenu extends AbstractMenu {
-
-	    @Override
-	    protected String getConfiguredText() {
-		return TEXTS.get("DeleteRole_");
-	    }
-
-	    @Override
-	    protected void execAction() throws ProcessingException {
-		if (MessageBoxes.showDeleteConfirmationMessage(getTable().getRoleNameColumn().getSelectedValue())) {
-		    BEANS.get(IRoleService.class).delete(getTable().getRoleNrColumn().getSelectedValue());
-		    reloadPage();
-		    ClientSession.get().getDesktop().dataChanged(DataType.ROLE);
+		public NameColumn getNameColumn() {
+			return getColumnSet().getColumnByClass(NameColumn.class);
 		}
-	    }
 
-	    @Override
-	    protected void execInitAction() throws ProcessingException {
-		setVisiblePermission(new UpdateAdministrationPermission());
-	    }
+		@Order(10.0)
+		public class IdColumn extends AbstractLongColumn {
+
+			@Override
+			protected boolean getConfiguredDisplayable() {
+				return false;
+			}
+		}
+
+		@Order(20.0)
+		public class NameColumn extends AbstractStringColumn {
+
+			@Override
+			protected String getConfiguredHeaderText() {
+				return TEXTS.get("Name");
+			}
+		}
+
+		@Order(10.0)
+		public class NewRoleMenu extends AbstractMenu {
+
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("NewRole_");
+			}
+
+			@Override
+			protected void execAction() throws ProcessingException {
+				RoleForm form = new RoleForm();
+				form.startNew();
+				form.waitFor();
+				if (form.isFormStored()) {
+					reloadPage();
+					ClientSession.get().getDesktop().dataChanged(DataType.ROLE);
+				}
+			}
+
+			@Override
+			protected void execInitAction() throws ProcessingException {
+				setVisiblePermission(new UpdateAdministrationPermission());
+			}
+
+			@Override
+			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+				return CollectionUtility.<IMenuType>hashSet(TableMenuType.EmptySpace);
+			}
+		}
+
+		@Order(20.0)
+		public class EditRoleMenu extends AbstractMenu {
+
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("EditRole_");
+			}
+
+			@Override
+			protected void execAction() throws ProcessingException {
+				RoleForm form = new RoleForm();
+				form.setRoleId(getTable().getIdColumn().getSelectedValue());
+				form.getNameField().setValue(getTable().getNameColumn().getSelectedValue());
+				form.startModify();
+				form.waitFor();
+				if (form.isFormStored()) {
+					reloadPage();
+					ClientSession.get().getDesktop().dataChanged(DataType.ROLE);
+				}
+			}
+
+			@Override
+			protected void execInitAction() throws ProcessingException {
+				setVisiblePermission(new UpdateAdministrationPermission());
+			}
+		}
+
+		@Order(30.0)
+		public class DeleteRoleMenu extends AbstractMenu {
+
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("DeleteRole_");
+			}
+
+			@Override
+			protected void execAction() throws ProcessingException {
+				if (MessageBoxes.showDeleteConfirmationMessage(getTable().getNameColumn().getSelectedValue())) {
+					BEANS.get(IRoleService.class).delete(getTable().getIdColumn().getSelectedValue());
+					reloadPage();
+					ClientSession.get().getDesktop().dataChanged(DataType.ROLE);
+				}
+			}
+
+			@Override
+			protected void execInitAction() throws ProcessingException {
+				setVisiblePermission(new UpdateAdministrationPermission());
+			}
+		}
 	}
-    }
 }

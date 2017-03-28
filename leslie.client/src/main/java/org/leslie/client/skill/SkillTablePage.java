@@ -7,6 +7,8 @@ import org.eclipse.scout.rt.client.ui.action.menu.AbstractMenu;
 import org.eclipse.scout.rt.client.ui.action.menu.IMenuType;
 import org.eclipse.scout.rt.client.ui.action.menu.TableMenuType;
 import org.eclipse.scout.rt.client.ui.basic.table.AbstractTable;
+import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractBigDecimalColumn;
+import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractDateTimeColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
@@ -18,6 +20,9 @@ import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.skill.SkillTablePage.Table;
+import org.leslie.client.skill.SkillTablePage.Table.DeleteSkillMenu;
+import org.leslie.client.skill.SkillTablePage.Table.EditSkillMenu;
+import org.leslie.client.skill.SkillTablePage.Table.NewSkillMenu;
 import org.leslie.shared.security.permission.CreateSkillPermission;
 import org.leslie.shared.security.permission.UpdateSkillPermission;
 import org.leslie.shared.skill.ISkillService;
@@ -31,6 +36,8 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 
 	private Long categoryId;
 
+	private Long userId;
+
 	public SkillTablePage(SkillPresentation presentationType) {
 		this.presentationType = presentationType;
 	}
@@ -43,6 +50,14 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 		this.categoryId = categoryId;
 	}
 
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	protected String getConfiguredTitle() {
 		return TEXTS.get("Skills");
@@ -51,13 +66,17 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 	@Override
 	protected void execLoadData(SearchFilter filter) {
 		SkillTablePageData pageData;
+		ISkillService service = BEANS.get(ISkillService.class);
 		switch (presentationType) {
+		case PERSONAL:
+			pageData = service.getPersonalSkillTableData();
+			break;
 		case ADMIN_CATEGORY:
-			pageData = BEANS.get(ISkillService.class).getSkillTableData(getCategoryId());
+			pageData = service.getCategorySkillTableData(getCategoryId());
 			break;
 		case ADMIN:
 		default:
-			pageData = BEANS.get(ISkillService.class).getSkillTableData();
+			pageData = service.getSkillTableData();
 			break;
 		}
 
@@ -72,14 +91,22 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 	@Override
 	protected void execInitPage() {
 		switch (presentationType) {
-		case ADMIN:
+		case PERSONAL:
+			getTable().getMenuByClass(EditSkillMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(NewSkillMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(DeleteSkillMenu.class).setVisibleGranted(false);
+			getTable().getDescriptionColumn().setDisplayable(false);
 			break;
 		case ADMIN_CATEGORY:
 			getTable().getCategoryColumn().setDisplayable(false);
-			break;
+		case ADMIN:
 		default:
+			getTable().getAffinityColumn().setDisplayable(false);
+			getTable().getSelfAssessmentColumn().setDisplayable(false);
+			getTable().getAssessmentColumn().setDisplayable(false);
+			getTable().getAssessedByColumn().setDisplayable(false);
+			getTable().getLastModifiedColumn().setDisplayable(false);
 			break;
-
 		}
 	}
 
@@ -95,6 +122,30 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 
 		public DescriptionColumn getDescriptionColumn() {
 			return getColumnSet().getColumnByClass(DescriptionColumn.class);
+		}
+
+		public SelfAssessmentColumn getSelfAssessmentColumn() {
+			return getColumnSet().getColumnByClass(SelfAssessmentColumn.class);
+		}
+
+		public AffinityColumn getAffinityColumn() {
+			return getColumnSet().getColumnByClass(AffinityColumn.class);
+		}
+
+		public AssessmentColumn getAssessmentColumn() {
+			return getColumnSet().getColumnByClass(AssessmentColumn.class);
+		}
+
+		public AssessedByColumn getAssessedByColumn() {
+			return getColumnSet().getColumnByClass(AssessedByColumn.class);
+		}
+
+		public LastModifiedColumn getLastModifiedColumn() {
+			return getColumnSet().getColumnByClass(LastModifiedColumn.class);
+		}
+
+		public AssessedByIdColumn getAssessedByIdColumn() {
+			return getColumnSet().getColumnByClass(AssessedByIdColumn.class);
 		}
 
 		public NameColumn getNameColumn() {
@@ -157,6 +208,81 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			@Override
 			protected int getConfiguredWidth() {
 				return 500;
+			}
+		}
+
+		@Order(6000)
+		public class SelfAssessmentColumn extends AbstractBigDecimalColumn {
+
+			@Override
+			protected String getConfiguredHeaderText() {
+				return TEXTS.get("SelfAssessment");
+			}
+
+			@Override
+			protected int getConfiguredWidth() {
+				return 130;
+			}
+		}
+
+		@Order(7000)
+		public class AffinityColumn extends AbstractBigDecimalColumn {
+			@Override
+			protected String getConfiguredHeaderText() {
+				return TEXTS.get("Affinity");
+			}
+
+			@Override
+			protected int getConfiguredWidth() {
+				return 100;
+			}
+		}
+
+		@Order(8000)
+		public class AssessmentColumn extends AbstractBigDecimalColumn {
+			@Override
+			protected String getConfiguredHeaderText() {
+				return TEXTS.get("Assessment");
+			}
+
+			@Override
+			protected int getConfiguredWidth() {
+				return 100;
+			}
+		}
+
+		@Order(8500)
+		public class AssessedByIdColumn extends AbstractLongColumn {
+			@Override
+			protected boolean getConfiguredDisplayable() {
+				return false;
+			}
+		}
+
+		@Order(9000)
+		public class AssessedByColumn extends AbstractStringColumn {
+			@Override
+			protected String getConfiguredHeaderText() {
+				return TEXTS.get("AssessedBy");
+			}
+
+			@Override
+			protected int getConfiguredWidth() {
+				return 150;
+			}
+		}
+
+		@Order(10000)
+		public class LastModifiedColumn extends AbstractDateTimeColumn {
+
+			@Override
+			protected String getConfiguredHeaderText() {
+				return TEXTS.get("LastModified");
+			}
+
+			@Override
+			protected int getConfiguredWidth() {
+				return 120;
 			}
 		}
 

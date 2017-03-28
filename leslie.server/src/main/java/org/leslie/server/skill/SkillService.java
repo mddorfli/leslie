@@ -8,9 +8,11 @@ import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.ServerSession;
+import org.leslie.server.entity.Skill;
+import org.leslie.server.entity.SkillAssessment;
 import org.leslie.server.jpa.JPA;
-import org.leslie.server.jpa.entity.Skill;
-import org.leslie.server.jpa.mapping.MappingUtility;
+import org.leslie.server.mapping.MappingUtility;
+import org.leslie.shared.security.permission.AssessSkillPermission;
 import org.leslie.shared.security.permission.CreateSkillPermission;
 import org.leslie.shared.security.permission.ReadSkillPermission;
 import org.leslie.shared.security.permission.UpdateSkillPermission;
@@ -22,23 +24,42 @@ public class SkillService implements ISkillService {
 
 	@Override
 	public SkillTablePageData getSkillTableData() {
-		List<Skill> allSkills = JPA.createNamedQuery(Skill.QUERY_ALL_FETCH_CATEGORY, Skill.class).getResultList();
-
+		if (!ACCESS.check(new ReadSkillPermission())) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+		List<Skill> allSkills = JPA.createNamedQuery(Skill.QUERY_ALL_FETCH_CATEGORY, Skill.class)
+				.getResultList();
 		SkillTablePageData pageData = new SkillTablePageData();
 		MappingUtility.importTablePageData(allSkills, pageData);
 		return pageData;
 	}
 
 	@Override
-	public SkillTablePageData getSkillTableData(Long categoryId) {
+	public SkillTablePageData getCategorySkillTableData(Long categoryId) {
+		if (!ACCESS.check(new ReadSkillPermission())) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
 		List<Long> categoryIds = Arrays.asList(categoryId);
 		List<Skill> skills = JPA.createNamedQuery(Skill.QUERY_IN_CATEGORY_IDS, Skill.class)
 				.setParameter("categoryIds", categoryIds)
 				.getResultList();
-
 		SkillTablePageData pageData = new SkillTablePageData();
 		MappingUtility.importTablePageData(skills, pageData);
+		return pageData;
+	}
 
+	@Override
+	public SkillTablePageData getPersonalSkillTableData() {
+		if (!ACCESS.check(new AssessSkillPermission())) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+		List<SkillAssessment> assessments = JPA.createNamedQuery(
+				SkillAssessment.QUERY_LATEST_BY_USER_FETCH_ALL, SkillAssessment.class)
+				.setParameter("userId", ServerSession.get().getUserNr())
+				.getResultList();
+
+		SkillTablePageData pageData = new SkillTablePageData();
+		MappingUtility.importTablePageData(assessments, pageData);
 		return pageData;
 	}
 
@@ -91,8 +112,14 @@ public class SkillService implements ISkillService {
 		}
 	}
 
+	/**
+	 * Runs without permission checks, as it is used by the permission checking
+	 * mechanism.
+	 * 
+	 * @see org.leslie.shared.skill.ISkillService#checkCurrentUserHasSkill(long)
+	 */
 	@Override
-	public boolean currentUserHasSkill(long skillId) {
+	public boolean checkCurrentUserHasSkill(long skillId) {
 		return ServerSession.get().getUser().getSkills().stream()
 				.anyMatch(assessment -> assessment.getSkill().getId() == skillId);
 	}

@@ -29,7 +29,7 @@ public class ManageProjectPermission extends BasicHierarchyPermission {
 		int result = LEVEL_ALL;
 		if (other instanceof ManageProjectPermission) {
 			long projectNr = ((ManageProjectPermission) other).getProjectId();
-			ParticipationLevel level = BEANS.get(IProjectService.class).getParticipationLevel(projectNr);
+			ParticipationLevel level = BEANS.get(IProjectService.class).checkParticipationLevel(projectNr);
 			if (level == ParticipationLevel.MANAGER) {
 				result = LEVEL_PROJECT;
 			}

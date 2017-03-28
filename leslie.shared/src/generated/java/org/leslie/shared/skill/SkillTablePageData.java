@@ -1,5 +1,8 @@
 package org.leslie.shared.skill;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import javax.annotation.Generated;
 
 import org.eclipse.scout.rt.shared.data.basic.table.AbstractTableRowData;
@@ -57,11 +60,23 @@ public class SkillTablePageData extends AbstractTablePageData {
 		public static final String category = "category";
 		public static final String name = "name";
 		public static final String description = "description";
+		public static final String selfAssessment = "selfAssessment";
+		public static final String affinity = "affinity";
+		public static final String assessment = "assessment";
+		public static final String assessedById = "assessedById";
+		public static final String assessedBy = "assessedBy";
+		public static final String lastModified = "lastModified";
 		private Long m_id;
 		private Long m_categoryId;
 		private String m_category;
 		private String m_name;
 		private String m_description;
+		private BigDecimal m_selfAssessment;
+		private BigDecimal m_affinity;
+		private BigDecimal m_assessment;
+		private Long m_assessedById;
+		private String m_assessedBy;
+		private Date m_lastModified;
 
 		public Long getId() {
 			return m_id;
@@ -101,6 +116,54 @@ public class SkillTablePageData extends AbstractTablePageData {
 
 		public void setDescription(String newDescription) {
 			m_description = newDescription;
+		}
+
+		public BigDecimal getSelfAssessment() {
+			return m_selfAssessment;
+		}
+
+		public void setSelfAssessment(BigDecimal newSelfAssessment) {
+			m_selfAssessment = newSelfAssessment;
+		}
+
+		public BigDecimal getAffinity() {
+			return m_affinity;
+		}
+
+		public void setAffinity(BigDecimal newAffinity) {
+			m_affinity = newAffinity;
+		}
+
+		public BigDecimal getAssessment() {
+			return m_assessment;
+		}
+
+		public void setAssessment(BigDecimal newAssessment) {
+			m_assessment = newAssessment;
+		}
+
+		public Long getAssessedById() {
+			return m_assessedById;
+		}
+
+		public void setAssessedById(Long newAssessedById) {
+			m_assessedById = newAssessedById;
+		}
+
+		public String getAssessedBy() {
+			return m_assessedBy;
+		}
+
+		public void setAssessedBy(String newAssessedBy) {
+			m_assessedBy = newAssessedBy;
+		}
+
+		public Date getLastModified() {
+			return m_lastModified;
+		}
+
+		public void setLastModified(Date newLastModified) {
+			m_lastModified = newLastModified;
 		}
 	}
 }

@@ -17,10 +17,10 @@ import org.eclipse.scout.rt.testing.server.runner.ServerTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.leslie.server.ServerSession;
+import org.leslie.server.entity.Activity;
+import org.leslie.server.entity.ProjectActivity;
+import org.leslie.server.entity.VacationActivity;
 import org.leslie.server.jpa.JPA;
-import org.leslie.server.jpa.entity.Activity;
-import org.leslie.server.jpa.entity.ProjectActivity;
-import org.leslie.server.jpa.entity.VacationActivity;
 import org.leslie.shared.project.IProjectActivityService;
 import org.leslie.shared.project.ProjectActivityFormData;
 

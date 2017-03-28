@@ -11,15 +11,21 @@ import org.leslie.server.ServerSession;
 import org.leslie.shared.skill.ISkillService;
 import org.leslie.shared.skill.SkillTablePageData;
 
-
 @RunWithSubject("mdo")
 @RunWith(ServerTestRunner.class)
 @RunWithServerSession(ServerSession.class)
 public class SkillServiceTest {
 
 	@Test
-	public void testGetSkillCategoryTableData() {
+	public void testGetSkillTableData() {
 		SkillTablePageData tableData = BEANS.get(ISkillService.class).getSkillTableData();
 		Assert.assertEquals(71, tableData.getRowCount());
 	}
+
+	@Test
+	public void testGetPersonalSkillTableData() {
+		SkillTablePageData tableData = BEANS.get(ISkillService.class).getPersonalSkillTableData();
+		Assert.assertEquals(71, tableData.getRowCount());
+	}
+
 }

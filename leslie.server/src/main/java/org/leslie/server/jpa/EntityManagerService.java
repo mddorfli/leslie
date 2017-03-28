@@ -69,11 +69,11 @@ public class EntityManagerService implements IService {
 
 		public JpaTransactionMember(String transactionId) {
 			super(transactionId);
-			logger.trace("JPA transaction begun.");
 			tx = m_entityManager.getTransaction();
 			if (tx.isActive()) {
 				logger.warn("Transaction should not be active!");
 			} else {
+				logger.trace("JPA transaction begun.");
 				tx.begin();
 			}
 		}

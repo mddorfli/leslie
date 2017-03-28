@@ -7,20 +7,20 @@
 	
 	<persistence-unit name="leslie" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>org.leslie.server.jpa.entity.Activity</class>
-		<class>org.leslie.server.jpa.entity.ParticipationValueConverter</class>
-		<class>org.leslie.server.jpa.entity.Project</class>
-		<class>org.leslie.server.jpa.entity.ProjectActivity</class>
-		<class>org.leslie.server.jpa.entity.ProjectAssignment</class>
-		<class>org.leslie.server.jpa.entity.ProjectAssignmentId</class>
-		<class>org.leslie.server.jpa.entity.Role</class>
-		<class>org.leslie.server.jpa.entity.RolePermission</class>
-		<class>org.leslie.server.jpa.entity.User</class>
-		<class>org.leslie.server.jpa.entity.VacationActivity</class>
-		<class>org.leslie.server.jpa.entity.Skill</class>
-		<class>org.leslie.server.jpa.entity.SkillCategory</class>
-		<class>org.leslie.server.jpa.entity.SkillAssessment</class>
-		<class>org.leslie.server.jpa.entity.SkillAssessmentId</class>
+		<class>org.leslie.server.entity.Activity</class>
+		<class>org.leslie.server.entity.ParticipationValueConverter</class>
+		<class>org.leslie.server.entity.Project</class>
+		<class>org.leslie.server.entity.ProjectActivity</class>
+		<class>org.leslie.server.entity.ProjectAssignment</class>
+		<class>org.leslie.server.entity.ProjectAssignmentId</class>
+		<class>org.leslie.server.entity.Role</class>
+		<class>org.leslie.server.entity.RolePermission</class>
+		<class>org.leslie.server.entity.User</class>
+		<class>org.leslie.server.entity.VacationActivity</class>
+		<class>org.leslie.server.entity.Skill</class>
+		<class>org.leslie.server.entity.SkillCategory</class>
+		<class>org.leslie.server.entity.SkillAssessment</class>
+		<class>org.leslie.server.entity.SkillAssessmentId</class>
 		
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		

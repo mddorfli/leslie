@@ -11,16 +11,15 @@ import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.platform.exception.VetoException;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
-import org.eclipse.scout.rt.shared.services.common.security.IAccessControlService;
 import org.leslie.client.permission.PermissionTablePageData;
-import org.leslie.client.permission.PermissionTablePageData.PermissionTableRowData;
 import org.leslie.client.role.RoleFormData;
 import org.leslie.client.role.RolePageData;
-import org.leslie.client.role.RolePageData.RoleRowData;
+import org.leslie.server.entity.Role;
+import org.leslie.server.entity.RolePermission;
+import org.leslie.server.entity.User;
 import org.leslie.server.jpa.JPA;
-import org.leslie.server.jpa.entity.Role;
-import org.leslie.server.jpa.entity.RolePermission;
-import org.leslie.server.jpa.entity.User;
+import org.leslie.server.mapping.MappingUtility;
+import org.leslie.server.security.ServerAccessControlService;
 import org.leslie.shared.role.IRoleService;
 import org.leslie.shared.security.permission.ReadAdministrationPermission;
 import org.leslie.shared.security.permission.UpdateAdministrationPermission;
@@ -30,34 +29,21 @@ public class RoleService implements IRoleService {
 
 	@Override
 	public RolePageData getRoleTableData() throws ProcessingException {
-		final RolePageData pageData = new RolePageData();
-		JPA.createNamedQuery(Role.QUERY_ALL, Role.class).getResultList()
-				.forEach((src) -> exportRowData(pageData.addRow(), src));
-
+		RolePageData pageData = new RolePageData();
+		List<Role> roles = JPA.createNamedQuery(Role.QUERY_ALL, Role.class).getResultList();
+		MappingUtility.importTablePageData(roles, pageData);
 		return pageData;
-	}
-
-	private static void exportRowData(RoleRowData row, Role role) {
-		// TODO refactor to use MappingUtility
-		row.setRoleNr(role.getId());
-		row.setRoleName(role.getName());
 	}
 
 	@Override
 	public PermissionTablePageData getPermissionTableData(Long roleId) {
 		final PermissionTablePageData pageData = new PermissionTablePageData();
-		JPA.createNamedQuery(RolePermission.QUERY_BY_ROLE_ID, RolePermission.class)
+		List<RolePermission> rolePermissions = JPA
+				.createNamedQuery(RolePermission.QUERY_BY_ROLE_ID, RolePermission.class)
 				.setParameter("roleId", roleId)
-				.getResultList()
-				.forEach((role) -> importRowData(role, pageData.addRow()));
-
+				.getResultList();
+		MappingUtility.importTablePageData(rolePermissions, pageData);
 		return pageData;
-	}
-
-	private static void importRowData(RolePermission rolePermission, PermissionTableRowData row) {
-		// TODO refactor to use MappingUtility
-		row.setLevel(rolePermission.getLevelUid());
-		row.setName(rolePermission.getPermissionName());
 	}
 
 	@Override
@@ -66,14 +52,9 @@ public class RoleService implements IRoleService {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 		Role role = new Role();
-		mapFields(formData, role);
+		MappingUtility.exportFormData(formData, role);
 		JPA.persist(role);
 		return formData;
-	}
-
-	private static void mapFields(RoleFormData formData, Role role) {
-		// TODO refactor to use MappingUtility
-		role.setName(formData.getName().getValue());
 	}
 
 	@Override
@@ -81,8 +62,8 @@ public class RoleService implements IRoleService {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
-		Role role = JPA.find(Role.class, formData.getRoleNr());
-		mapFields(formData, role);
+		Role role = JPA.find(Role.class, formData.getRoleId());
+		MappingUtility.exportFormData(formData, role);
 		return formData;
 	}
 
@@ -108,7 +89,7 @@ public class RoleService implements IRoleService {
 
 		JPA.remove(role);
 
-		BEANS.get(IAccessControlService.class).clearCache();
+		BEANS.get(ServerAccessControlService.class).clearCache();
 	}
 
 	@Override
@@ -147,7 +128,7 @@ public class RoleService implements IRoleService {
 				JPA.persist(rp);
 			}
 		}
-		BEANS.get(IAccessControlService.class).clearCache();
+		BEANS.get(ServerAccessControlService.class).clearCache();
 	}
 
 	@Override
@@ -158,6 +139,6 @@ public class RoleService implements IRoleService {
 		Role role = JPA.find(Role.class, roleId);
 		role.getRolePermissions().removeIf(permission -> permissionNames.contains(permission.getPermissionName()));
 
-		BEANS.get(IAccessControlService.class).clearCache();
+		BEANS.get(ServerAccessControlService.class).clearCache();
 	}
 }

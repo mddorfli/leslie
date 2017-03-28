@@ -19,11 +19,21 @@ public interface ISkillService extends IService {
 		 * Also administration view, shown under a parent category.
 		 */
 		ADMIN_CATEGORY,
+
+		/**
+		 * Personal view. Self-evaluation mode.
+		 */
+		PERSONAL,
 	}
 
 	SkillTablePageData getSkillTableData();
 
-	SkillTablePageData getSkillTableData(Long categoryId);
+	SkillTablePageData getCategorySkillTableData(Long categoryId);
+
+	/**
+	 * @return skill table data for the currently logged in user
+	 */
+	SkillTablePageData getPersonalSkillTableData();
 
 	SkillFormData load(SkillFormData formData) throws ProcessingException;
 
@@ -37,6 +47,6 @@ public interface ISkillService extends IService {
 	 * @param skillId
 	 * @return true if the current user has this skill
 	 */
-	boolean currentUserHasSkill(long skillId);
+	boolean checkCurrentUserHasSkill(long skillId);
 
 }

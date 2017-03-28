@@ -10,8 +10,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.eclipse.scout.rt.platform.Bean;
+import org.leslie.server.entity.Activity;
 import org.leslie.server.jpa.JPA;
-import org.leslie.server.jpa.entity.Activity;
 
 @Bean
 public class ActivityService {

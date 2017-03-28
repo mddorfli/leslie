@@ -1,8 +1,8 @@
 package org.leslie.server.project;
 
 import org.eclipse.scout.rt.shared.services.lookup.ILookupCall;
-import org.leslie.server.jpa.entity.Project;
-import org.leslie.server.jpa.lookup.AbstractJpaLongLookupService;
+import org.leslie.server.entity.Project;
+import org.leslie.server.jpa.AbstractJpaLongLookupService;
 import org.leslie.shared.lookup.LongLookupRow;
 import org.leslie.shared.project.IProjectLookupService;
 

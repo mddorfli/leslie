@@ -27,6 +27,6 @@ public interface IProjectService extends IService {
 
     void assignUser(UserSelectionFormData formData);
 
-    ParticipationLevel getParticipationLevel(long projectId);
+    ParticipationLevel checkParticipationLevel(long projectId);
 
 }

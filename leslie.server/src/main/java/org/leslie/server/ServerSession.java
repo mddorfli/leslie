@@ -5,8 +5,8 @@ import java.util.Date;
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.server.AbstractServerSession;
 import org.eclipse.scout.rt.server.session.ServerSessionProvider;
+import org.leslie.server.entity.User;
 import org.leslie.server.jpa.JPA;
-import org.leslie.server.jpa.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
