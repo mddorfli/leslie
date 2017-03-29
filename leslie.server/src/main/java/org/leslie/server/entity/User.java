@@ -97,7 +97,7 @@ public class User {
 	private Collection<ProjectAssignment> projectAssignments;
 
 	@OneToMany(mappedBy = "user")
-	private Collection<SkillAssessment> skills;
+	private Collection<SkillAssessment> skillAssessments;
 
 	public long getId() {
 		return id;
@@ -211,11 +211,11 @@ public class User {
 		this.roles = roles;
 	}
 
-	public Collection<SkillAssessment> getSkills() {
-		return skills;
+	public Collection<SkillAssessment> getSkillAssessments() {
+		return skillAssessments;
 	}
 
-	public void setSkills(Collection<SkillAssessment> skills) {
-		this.skills = skills;
+	public void setSkillAssessments(Collection<SkillAssessment> skillAssessments) {
+		this.skillAssessments = skillAssessments;
 	}
 }

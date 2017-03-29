@@ -123,7 +123,7 @@ public class SkillAssessmentForm extends AbstractForm {
 
 				@Override
 				protected int getConfiguredGridH() {
-					return 3;
+					return 2;
 				}
 
 				@Override

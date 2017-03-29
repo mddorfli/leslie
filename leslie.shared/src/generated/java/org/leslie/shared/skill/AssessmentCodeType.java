@@ -1,7 +1,6 @@
 package org.leslie.shared.skill;
 
 import org.eclipse.scout.rt.platform.Order;
-import org.eclipse.scout.rt.platform.util.ColorUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.code.AbstractCode;
 import org.eclipse.scout.rt.shared.services.common.code.AbstractCodeType;
@@ -31,10 +30,10 @@ public class AssessmentCodeType extends AbstractCodeType<Long, Integer> {
 			return ID;
 		}
 
-		@Override
-		protected String getConfiguredForegroundColor() {
-			return ColorUtility.GREEN;
-		}
+		// @Override
+		// protected String getConfiguredForegroundColor() {
+		// return ColorUtility.GREEN;
+		// }
 	}
 
 	@Order(2000)
@@ -52,10 +51,10 @@ public class AssessmentCodeType extends AbstractCodeType<Long, Integer> {
 			return ID;
 		}
 
-		@Override
-		protected String getConfiguredForegroundColor() {
-			return "99ff00";
-		}
+		// @Override
+		// protected String getConfiguredForegroundColor() {
+		// return "99ff00";
+		// }
 	}
 
 	@Order(3000)
@@ -73,10 +72,10 @@ public class AssessmentCodeType extends AbstractCodeType<Long, Integer> {
 			return ID;
 		}
 
-		@Override
-		protected String getConfiguredForegroundColor() {
-			return ColorUtility.YELLOW;
-		}
+		// @Override
+		// protected String getConfiguredForegroundColor() {
+		// return ColorUtility.YELLOW;
+		// }
 	}
 
 	@Order(4000)
@@ -94,10 +93,10 @@ public class AssessmentCodeType extends AbstractCodeType<Long, Integer> {
 			return ID;
 		}
 
-		@Override
-		protected String getConfiguredForegroundColor() {
-			return "ff9900";
-		}
+		// @Override
+		// protected String getConfiguredForegroundColor() {
+		// return "ff9900";
+		// }
 	}
 
 	@Order(5000)
@@ -115,10 +114,10 @@ public class AssessmentCodeType extends AbstractCodeType<Long, Integer> {
 			return ID;
 		}
 
-		@Override
-		protected String getConfiguredForegroundColor() {
-			return ColorUtility.RED;
-		}
+		// @Override
+		// protected String getConfiguredForegroundColor() {
+		// return ColorUtility.RED;
+		// }
 	}
 
 }

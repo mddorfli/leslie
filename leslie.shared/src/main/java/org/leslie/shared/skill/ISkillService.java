@@ -24,6 +24,11 @@ public interface ISkillService extends IService {
 		 * Personal view. Self-evaluation mode.
 		 */
 		PERSONAL,
+
+		/**
+		 * Historical view - shows last updates.
+		 */
+		PERSONAL_HISTORY,
 	}
 
 	SkillTablePageData getSkillTableData();
@@ -34,6 +39,12 @@ public interface ISkillService extends IService {
 	 * @return skill table data for the currently logged in user
 	 */
 	SkillTablePageData getPersonalSkillTableData();
+
+	/**
+	 * @param skillId
+	 * @return current user's change history for this skill
+	 */
+	SkillTablePageData getPersonalSkillHistoryTableData(Long skillId);
 
 	SkillFormData load(SkillFormData formData) throws ProcessingException;
 

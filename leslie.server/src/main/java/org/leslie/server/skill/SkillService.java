@@ -57,7 +57,7 @@ public class SkillService implements ISkillService {
 		}
 		SkillTablePageData pageData = new SkillTablePageData();
 		List<SkillAssessment> assessments = JPA.createNamedQuery(
-				SkillAssessment.QUERY_LATEST_BY_USER_FETCH_ALL, SkillAssessment.class)
+				SkillAssessment.QUERY_LATEST_BY_USER_ID_FETCH_ALL, SkillAssessment.class)
 				.setParameter("userId", ServerSession.get().getUserNr())
 				.getResultList();
 		MappingUtility.importTablePageData(assessments, pageData);
@@ -67,6 +67,19 @@ public class SkillService implements ISkillService {
 				.getResultList();
 		MappingUtility.importTablePageData(remainingSkills, pageData);
 
+		return pageData;
+	}
+
+	@Override
+	public SkillTablePageData getPersonalSkillHistoryTableData(Long skillId) {
+		List<SkillAssessment> assessments = JPA.createNamedQuery(
+				SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID, SkillAssessment.class)
+				.setParameter("skillId", skillId)
+				.setParameter("userId", ServerSession.get().getUserNr())
+				.getResultList();
+
+		SkillTablePageData pageData = new SkillTablePageData();
+		MappingUtility.importTablePageData(assessments, pageData);
 		return pageData;
 	}
 

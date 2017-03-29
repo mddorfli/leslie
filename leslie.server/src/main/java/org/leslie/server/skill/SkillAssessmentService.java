@@ -62,7 +62,7 @@ public class SkillAssessmentService implements ISkillAssessmentService {
 		assessment.setLastModified(Date.from(Instant.now()));
 		JPA.persist(assessment);
 
-		user.getSkills().add(assessment);
+		user.getSkillAssessments().add(assessment);
 		skill.getAssessments().add(assessment);
 
 		return formData;
@@ -77,7 +77,7 @@ public class SkillAssessmentService implements ISkillAssessmentService {
 	@Override
 	public boolean checkCurrentUserHasSkillAssessment(long skillAssessmentId) {
 		User user = ServerSession.get().getUser();
-		return user.getSkills().stream()
+		return user.getSkillAssessments().stream()
 				.anyMatch(assessment -> assessment.getId() == skillAssessmentId);
 	}
 }

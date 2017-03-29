@@ -7,11 +7,13 @@ import org.eclipse.scout.rt.client.ui.action.menu.AbstractMenu;
 import org.eclipse.scout.rt.client.ui.action.menu.IMenuType;
 import org.eclipse.scout.rt.client.ui.action.menu.TableMenuType;
 import org.eclipse.scout.rt.client.ui.basic.table.AbstractTable;
+import org.eclipse.scout.rt.client.ui.basic.table.ITableRow;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractDateTimeColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
+import org.eclipse.scout.rt.client.ui.desktop.outline.pages.IPage;
 import org.eclipse.scout.rt.client.ui.messagebox.MessageBoxes;
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
@@ -39,8 +41,8 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 	private SkillPresentation presentationType;
 
 	private Long categoryId;
-
 	private Long userId;
+	private Long skillId;
 
 	public SkillTablePage(SkillPresentation presentationType) {
 		this.presentationType = presentationType;
@@ -62,6 +64,14 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 		this.userId = userId;
 	}
 
+	public Long getSkillId() {
+		return skillId;
+	}
+
+	public void setSkillId(Long skillId) {
+		this.skillId = skillId;
+	}
+
 	@Override
 	protected String getConfiguredTitle() {
 		return TEXTS.get("Skills");
@@ -74,6 +84,9 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 		switch (presentationType) {
 		case PERSONAL:
 			pageData = service.getPersonalSkillTableData();
+			break;
+		case PERSONAL_HISTORY:
+			pageData = service.getPersonalSkillHistoryTableData(getSkillId());
 			break;
 		case ADMIN_CATEGORY:
 			pageData = service.getCategorySkillTableData(getCategoryId());
@@ -95,15 +108,29 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 	@Override
 	protected void execInitPage() {
 		switch (presentationType) {
+		case PERSONAL_HISTORY:
+			getTable().getDescriptionColumn().setDisplayable(false);
+			getTable().getMenuByClass(EditSkillMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(NewSkillMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(DeleteSkillMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
+			getTable().getLastModifiedColumn().setInitialSortIndex(0);
+			setLeaf(true);
+			break;
 		case PERSONAL:
 			getTable().getDescriptionColumn().setDisplayable(false);
 			getTable().getMenuByClass(EditSkillMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(NewSkillMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(DeleteSkillMenu.class).setVisibleGranted(false);
+			getTable().getCategoryColumn().setInitialSortIndex(0);
+			getTable().getNameColumn().setInitialSortIndex(1);
+			setLeaf(false);
 			break;
 		case ADMIN_CATEGORY:
 			getTable().getCategoryColumn().setDisplayable(false);
 			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
+			getTable().getNameColumn().setInitialSortIndex(0);
+			setLeaf(true);
 		case ADMIN:
 		default:
 			getTable().getAffinityColumn().setDisplayable(false);
@@ -112,8 +139,23 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			getTable().getAssessedByColumn().setDisplayable(false);
 			getTable().getLastModifiedColumn().setDisplayable(false);
 			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
+			getTable().getCategoryColumn().setInitialSortIndex(0);
+			getTable().getNameColumn().setInitialSortIndex(1);
+			setLeaf(true);
 			break;
 		}
+	}
+
+	@Override
+	protected IPage<?> execCreateChildPage(ITableRow row) {
+		IPage<?> page = null;
+		if (presentationType == SkillPresentation.PERSONAL) {
+			SkillTablePage childPage = new SkillTablePage(SkillPresentation.PERSONAL_HISTORY);
+			childPage.setSkillId(getTable().getIdColumn().getValue(row));
+			childPage.setUserId(getUserId());
+			page = childPage;
+		}
+		return page;
 	}
 
 	public class Table extends AbstractTable {
@@ -216,8 +258,8 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			}
 
 			@Override
-			protected int getConfiguredSortIndex() {
-				return 0;
+			protected boolean getConfiguredSummary() {
+				return true;
 			}
 		}
 
@@ -373,7 +415,7 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			@Override
 			protected void execAction() {
 				SkillForm form = new SkillForm();
-				form.startSelfAssessment();
+				form.startNew();
 				form.waitFor();
 				if (form.isFormStored()) {
 					reloadPage();

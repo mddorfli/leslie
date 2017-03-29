@@ -22,7 +22,7 @@ import org.leslie.server.mapping.MappedField;
 @Entity
 @Table(name = "users_x_skill")
 @NamedQueries({
-		@NamedQuery(name = SkillAssessment.QUERY_LATEST_BY_USER_FETCH_ALL, query = ""
+		@NamedQuery(name = SkillAssessment.QUERY_LATEST_BY_USER_ID_FETCH_ALL, query = ""
 				+ "SELECT DISTINCT sa "
 				+ "  FROM SkillAssessment sa "
 				+ "  LEFT JOIN FETCH sa.user "
@@ -30,11 +30,13 @@ import org.leslie.server.mapping.MappedField;
 				+ "  LEFT JOIN FETCH sa.assessedBy "
 				+ " WHERE sa.user.id = :userId "
 				+ "   AND sa.id IN (SELECT MAX(sqsa.id) FROM SkillAssessment sqsa GROUP BY sqsa.user, sqsa.skill)"),
+		@NamedQuery(name = SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID, query = "SELECT sa FROM SkillAssessment sa WHERE sa.user.id = :userId AND sa.skill.id = :skillId "),
 })
 @MappedClass(value = SkillAssessmentMapping.class)
 public class SkillAssessment {
 
-	public static final String QUERY_LATEST_BY_USER_FETCH_ALL = "SkillAssessment.latestByUserFetchAll";
+	public static final String QUERY_LATEST_BY_USER_ID_FETCH_ALL = "SkillAssessment.latestByUserIdFetchAll";
+	public static final String QUERY_HISTORY_BY_SKILL_ID_USER_ID = "SkillAssessment.historyBySkillIdUserId";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
