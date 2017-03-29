@@ -48,8 +48,8 @@ public class SkillForm extends AbstractForm {
 		startInternalExclusive(new ModifyHandler());
 	}
 
-	public void startNew() {
-		startInternal(new NewHandler());
+	public void startSelfAssessment() {
+		startInternal(new SelfAssessmentHandler());
 	}
 
 	public CancelButton getCancelButton() {
@@ -163,7 +163,7 @@ public class SkillForm extends AbstractForm {
 		}
 	}
 
-	public class NewHandler extends AbstractFormHandler {
+	public class SelfAssessmentHandler extends AbstractFormHandler {
 
 		@Override
 		protected void execLoad() {

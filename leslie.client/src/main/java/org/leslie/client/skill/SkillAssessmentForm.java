@@ -144,28 +144,38 @@ public class SkillAssessmentForm extends AbstractForm {
 			}
 
 			@Order(3000)
-			public class SelfAssessmentField extends AbstractSmartField<Double> {
+			public class SelfAssessmentField extends AbstractSmartField<Integer> {
 				@Override
 				protected String getConfiguredLabel() {
 					return TEXTS.get("SelfAssessment");
 				}
 
 				@Override
-				protected Class<? extends ICodeType<?, Double>> getConfiguredCodeType() {
+				protected Class<? extends ICodeType<?, Integer>> getConfiguredCodeType() {
 					return AssessmentCodeType.class;
+				}
+
+				@Override
+				protected boolean getConfiguredMandatory() {
+					return true;
 				}
 			}
 
 			@Order(4000)
-			public class SelfAffinityField extends AbstractSmartField<Double> {
+			public class SelfAffinityField extends AbstractSmartField<Integer> {
 				@Override
 				protected String getConfiguredLabel() {
 					return TEXTS.get("Affinity");
 				}
 
 				@Override
-				protected Class<? extends ICodeType<?, Double>> getConfiguredCodeType() {
+				protected Class<? extends ICodeType<?, Integer>> getConfiguredCodeType() {
 					return AssessmentCodeType.class;
+				}
+
+				@Override
+				protected boolean getConfiguredMandatory() {
+					return true;
 				}
 			}
 

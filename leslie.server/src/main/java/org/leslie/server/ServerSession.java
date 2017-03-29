@@ -17,46 +17,54 @@ import org.slf4j.LoggerFactory;
  */
 public class ServerSession extends AbstractServerSession {
 
-    private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(ServerSession.class);
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(ServerSession.class);
 
-    public ServerSession() {
-	super(true);
-    }
+	public ServerSession() {
+		super(true);
+	}
 
-    /**
-     * @return The {@link ServerSession} which is associated with the current
-     *         thread, or <code>null</code> if not found.
-     */
-    public static ServerSession get() {
-	return ServerSessionProvider.currentSession(ServerSession.class);
-    }
+	/**
+	 * @return The {@link ServerSession} which is associated with the current
+	 *         thread, or <code>null</code> if not found.
+	 */
+	public static ServerSession get() {
+		return ServerSessionProvider.currentSession(ServerSession.class);
+	}
 
-    public User getUser() {
-	return JPA.find(User.class, getUserNr());
-    }
+	/**
+	 * @return the currently logged in user
+	 */
+	public User getUser() {
+		return JPA.find(User.class, getUserNr());
+	}
 
-    public Long getUserNr() {
-	return getSharedContextVariable("userNr", Long.class);
-    }
+	/**
+	 * @return the id of the currently logged in user. <br>
+	 *         (Note, this method cannot be called getUserId(), as that is
+	 *         reserved by a superclass)
+	 */
+	public Long getUserNr() {
+		return getSharedContextVariable("userNr", Long.class);
+	}
 
-    private void setUserNrInternal(Long userNr) {
-	setSharedContextVariable("userNr", Long.class, userNr);
-    }
+	private void setUserNrInternal(Long userNr) {
+		setSharedContextVariable("userNr", Long.class, userNr);
+	}
 
-    @Override
-    protected void execLoadSession() {
-	User user = JPA.createNamedQuery(User.QUERY_BY_USERNAME, User.class)
-		.setParameter("username", getUserId())
-		.getResultList().stream()
-		.findAny()
-		.orElseThrow(() -> new SecurityException(
-			new ProcessingException("Could not find user with username {}", (Object) getUserId())));
+	@Override
+	protected void execLoadSession() {
+		User user = JPA.createNamedQuery(User.QUERY_BY_USERNAME, User.class)
+				.setParameter("username", getUserId())
+				.getResultList().stream()
+				.findAny()
+				.orElseThrow(() -> new SecurityException(
+						new ProcessingException("Could not find user with username {}", (Object) getUserId())));
 
-	setUserNrInternal(Long.valueOf(user.getId()));
-	user.setLastLogin(new Date(System.currentTimeMillis()));
-	user.setFailedLoginAttempts(0);
+		setUserNrInternal(Long.valueOf(user.getId()));
+		user.setLastLogin(new Date(System.currentTimeMillis()));
+		user.setFailedLoginAttempts(0);
 
-	LOG.info("created a new session for {}", getUserId());
-    }
+		LOG.info("created a new session for {}", getUserId());
+	}
 }

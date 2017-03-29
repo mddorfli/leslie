@@ -68,12 +68,12 @@ public class SkillAssessmentFormData extends AbstractFormData {
 		return getFieldByClass(SkillName.class);
 	}
 
-	public static class SelfAffinity extends AbstractValueFieldData<Double> {
+	public static class SelfAffinity extends AbstractValueFieldData<Integer> {
 
 		private static final long serialVersionUID = 1L;
 	}
 
-	public static class SelfAssessment extends AbstractValueFieldData<Double> {
+	public static class SelfAssessment extends AbstractValueFieldData<Integer> {
 
 		private static final long serialVersionUID = 1L;
 	}

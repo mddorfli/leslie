@@ -12,9 +12,9 @@
 		<column name="skill_id" type="java.sql.Types.BIGINT">
 			<constraints nullable="false"/>
 		</column>
-		<column name="self_assessment" type="java.sql.Types.DOUBLE"/>
-		<column name="self_affinity" type="java.sql.Types.DOUBLE"/>
-		<column name="assessment" type="java.sql.Types.DOUBLE"/>
+		<column name="self_assessment_uid" type="java.sql.Types.INTEGER"/>
+		<column name="self_affinity_uid" type="java.sql.Types.INTEGER"/>
+		<column name="assessment_uid" type="java.sql.Types.INTEGER"/>
 		<column name="assessed_by" type="java.sql.Types.BIGINT"/>
 		<column name="last_modified" type="java.sql.Types.TIMESTAMP">
 			<constraints nullable="false"/>

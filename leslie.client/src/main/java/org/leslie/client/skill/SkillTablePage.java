@@ -7,9 +7,9 @@ import org.eclipse.scout.rt.client.ui.action.menu.AbstractMenu;
 import org.eclipse.scout.rt.client.ui.action.menu.IMenuType;
 import org.eclipse.scout.rt.client.ui.action.menu.TableMenuType;
 import org.eclipse.scout.rt.client.ui.basic.table.AbstractTable;
-import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractBigDecimalColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractDateTimeColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
+import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
 import org.eclipse.scout.rt.client.ui.messagebox.MessageBoxes;
@@ -17,16 +17,18 @@ import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
+import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.skill.SkillTablePage.Table;
-import org.leslie.client.skill.SkillTablePage.Table.AddSelfAssessmentMenu;
 import org.leslie.client.skill.SkillTablePage.Table.DeleteSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.EditSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.NewSkillMenu;
+import org.leslie.client.skill.SkillTablePage.Table.SelfAssessMenu;
 import org.leslie.shared.security.permission.AssessSkillPermission;
 import org.leslie.shared.security.permission.CreateSkillPermission;
 import org.leslie.shared.security.permission.UpdateSkillPermission;
+import org.leslie.shared.skill.AssessmentCodeType;
 import org.leslie.shared.skill.ISkillService;
 import org.leslie.shared.skill.ISkillService.SkillPresentation;
 import org.leslie.shared.skill.SkillTablePageData;
@@ -101,7 +103,7 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			break;
 		case ADMIN_CATEGORY:
 			getTable().getCategoryColumn().setDisplayable(false);
-			getTable().getMenuByClass(AddSelfAssessmentMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
 		case ADMIN:
 		default:
 			getTable().getAffinityColumn().setDisplayable(false);
@@ -109,7 +111,7 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			getTable().getAssessmentColumn().setDisplayable(false);
 			getTable().getAssessedByColumn().setDisplayable(false);
 			getTable().getLastModifiedColumn().setDisplayable(false);
-			getTable().getMenuByClass(AddSelfAssessmentMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
 			break;
 		}
 	}
@@ -228,11 +230,16 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 		}
 
 		@Order(6000)
-		public class SelfAssessmentColumn extends AbstractBigDecimalColumn {
+		public class SelfAssessmentColumn extends AbstractSmartColumn<Integer> {
 
 			@Override
 			protected String getConfiguredHeaderText() {
 				return TEXTS.get("SelfAssessment");
+			}
+
+			@Override
+			protected Class<? extends ICodeType<?, Integer>> getConfiguredCodeType() {
+				return AssessmentCodeType.class;
 			}
 
 			@Override
@@ -242,10 +249,15 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 		}
 
 		@Order(7000)
-		public class AffinityColumn extends AbstractBigDecimalColumn {
+		public class AffinityColumn extends AbstractSmartColumn<Integer> {
 			@Override
 			protected String getConfiguredHeaderText() {
 				return TEXTS.get("Affinity");
+			}
+
+			@Override
+			protected Class<? extends ICodeType<?, Integer>> getConfiguredCodeType() {
+				return AssessmentCodeType.class;
 			}
 
 			@Override
@@ -255,10 +267,15 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 		}
 
 		@Order(8000)
-		public class AssessmentColumn extends AbstractBigDecimalColumn {
+		public class AssessmentColumn extends AbstractSmartColumn<Integer> {
 			@Override
 			protected String getConfiguredHeaderText() {
 				return TEXTS.get("Assessment");
+			}
+
+			@Override
+			protected Class<? extends ICodeType<?, Integer>> getConfiguredCodeType() {
+				return AssessmentCodeType.class;
 			}
 
 			@Override
@@ -351,7 +368,7 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			@Override
 			protected void execAction() {
 				SkillForm form = new SkillForm();
-				form.startNew();
+				form.startSelfAssessment();
 				form.waitFor();
 				if (form.isFormStored()) {
 					reloadPage();
@@ -387,10 +404,10 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 		}
 
 		@Order(4000)
-		public class AddSelfAssessmentMenu extends AbstractMenu {
+		public class SelfAssessMenu extends AbstractMenu {
 			@Override
 			protected String getConfiguredText() {
-				return TEXTS.get("AddSelfAssessment_");
+				return TEXTS.get("SelfAssess_");
 			}
 
 			@Override

@@ -18,19 +18,19 @@ public class AssessSkillPermission extends BasicHierarchyPermission {
 
 	public static final int LEVEL_OWN = 10;
 
-	private long skillId;
+	private long skillAssessmentId;
 
 	public AssessSkillPermission() {
 		super(AssessSkillPermission.class.getSimpleName() + ".*", LEVEL_OWN);
 	}
 
-	public AssessSkillPermission(long skillId) {
-		super(AssessSkillPermission.class.getSimpleName() + "." + skillId, LEVEL_UNDEFINED);
-		this.skillId = skillId;
+	public AssessSkillPermission(long skillAssessmentId) {
+		super(AssessSkillPermission.class.getSimpleName() + "." + skillAssessmentId, LEVEL_UNDEFINED);
+		this.skillAssessmentId = skillAssessmentId;
 	}
 
-	public long getSkillId() {
-		return skillId;
+	public long getSkillAssessmentId() {
+		return skillAssessmentId;
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class AssessSkillPermission extends BasicHierarchyPermission {
 		if (other instanceof AssessSkillPermission) {
 			AssessSkillPermission otherPermission = (AssessSkillPermission) other;
 			ISkillService service = BEANS.get(ISkillService.class);
-			if (service.checkCurrentUserHasSkill(otherPermission.getSkillId())) {
+			if (service.checkCurrentUserHasSkillAssessment(otherPermission.getSkillAssessmentId())) {
 				// if the user is the owner, LEVEL_OWN is sufficient.
 				result = LEVEL_OWN;
 			}

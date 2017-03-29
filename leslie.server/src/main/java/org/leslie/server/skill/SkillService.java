@@ -11,6 +11,7 @@ import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.ServerSession;
 import org.leslie.server.entity.Skill;
 import org.leslie.server.entity.SkillAssessment;
+import org.leslie.server.entity.User;
 import org.leslie.server.jpa.JPA;
 import org.leslie.server.mapping.MappingUtility;
 import org.leslie.shared.security.permission.AssessSkillPermission;
@@ -123,11 +124,12 @@ public class SkillService implements ISkillService {
 	 * Runs without permission checks, as it is used by the permission checking
 	 * mechanism.
 	 * 
-	 * @see org.leslie.shared.skill.ISkillService#checkCurrentUserHasSkill(long)
+	 * @see org.leslie.shared.skill.ISkillService#checkCurrentUserHasSkillAssessment(long)
 	 */
 	@Override
-	public boolean checkCurrentUserHasSkill(long skillId) {
-		return ServerSession.get().getUser().getSkills().stream()
-				.anyMatch(assessment -> assessment.getSkill().getId() == skillId);
+	public boolean checkCurrentUserHasSkillAssessment(long skillAssessmentId) {
+		User user = ServerSession.get().getUser();
+		return user.getSkills().stream()
+				.anyMatch(assessment -> assessment.getId() == skillAssessmentId);
 	}
 }

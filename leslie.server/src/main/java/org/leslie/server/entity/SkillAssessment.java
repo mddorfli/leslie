@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,6 +37,7 @@ public class SkillAssessment {
 	public static final String QUERY_LATEST_BY_USER_FETCH_ALL = "SkillAssessment.latestByUserFetchAll";
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@MappedField(readOnly = true, pageFieldName = "assessmentId")
 	private long id;
 
@@ -46,16 +49,17 @@ public class SkillAssessment {
 	@JoinColumn(name = "skill_id")
 	private Skill skill;
 
-	@Column(name = "self_assessment")
+	@Column(name = "self_assessment_uid")
 	@MappedField
-	private Double selfAssessment;
+	private Integer selfAssessment;
 
-	@Column(name = "self_affinity")
+	@Column(name = "self_affinity_uid")
 	@MappedField(pageFieldName = "affinity")
-	private Double selfAffinity;
+	private Integer selfAffinity;
 
 	@MappedField
-	private Double assessment;
+	@Column(name = "assessment_uid")
+	private Integer assessment;
 
 	@ManyToOne
 	@JoinColumn(name = "assessed_by")
@@ -78,7 +82,7 @@ public class SkillAssessment {
 		return user;
 	}
 
-	void setUser(User user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 
@@ -86,32 +90,32 @@ public class SkillAssessment {
 		return skill;
 	}
 
-	void setSkill(Skill skill) {
+	public void setSkill(Skill skill) {
 		this.skill = skill;
 	}
 
-	public Double getSelfAssessment() {
+	public Integer getSelfAssessment() {
 		return selfAssessment;
 	}
 
-	public void setSelfAssessment(Double selfAssessment) {
+	public void setSelfAssessment(Integer selfAssessment) {
 		this.selfAssessment = selfAssessment;
 	}
 
-	public Double getSelfAffinity() {
+	public Integer getSelfAffinity() {
 		return selfAffinity;
 	}
 
-	public void setSelfAffinity(Double selfAffinity) {
+	public void setSelfAffinity(Integer selfAffinity) {
 		this.selfAffinity = selfAffinity;
 	}
 
-	public Double getAssessment() {
-		return assessment;
+	public void setAssessment(Integer assessment) {
+		this.assessment = assessment;
 	}
 
-	public void setAssessment(Double assessment) {
-		this.assessment = assessment;
+	public Integer getAssessment() {
+		return assessment;
 	}
 
 	public User getAssessedBy() {

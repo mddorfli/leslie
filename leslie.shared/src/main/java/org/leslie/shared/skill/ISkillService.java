@@ -45,8 +45,8 @@ public interface ISkillService extends IService {
 
 	/**
 	 * @param skillId
-	 * @return true if the current user has this skill
+	 * @return true if the current user has this skill assessment
 	 */
-	boolean checkCurrentUserHasSkill(long skillId);
+	boolean checkCurrentUserHasSkillAssessment(long skillAssessmentId);
 
 }

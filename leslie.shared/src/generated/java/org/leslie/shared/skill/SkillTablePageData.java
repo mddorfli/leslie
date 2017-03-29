@@ -1,6 +1,5 @@
 package org.leslie.shared.skill;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.annotation.Generated;
@@ -73,9 +72,9 @@ public class SkillTablePageData extends AbstractTablePageData {
 		private String m_category;
 		private String m_name;
 		private String m_description;
-		private BigDecimal m_selfAssessment;
-		private BigDecimal m_affinity;
-		private BigDecimal m_assessment;
+		private Integer m_selfAssessment;
+		private Integer m_affinity;
+		private Integer m_assessment;
 		private Long m_assessedById;
 		private String m_assessedBy;
 		private Date m_lastModified;
@@ -128,27 +127,27 @@ public class SkillTablePageData extends AbstractTablePageData {
 			m_description = newDescription;
 		}
 
-		public BigDecimal getSelfAssessment() {
+		public Integer getSelfAssessment() {
 			return m_selfAssessment;
 		}
 
-		public void setSelfAssessment(BigDecimal newSelfAssessment) {
+		public void setSelfAssessment(Integer newSelfAssessment) {
 			m_selfAssessment = newSelfAssessment;
 		}
 
-		public BigDecimal getAffinity() {
+		public Integer getAffinity() {
 			return m_affinity;
 		}
 
-		public void setAffinity(BigDecimal newAffinity) {
+		public void setAffinity(Integer newAffinity) {
 			m_affinity = newAffinity;
 		}
 
-		public BigDecimal getAssessment() {
+		public Integer getAssessment() {
 			return m_assessment;
 		}
 
-		public void setAssessment(BigDecimal newAssessment) {
+		public void setAssessment(Integer newAssessment) {
 			m_assessment = newAssessment;
 		}
 
