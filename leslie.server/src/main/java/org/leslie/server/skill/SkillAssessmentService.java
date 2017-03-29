@@ -11,6 +11,7 @@ import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.ServerSession;
 import org.leslie.server.entity.Skill;
 import org.leslie.server.entity.SkillAssessment;
+import org.leslie.server.entity.User;
 import org.leslie.server.jpa.JPA;
 import org.leslie.shared.security.permission.AssessSkillPermission;
 import org.leslie.shared.skill.ISkillAssessmentService;
@@ -49,18 +50,34 @@ public class SkillAssessmentService implements ISkillAssessmentService {
 		if (!ACCESS.check(new AssessSkillPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
+		User user = ServerSession.get().getUser();
+		Skill skill = JPA.find(Skill.class, formData.getSkillId());
 
 		// always inserts a new record
 		SkillAssessment assessment = new SkillAssessment();
-		assessment.setUser(ServerSession.get().getUser());
-		assessment.setSkill(JPA.find(Skill.class, formData.getSkillId()));
+		assessment.setUser(user);
+		assessment.setSkill(skill);
 		assessment.setSelfAffinity(formData.getSelfAffinity().getValue());
 		assessment.setSelfAssessment(formData.getSelfAssessment().getValue());
 		assessment.setLastModified(Date.from(Instant.now()));
-
 		JPA.persist(assessment);
+
+		user.getSkills().add(assessment);
+		skill.getAssessments().add(assessment);
 
 		return formData;
 	}
 
+	/**
+	 * Runs without permission checks, as it is used by the permission checking
+	 * mechanism.
+	 * 
+	 * @see org.leslie.shared.skill.ISkillService#checkCurrentUserHasSkillAssessment(long)
+	 */
+	@Override
+	public boolean checkCurrentUserHasSkillAssessment(long skillAssessmentId) {
+		User user = ServerSession.get().getUser();
+		return user.getSkills().stream()
+				.anyMatch(assessment -> assessment.getId() == skillAssessmentId);
+	}
 }

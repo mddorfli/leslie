@@ -11,4 +11,9 @@ public interface ISkillAssessmentService extends IService {
 
 	SkillAssessmentFormData store(SkillAssessmentFormData formData) throws ProcessingException;
 
+	/**
+	 * @param skillId
+	 * @return true if the current user has this skill assessment
+	 */
+	boolean checkCurrentUserHasSkillAssessment(long skillAssessmentId);
 }

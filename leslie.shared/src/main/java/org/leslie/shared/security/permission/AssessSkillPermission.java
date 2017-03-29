@@ -2,7 +2,7 @@ package org.leslie.shared.security.permission;
 
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.shared.security.BasicHierarchyPermission;
-import org.leslie.shared.skill.ISkillService;
+import org.leslie.shared.skill.ISkillAssessmentService;
 
 /**
  * Determines whether users can make skill assessments.<br>
@@ -39,7 +39,7 @@ public class AssessSkillPermission extends BasicHierarchyPermission {
 		int result = LEVEL_ALL;
 		if (other instanceof AssessSkillPermission) {
 			AssessSkillPermission otherPermission = (AssessSkillPermission) other;
-			ISkillService service = BEANS.get(ISkillService.class);
+			ISkillAssessmentService service = BEANS.get(ISkillAssessmentService.class);
 			if (service.checkCurrentUserHasSkillAssessment(otherPermission.getSkillAssessmentId())) {
 				// if the user is the owner, LEVEL_OWN is sufficient.
 				result = LEVEL_OWN;
