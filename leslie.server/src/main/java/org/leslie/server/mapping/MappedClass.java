@@ -12,7 +12,7 @@ import org.eclipse.scout.rt.shared.data.form.AbstractFormData;
 /**
  * Indicates that the annotated class should be considered for data mapping. An optional custom mapping may be specified.
  * 
- * @author mddorfli
+ * @author Marco Dörfliger
  *
  */
 @Retention(RUNTIME)

@@ -34,6 +34,61 @@ import org.leslie.shared.user.IUserService;
 public class UserService implements IUserService {
 
 	@Override
+	public UserPageData getProjectUserTableData(Long projectId) {
+		if (ACCESS.getLevel(new ReadProjectPermission()) == ReadProjectPermission.LEVEL_NONE) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+
+		final Project project = JPA.find(Project.class, projectId);
+		List<User> users = JPA.createNamedQuery(User.QUERY_BY_PROJECT_ID, User.class)
+				.setParameter("projectId", projectId)
+				.getResultList();
+
+		final UserPageData pageData = new UserPageData();
+		MappingUtility.importTablePageData(users, pageData, (user, row) -> {
+			UserRowData userRow = (UserRowData) row;
+			userRow.setDisplayName(user.getDisplayName());
+			for (ProjectAssignment pa : project.getUserAssignments()) {
+				if (user.equals(pa.getUser())) {
+					userRow.setParticipationLevel(pa.getParticipationLevel());
+					break;
+				}
+			}
+		});
+
+		return pageData;
+	}
+
+	@Override
+	public UserPageData getAdministrationUserTableData() {
+		if (!ACCESS.check(new ReadAdministrationPermission())) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+
+		List<User> result = JPA.createNamedQuery(User.QUERY_ALL, User.class).getResultList();
+		final UserPageData pageData = new UserPageData();
+
+		MappingUtility.importTablePageData(result, pageData, (user, row) -> {
+			((UserRowData) row).setDisplayName(user.getDisplayName());
+		});
+
+		return pageData;
+	}
+
+	@Override
+	public UserPageData getUserTableData() {
+		// no special access required to get a list of users
+		List<User> users = JPA.createNamedQuery(User.QUERY_ACTIVE, User.class).getResultList();
+		UserPageData pageData = new UserPageData();
+		for (User user : users) {
+			UserRowData row = pageData.addRow();
+			row.setId(user.getId());
+			row.setDisplayName(user.getDisplayName());
+		}
+		return pageData;
+	}
+
+	@Override
 	public UserFormData create(UserFormData formData) throws ProcessingException {
 		if (!ACCESS.check(new UpdateAdministrationPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
@@ -107,48 +162,6 @@ public class UserService implements IUserService {
 		user.getProjectAssignments().clear();
 		user.getRoles().clear();
 		JPA.remove(user);
-	}
-
-	@Override
-	public UserPageData getProjectUserTableData(Long projectId) {
-		if (ACCESS.getLevel(new ReadProjectPermission()) == ReadProjectPermission.LEVEL_NONE) {
-			throw new VetoException(TEXTS.get("AuthorizationFailed"));
-		}
-
-		final Project project = JPA.find(Project.class, projectId);
-		List<User> users = JPA.createNamedQuery(User.QUERY_BY_PROJECT_ID, User.class)
-				.setParameter("projectId", projectId)
-				.getResultList();
-
-		final UserPageData pageData = new UserPageData();
-		MappingUtility.importTablePageData(users, pageData, (user, row) -> {
-			UserRowData userRow = (UserRowData) row;
-			userRow.setDisplayName(user.getDisplayName());
-			for (ProjectAssignment pa : project.getUserAssignments()) {
-				if (user.equals(pa.getUser())) {
-					userRow.setParticipationLevel(pa.getParticipationLevel());
-					break;
-				}
-			}
-		});
-
-		return pageData;
-	}
-
-	@Override
-	public UserPageData getAdministrationUserTableData() {
-		if (!ACCESS.check(new ReadAdministrationPermission())) {
-			throw new VetoException(TEXTS.get("AuthorizationFailed"));
-		}
-
-		List<User> result = JPA.createNamedQuery(User.QUERY_ALL, User.class).getResultList();
-		final UserPageData pageData = new UserPageData();
-
-		MappingUtility.importTablePageData(result, pageData, (user, row) -> {
-			((UserRowData) row).setDisplayName(user.getDisplayName());
-		});
-
-		return pageData;
 	}
 
 	private static void applyPassword(User user, String password) {

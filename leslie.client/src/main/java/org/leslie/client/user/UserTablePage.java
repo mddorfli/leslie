@@ -16,6 +16,7 @@ import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
+import org.eclipse.scout.rt.client.ui.desktop.outline.pages.IPage;
 import org.eclipse.scout.rt.client.ui.messagebox.MessageBoxes;
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
@@ -28,6 +29,7 @@ import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.client.ClientSession;
+import org.leslie.client.skill.SkillTablePage;
 import org.leslie.client.user.UserTablePage.Table.AddUserMenu;
 import org.leslie.client.user.UserTablePage.Table.DeleteUserMenu;
 import org.leslie.client.user.UserTablePage.Table.EditUserMenu;
@@ -38,6 +40,7 @@ import org.leslie.shared.code.ParticipationCodeType.ParticipationLevel;
 import org.leslie.shared.project.IProjectService;
 import org.leslie.shared.security.permission.ManageProjectPermission;
 import org.leslie.shared.security.permission.UpdateAdministrationPermission;
+import org.leslie.shared.skill.ISkillService.SkillPresentation;
 import org.leslie.shared.user.IUserService;
 import org.leslie.shared.user.IUserService.UserPresentation;
 
@@ -61,16 +64,53 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 	}
 
 	@Override
-	protected void execPageActivated() {
+	protected String getConfiguredTitle() {
+		String title;
 		switch (presentationType) {
+		case SKILL_ASSESSMENT:
+			title = TEXTS.get("SkillAssessment");
+			break;
+		case PROJECT:
+			title = TEXTS.get("Members");
+			break;
+		case ADMINISTRATION:
+		default:
+			title = TEXTS.get("Users");
+			break;
+		}
+		return title;
+	}
+
+	@Override
+	protected void execInitPage() {
+		switch (presentationType) {
+		case SKILL_ASSESSMENT:
+			getTable().getParticipationLevelColumn().setDisplayable(false);
+			getTable().getUsernameColumn().setDisplayable(false);
+			getTable().getFirstNameColumn().setDisplayable(false);
+			getTable().getLastNameColumn().setDisplayable(false);
+			getTable().getEmailColumn().setDisplayable(false);
+			getTable().getLastLoginColumn().setDisplayable(false);
+			getTable().getLoginAttemptsColumn().setDisplayable(false);
+			getTable().getBlockedColumn().setDisplayable(false);
+
+			getTable().getMenuByClass(NewUserMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(EditUserMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(DeleteUserMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(AddUserMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(RemoveUserMenu.class).setVisibleGranted(false);
+
+			setLeaf(false);
+			break;
 		case ADMINISTRATION:
 			getTable().getDisplayNameColumn().setDisplayable(false);
 			getTable().getParticipationLevelColumn().setDisplayable(false);
 
 			getTable().getMenuByClass(AddUserMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(RemoveUserMenu.class).setVisibleGranted(false);
-			break;
 
+			setLeaf(true);
+			break;
 		case PROJECT:
 			boolean pmEnabled = ACCESS.check(new ManageProjectPermission(getProjectId()));
 			getTable().getUsernameColumn().setDisplayable(false);
@@ -86,36 +126,42 @@ public class UserTablePage extends AbstractPageWithTable<UserTablePage.Table> {
 			getTable().getMenuByClass(DeleteUserMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(AddUserMenu.class).setEnabled(pmEnabled);
 			getTable().getMenuByClass(RemoveUserMenu.class).setEnabled(pmEnabled);
+
+			setLeaf(true);
+			break;
+		default:
 			break;
 		}
 	}
 
 	@Override
 	protected void execLoadData(SearchFilter filter) throws ProcessingException {
+		IUserService service = BEANS.get(IUserService.class);
+		UserPageData pageData = null;
 		switch (presentationType) {
+		case SKILL_ASSESSMENT:
+			pageData = service.getUserTableData();
+			break;
 		case ADMINISTRATION:
-			importPageData(BEANS.get(IUserService.class).getAdministrationUserTableData());
+			pageData = service.getAdministrationUserTableData();
 			break;
 		case PROJECT:
-			importPageData(BEANS.get(IUserService.class).getProjectUserTableData(getProjectId()));
+			pageData = service.getProjectUserTableData(getProjectId());
 			break;
-		}
-	}
-
-	@Override
-	protected boolean getConfiguredLeaf() {
-		return true;
-	}
-
-	@Override
-	protected String getConfiguredTitle() {
-		switch (presentationType) {
-		case ADMINISTRATION:
 		default:
-			return TEXTS.get("Users");
-		case PROJECT:
-			return TEXTS.get("Members");
+			break;
 		}
+		importPageData(pageData);
+	}
+
+	@Override
+	protected IPage<?> execCreateChildPage(ITableRow row) {
+		if (presentationType == UserPresentation.SKILL_ASSESSMENT) {
+			SkillTablePage skillPage = new SkillTablePage(SkillPresentation.ASSESSMENT);
+			skillPage.setUserId(getTable().getIdColumn().getValue(row));
+			return skillPage;
+		}
+		return null;
 	}
 
 	@Order(10.0)

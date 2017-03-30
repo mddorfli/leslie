@@ -29,16 +29,25 @@ public interface ISkillService extends IService {
 		 * Historical view - shows last updates.
 		 */
 		PERSONAL_HISTORY,
+
+		/**
+		 * View for assessing skills
+		 */
+		ASSESSMENT,
 	}
 
+	/**
+	 * @return all skills in the system
+	 */
 	SkillTablePageData getSkillTableData();
 
 	SkillTablePageData getCategorySkillTableData(Long categoryId);
 
 	/**
+	 * @param userId TODO
 	 * @return skill table data for the currently logged in user
 	 */
-	SkillTablePageData getPersonalSkillTableData();
+	SkillTablePageData getPersonalSkillTableData(Long userId);
 
 	/**
 	 * @param skillId

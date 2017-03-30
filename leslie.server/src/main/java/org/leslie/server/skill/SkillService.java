@@ -51,19 +51,19 @@ public class SkillService implements ISkillService {
 	}
 
 	@Override
-	public SkillTablePageData getPersonalSkillTableData() {
+	public SkillTablePageData getPersonalSkillTableData(Long userId) {
 		if (!ACCESS.check(new AssessSkillPermission())) {
 			throw new VetoException(TEXTS.get("AuthorizationFailed"));
 		}
 		SkillTablePageData pageData = new SkillTablePageData();
 		List<SkillAssessment> assessments = JPA.createNamedQuery(
 				SkillAssessment.QUERY_LATEST_BY_USER_ID_FETCH_ALL, SkillAssessment.class)
-				.setParameter("userId", ServerSession.get().getUserNr())
+				.setParameter("userId", userId)
 				.getResultList();
 		MappingUtility.importTablePageData(assessments, pageData);
 
 		List<Skill> remainingSkills = JPA.createNamedQuery(Skill.QUERY_UNASSESSED_BY_USER_ID, Skill.class)
-				.setParameter("userId", ServerSession.get().getUserNr())
+				.setParameter("userId", userId)
 				.getResultList();
 		MappingUtility.importTablePageData(remainingSkills, pageData);
 

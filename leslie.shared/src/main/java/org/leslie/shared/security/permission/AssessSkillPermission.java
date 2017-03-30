@@ -9,7 +9,7 @@ import org.leslie.shared.skill.ISkillAssessmentService;
  * Level {@link #LEVEL_OWN} enables self-assessment only.<br>
  * Level {@link BasicHierarchyPermission#LEVEL_ALL} can assess everyone.<br>
  * 
- * @author mddorfli
+ * @author Marco Dörfliger
  *
  */
 public class AssessSkillPermission extends BasicHierarchyPermission {

@@ -25,6 +25,7 @@ import org.leslie.server.mapping.MappedField;
 @Table(name = "users")
 @NamedQueries({
 		@NamedQuery(name = User.QUERY_ALL, query = "SELECT u FROM User u "),
+		@NamedQuery(name = User.QUERY_ACTIVE, query = "SELECT u FROM User u WHERE u.id > 1 AND COALESCE(u.blocked, FALSE) = FALSE"),
 		@NamedQuery(name = User.QUERY_ALL_FETCH_PERMISSIONS, query = ""
 				+ "SELECT u "
 				+ "  FROM User u "
@@ -49,6 +50,7 @@ import org.leslie.server.mapping.MappedField;
 public class User {
 
 	public static final String QUERY_ALL = "User.all";
+	public static final String QUERY_ACTIVE = "User.active";
 	public static final String QUERY_ALL_FETCH_PERMISSIONS = "User.allFetchPermissions";
 	public static final String QUERY_BY_USERNAME = "User.byUsername";
 	public static final String QUERY_BY_ROLE_ID = "User.byRoleId";

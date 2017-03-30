@@ -24,7 +24,7 @@ public class SkillServiceTest {
 
 	@Test
 	public void testGetPersonalSkillTableData() {
-		SkillTablePageData tableData = BEANS.get(ISkillService.class).getPersonalSkillTableData();
+		SkillTablePageData tableData = BEANS.get(ISkillService.class).getPersonalSkillTableData(2L);
 		Assert.assertEquals(71, tableData.getRowCount());
 	}
 

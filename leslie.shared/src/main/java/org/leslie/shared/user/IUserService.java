@@ -9,32 +9,42 @@ import org.leslie.client.user.UserPageData;
 @TunnelToServer
 public interface IUserService extends IService {
 
-    enum UserPresentation {
+	enum UserPresentation {
+		/**
+		 * Shows all users and all columns. <br>
+		 * Enables menus for CRUD operations on users.
+		 */
+		ADMINISTRATION,
+		/**
+		 * Shows users of a given project. <br>
+		 * Only display name column is shown.
+		 */
+		PROJECT,
+		/**
+		 * Lists just users (as nodes), and their full skill profile as a
+		 * sub-table.
+		 */
+		SKILL_ASSESSMENT,
+	}
+
+	UserPageData getAdministrationUserTableData();
+
+	UserFormData create(UserFormData formData) throws ProcessingException;
+
+	UserFormData load(UserFormData formData) throws ProcessingException;
+
+	UserFormData store(UserFormData formData) throws ProcessingException;
+
+	void delete(Long selectedValue) throws ProcessingException;
+
+	UserPageData getProjectUserTableData(Long projectId);
+
+	Long getUserId(String username);
+
+	Long getCurrentUserNr();
+
 	/**
-	 * Shows all users and all columns. <br>
-	 * Enables menus for CRUD operations on users.
+	 * @return just the ids and names of the active users in the system
 	 */
-	ADMINISTRATION,
-	/**
-	 * Shows users of a given project. <br>
-	 * Only display name column is shown.
-	 */
-	PROJECT
-    }
-
-    UserPageData getAdministrationUserTableData();
-
-    UserFormData create(UserFormData formData) throws ProcessingException;
-
-    UserFormData load(UserFormData formData) throws ProcessingException;
-
-    UserFormData store(UserFormData formData) throws ProcessingException;
-
-    void delete(Long selectedValue) throws ProcessingException;
-
-    UserPageData getProjectUserTableData(Long projectId);
-
-    Long getUserId(String username);
-
-    Long getCurrentUserNr();
+	UserPageData getUserTableData();
 }

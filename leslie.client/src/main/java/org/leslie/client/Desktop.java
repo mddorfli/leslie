@@ -15,7 +15,7 @@ import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.leslie.client.outline.AdministrationOutline;
 import org.leslie.client.outline.PersonalOutline;
-import org.leslie.client.outline.ProjectOutline;
+import org.leslie.client.outline.WorkOutline;
 import org.leslie.shared.Icons;
 
 /**
@@ -25,154 +25,154 @@ import org.leslie.shared.Icons;
  */
 public class Desktop extends AbstractDesktop {
 
-    @Override
-    protected String getConfiguredTitle() {
-	return TEXTS.get("ApplicationTitle");
-    }
-
-    @Override
-    protected String getConfiguredLogoId() {
-	return Icons.AppLogo;
-    }
-
-    @Override
-    protected List<Class<? extends IOutline>> getConfiguredOutlines() {
-	return CollectionUtility.<Class<? extends IOutline>>arrayList(
-		PersonalOutline.class, ProjectOutline.class, AdministrationOutline.class);
-    }
-
-    @Override
-    protected void execGuiAttached() {
-	super.execGuiAttached();
-	selectFirstVisibleOutline();
-    }
-
-    protected void selectFirstVisibleOutline() {
-	for (IOutline outline : getAvailableOutlines()) {
-	    if (outline.isEnabled() && outline.isVisible()) {
-		setOutline(outline);
-		break;
-	    }
+	@Override
+	protected String getConfiguredTitle() {
+		return TEXTS.get("ApplicationTitle");
 	}
-    }
-
-    @Order(1000)
-    public class FileMenu extends AbstractMenu {
 
 	@Override
-	protected String getConfiguredText() {
-	    return TEXTS.get("File");
+	protected String getConfiguredLogoId() {
+		return Icons.AppLogo;
+	}
+
+	@Override
+	protected List<Class<? extends IOutline>> getConfiguredOutlines() {
+		return CollectionUtility.<Class<? extends IOutline>>arrayList(
+				PersonalOutline.class, WorkOutline.class, AdministrationOutline.class);
+	}
+
+	@Override
+	protected void execGuiAttached() {
+		super.execGuiAttached();
+		selectFirstVisibleOutline();
+	}
+
+	protected void selectFirstVisibleOutline() {
+		for (IOutline outline : getAvailableOutlines()) {
+			if (outline.isEnabled() && outline.isVisible()) {
+				setOutline(outline);
+				break;
+			}
+		}
 	}
 
 	@Order(1000)
-	public class ExitMenu extends AbstractMenu {
+	public class FileMenu extends AbstractMenu {
 
-	    @Override
-	    protected String getConfiguredText() {
-		return TEXTS.get("Exit");
-	    }
+		@Override
+		protected String getConfiguredText() {
+			return TEXTS.get("File");
+		}
 
-	    @Override
-	    protected void execAction() {
-		ClientSessionProvider.currentSession(ClientSession.class).stop();
-	    }
-	}
-    }
+		@Order(1000)
+		public class ExitMenu extends AbstractMenu {
 
-    @Order(2000)
-    public class BookmarkMenu extends AbstractBookmarkMenu {
-	public BookmarkMenu() {
-	    super(Desktop.this);
-	}
-    }
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("Exit");
+			}
 
-    @Order(3000)
-    public class HelpMenu extends AbstractMenu {
-
-	@Override
-	protected String getConfiguredText() {
-	    return TEXTS.get("Help");
+			@Override
+			protected void execAction() {
+				ClientSessionProvider.currentSession(ClientSession.class).stop();
+			}
+		}
 	}
 
-	@Order(1000)
-	public class AboutMenu extends AbstractMenu {
-
-	    @Override
-	    protected String getConfiguredText() {
-		return TEXTS.get("About");
-	    }
-
-	    @Override
-	    protected void execAction() {
-		ScoutInfoForm form = new ScoutInfoForm();
-		form.startModify();
-	    }
-	}
-    }
-
-    @Order(2000)
-    public class PersonalOutlineViewButton extends AbstractOutlineViewButton {
-
-	public PersonalOutlineViewButton() {
-	    this(PersonalOutline.class);
+	@Order(2000)
+	public class BookmarkMenu extends AbstractBookmarkMenu {
+		public BookmarkMenu() {
+			super(Desktop.this);
+		}
 	}
 
-	protected PersonalOutlineViewButton(Class<? extends PersonalOutline> outlineClass) {
-	    super(Desktop.this, outlineClass);
+	@Order(3000)
+	public class HelpMenu extends AbstractMenu {
+
+		@Override
+		protected String getConfiguredText() {
+			return TEXTS.get("Help");
+		}
+
+		@Order(1000)
+		public class AboutMenu extends AbstractMenu {
+
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("About");
+			}
+
+			@Override
+			protected void execAction() {
+				ScoutInfoForm form = new ScoutInfoForm();
+				form.startModify();
+			}
+		}
 	}
 
-	@Override
-	protected DisplayStyle getConfiguredDisplayStyle() {
-	    return DisplayStyle.TAB;
+	@Order(2000)
+	public class PersonalOutlineViewButton extends AbstractOutlineViewButton {
+
+		public PersonalOutlineViewButton() {
+			this(PersonalOutline.class);
+		}
+
+		protected PersonalOutlineViewButton(Class<? extends PersonalOutline> outlineClass) {
+			super(Desktop.this, outlineClass);
+		}
+
+		@Override
+		protected DisplayStyle getConfiguredDisplayStyle() {
+			return DisplayStyle.TAB;
+		}
+
+		@Override
+		protected String getConfiguredKeyStroke() {
+			return IKeyStroke.F2;
+		}
 	}
 
-	@Override
-	protected String getConfiguredKeyStroke() {
-	    return IKeyStroke.F2;
-	}
-    }
+	@Order(2000)
+	public class WorkOutlineViewButton extends AbstractOutlineViewButton {
 
-    @Order(2000)
-    public class ProjectOutlineViewButton extends AbstractOutlineViewButton {
+		public WorkOutlineViewButton() {
+			this(WorkOutline.class);
+		}
 
-	public ProjectOutlineViewButton() {
-	    this(ProjectOutline.class);
-	}
+		protected WorkOutlineViewButton(Class<? extends WorkOutline> outlineClass) {
+			super(Desktop.this, outlineClass);
+		}
 
-	protected ProjectOutlineViewButton(Class<? extends ProjectOutline> outlineClass) {
-	    super(Desktop.this, outlineClass);
-	}
+		@Override
+		protected DisplayStyle getConfiguredDisplayStyle() {
+			return DisplayStyle.TAB;
+		}
 
-	@Override
-	protected DisplayStyle getConfiguredDisplayStyle() {
-	    return DisplayStyle.TAB;
-	}
-
-	@Override
-	protected String getConfiguredKeyStroke() {
-	    return IKeyStroke.F3;
-	}
-    }
-
-    @Order(3000)
-    public class AdministrationOutlineViewButton extends AbstractOutlineViewButton {
-
-	public AdministrationOutlineViewButton() {
-	    this(AdministrationOutline.class);
+		@Override
+		protected String getConfiguredKeyStroke() {
+			return IKeyStroke.F3;
+		}
 	}
 
-	protected AdministrationOutlineViewButton(Class<? extends AdministrationOutline> outlineClass) {
-	    super(Desktop.this, outlineClass);
-	}
+	@Order(3000)
+	public class AdministrationOutlineViewButton extends AbstractOutlineViewButton {
 
-	@Override
-	protected DisplayStyle getConfiguredDisplayStyle() {
-	    return DisplayStyle.TAB;
-	}
+		public AdministrationOutlineViewButton() {
+			this(AdministrationOutline.class);
+		}
 
-	@Override
-	protected String getConfiguredKeyStroke() {
-	    return IKeyStroke.F10;
+		protected AdministrationOutlineViewButton(Class<? extends AdministrationOutline> outlineClass) {
+			super(Desktop.this, outlineClass);
+		}
+
+		@Override
+		protected DisplayStyle getConfiguredDisplayStyle() {
+			return DisplayStyle.TAB;
+		}
+
+		@Override
+		protected String getConfiguredKeyStroke() {
+			return IKeyStroke.F10;
+		}
 	}
-    }
 }
