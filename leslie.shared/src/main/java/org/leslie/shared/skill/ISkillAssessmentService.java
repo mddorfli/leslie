@@ -16,4 +16,6 @@ public interface ISkillAssessmentService extends IService {
 	 * @return true if the current user has this skill assessment
 	 */
 	boolean checkCurrentUserHasSkillAssessment(long skillAssessmentId);
+
+	SkillAssessmentHistoryFormData loadHistory(SkillAssessmentHistoryFormData formData);
 }

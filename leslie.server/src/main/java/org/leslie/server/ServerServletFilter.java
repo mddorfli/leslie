@@ -25,43 +25,43 @@ import org.eclipse.scout.rt.server.commons.authentication.TrivialAccessControlle
  */
 public class ServerServletFilter implements Filter {
 
-    private TrivialAccessController m_trivialAccessController;
-    private ServiceTunnelAccessTokenAccessController m_tunnelAccessController;
-    private DevelopmentAccessController m_developmentAccessController;
+	private TrivialAccessController m_trivialAccessController;
+	private ServiceTunnelAccessTokenAccessController m_tunnelAccessController;
+	private DevelopmentAccessController m_developmentAccessController;
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-	m_trivialAccessController = BEANS.get(TrivialAccessController.class)
-		.init(new TrivialAuthConfig().withExclusionFilter(filterConfig.getInitParameter("filter-exclude")));
-	m_tunnelAccessController = BEANS.get(ServiceTunnelAccessTokenAccessController.class).init();
-	m_developmentAccessController = BEANS.get(DevelopmentAccessController.class).init();
-    }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-	    throws IOException, ServletException {
-	final HttpServletRequest req = (HttpServletRequest) request;
-	final HttpServletResponse resp = (HttpServletResponse) response;
-
-	if (m_trivialAccessController.handle(req, resp, chain)) {
-	    return;
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		m_trivialAccessController = BEANS.get(TrivialAccessController.class)
+				.init(new TrivialAuthConfig().withExclusionFilter(filterConfig.getInitParameter("filter-exclude")));
+		m_tunnelAccessController = BEANS.get(ServiceTunnelAccessTokenAccessController.class).init();
+		m_developmentAccessController = BEANS.get(DevelopmentAccessController.class).init();
 	}
 
-	if (m_tunnelAccessController.handle(req, resp, chain)) {
-	    return;
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		final HttpServletRequest req = (HttpServletRequest) request;
+		final HttpServletResponse resp = (HttpServletResponse) response;
+
+		if (m_trivialAccessController.handle(req, resp, chain)) {
+			return;
+		}
+
+		if (m_tunnelAccessController.handle(req, resp, chain)) {
+			return;
+		}
+
+		if (m_developmentAccessController.handle(req, resp, chain)) {
+			return;
+		}
+
+		resp.sendError(HttpServletResponse.SC_FORBIDDEN);
 	}
 
-	if (m_developmentAccessController.handle(req, resp, chain)) {
-	    return;
+	@Override
+	public void destroy() {
+		m_developmentAccessController.destroy();
+		m_tunnelAccessController.destroy();
+		m_trivialAccessController.destroy();
 	}
-
-	resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-    }
-
-    @Override
-    public void destroy() {
-	m_developmentAccessController.destroy();
-	m_tunnelAccessController.destroy();
-	m_trivialAccessController.destroy();
-    }
 }

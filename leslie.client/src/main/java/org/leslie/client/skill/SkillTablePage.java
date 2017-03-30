@@ -13,7 +13,6 @@ import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
-import org.eclipse.scout.rt.client.ui.desktop.outline.pages.IPage;
 import org.eclipse.scout.rt.client.ui.messagebox.MessageBoxes;
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
@@ -27,6 +26,7 @@ import org.leslie.client.skill.SkillTablePage.Table.DeleteSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.EditSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.NewSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.SelfAssessMenu;
+import org.leslie.client.skill.SkillTablePage.Table.ViewHistoryMenu;
 import org.leslie.shared.security.permission.AssessSkillPermission;
 import org.leslie.shared.security.permission.CreateSkillPermission;
 import org.leslie.shared.security.permission.UpdateSkillPermission;
@@ -101,11 +101,6 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 	}
 
 	@Override
-	protected boolean getConfiguredLeaf() {
-		return true;
-	}
-
-	@Override
 	protected void execInitPage() {
 		switch (presentationType) {
 		case PERSONAL_HISTORY:
@@ -114,8 +109,8 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			getTable().getMenuByClass(NewSkillMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(DeleteSkillMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(ViewHistoryMenu.class).setVisibleGranted(false);
 			getTable().getLastModifiedColumn().setInitialSortIndex(0);
-			setLeaf(true);
 			break;
 		case PERSONAL:
 			getTable().getDescriptionColumn().setDisplayable(false);
@@ -124,13 +119,12 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			getTable().getMenuByClass(DeleteSkillMenu.class).setVisibleGranted(false);
 			getTable().getCategoryColumn().setInitialSortIndex(0);
 			getTable().getNameColumn().setInitialSortIndex(1);
-			setLeaf(false);
 			break;
 		case ADMIN_CATEGORY:
 			getTable().getCategoryColumn().setDisplayable(false);
 			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(ViewHistoryMenu.class).setVisibleGranted(false);
 			getTable().getNameColumn().setInitialSortIndex(0);
-			setLeaf(true);
 		case ADMIN:
 		default:
 			getTable().getAffinityColumn().setDisplayable(false);
@@ -139,24 +133,30 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			getTable().getAssessedByColumn().setDisplayable(false);
 			getTable().getLastModifiedColumn().setDisplayable(false);
 			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
+			getTable().getMenuByClass(ViewHistoryMenu.class).setVisibleGranted(false);
 			getTable().getCategoryColumn().setInitialSortIndex(0);
 			getTable().getNameColumn().setInitialSortIndex(1);
-			setLeaf(true);
 			break;
 		}
 	}
 
 	@Override
-	protected IPage<?> execCreateChildPage(ITableRow row) {
-		IPage<?> page = null;
-		if (presentationType == SkillPresentation.PERSONAL) {
-			SkillTablePage childPage = new SkillTablePage(SkillPresentation.PERSONAL_HISTORY);
-			childPage.setSkillId(getTable().getIdColumn().getValue(row));
-			childPage.setUserId(getUserId());
-			page = childPage;
-		}
-		return page;
+	protected boolean getConfiguredLeaf() {
+		return true;
 	}
+
+	// @Override
+	// protected IPage<?> execCreateChildPage(ITableRow row) {
+	// IPage<?> page = null;
+	// if (presentationType == SkillPresentation.PERSONAL) {
+	// SkillTablePage childPage = new
+	// SkillTablePage(SkillPresentation.PERSONAL_HISTORY);
+	// childPage.setSkillId(getTable().getIdColumn().getValue(row));
+	// childPage.setUserId(getUserId());
+	// page = childPage;
+	// }
+	// return page;
+	// }
 
 	public class Table extends AbstractTable {
 
@@ -477,6 +477,32 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 				if (form.isFormStored()) {
 					reloadPage();
 				}
+			}
+		}
+
+		@Order(5000)
+		public class ViewHistoryMenu extends AbstractMenu {
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("ViewHistory_");
+			}
+
+			@Override
+			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+				return CollectionUtility.hashSet(TableMenuType.SingleSelection);
+			}
+
+			@Override
+			protected void execOwnerValueChanged(Object newOwnerValue) {
+				ITableRow row = CollectionUtility.firstElement(newOwnerValue);
+				setVisible(ACCESS.check(new AssessSkillPermission(getAssessmentIdColumn().getValue(row))));
+			}
+
+			@Override
+			protected void execAction() {
+				SkillAssessmentHistoryForm form = new SkillAssessmentHistoryForm();
+				form.setSkillAssessmentId(getAssessmentIdColumn().getSelectedValue());
+				form.startView();
 			}
 		}
 

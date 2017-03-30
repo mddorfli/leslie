@@ -2,6 +2,7 @@ package org.leslie.server.skill;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.util.List;
 
 import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
@@ -16,6 +17,9 @@ import org.leslie.server.jpa.JPA;
 import org.leslie.shared.security.permission.AssessSkillPermission;
 import org.leslie.shared.skill.ISkillAssessmentService;
 import org.leslie.shared.skill.SkillAssessmentFormData;
+import org.leslie.shared.skill.SkillAssessmentHistoryFormData;
+import org.leslie.shared.skill.SkillAssessmentHistoryFormData.History;
+import org.leslie.shared.skill.SkillAssessmentHistoryFormData.History.HistoryRowData;
 
 @Bean
 public class SkillAssessmentService implements ISkillAssessmentService {
@@ -79,5 +83,37 @@ public class SkillAssessmentService implements ISkillAssessmentService {
 		User user = ServerSession.get().getUser();
 		return user.getSkillAssessments().stream()
 				.anyMatch(assessment -> assessment.getId() == skillAssessmentId);
+	}
+
+	@Override
+	public SkillAssessmentHistoryFormData loadHistory(SkillAssessmentHistoryFormData formData) {
+		if (!ACCESS.check(new AssessSkillPermission(formData.getSkillAssessmentId()))) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+		SkillAssessment current = JPA.find(SkillAssessment.class, formData.getSkillAssessmentId());
+		List<SkillAssessment> assessments = JPA.createNamedQuery(
+				SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID, SkillAssessment.class)
+				.setParameter("skillId", current.getSkill().getId())
+				.setParameter("userId", current.getUser().getId())
+				.getResultList();
+
+		for (SkillAssessment assessment : assessments) {
+			History history = formData.getHistory();
+			HistoryRowData row = history.addRow();
+			row.setAssessmentId(assessment.getId());
+			if (assessment.getSkill().getCategory() != null) {
+				row.setCategory(assessment.getSkill().getCategory().getName());
+			}
+			row.setName(assessment.getSkill().getName());
+			row.setSelfAssessment(assessment.getSelfAssessment());
+			row.setAssessment(assessment.getAssessment());
+			row.setAffinity(assessment.getSelfAffinity());
+			row.setLastModified(assessment.getLastModified());
+			if (assessment.getAssessedBy() != null) {
+				row.setAssessedById(assessment.getAssessedBy().getId());
+				row.setAssessedBy(assessment.getAssessedBy().getDisplayName());
+			}
+		}
+		return formData;
 	}
 }
