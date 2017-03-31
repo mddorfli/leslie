@@ -19,6 +19,9 @@
 		<column name="last_modified" type="java.sql.Types.TIMESTAMP">
 			<constraints nullable="false"/>
 		</column>
+		<column name="modified_by" type="java.sql.Types.BIGINT">
+			<constraints nullable="false"/>
+		</column>
 	</createTable>
 </changeSet>
 

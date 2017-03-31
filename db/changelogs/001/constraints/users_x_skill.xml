@@ -16,5 +16,10 @@
 		baseTableName="users_x_skill" baseColumnNames="assessed_by" 
 		referencedTableName="users" referencedColumnNames="id"/>
 </changeSet>
+<changeSet id="40" author="mddorfli">
+	<addForeignKeyConstraint constraintName="fk_users_x_skill_modified_by" 
+		baseTableName="users_x_skill" baseColumnNames="modified_by" 
+		referencedTableName="users" referencedColumnNames="id"/>
+</changeSet>
 
 </databaseChangeLog>

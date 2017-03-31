@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.eclipse.scout.rt.client.dto.Data;
 import org.eclipse.scout.rt.client.ui.action.menu.AbstractMenu;
+import org.eclipse.scout.rt.client.ui.action.menu.IMenu;
 import org.eclipse.scout.rt.client.ui.action.menu.IMenuType;
 import org.eclipse.scout.rt.client.ui.action.menu.TableMenuType;
 import org.eclipse.scout.rt.client.ui.basic.table.AbstractTable;
@@ -13,11 +14,15 @@ import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
 import org.eclipse.scout.rt.client.ui.desktop.outline.pages.AbstractPageWithTable;
+import org.eclipse.scout.rt.client.ui.messagebox.IMessageBox;
 import org.eclipse.scout.rt.client.ui.messagebox.MessageBoxes;
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.platform.util.CollectionUtility;
+import org.eclipse.scout.rt.platform.util.collection.OrderedCollection;
 import org.eclipse.scout.rt.shared.TEXTS;
+import org.eclipse.scout.rt.shared.services.common.code.CODES;
+import org.eclipse.scout.rt.shared.services.common.code.ICode;
 import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
 import org.eclipse.scout.rt.shared.services.common.jdbc.SearchFilter;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
@@ -28,10 +33,12 @@ import org.leslie.client.skill.SkillTablePage.Table.EditSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.NewSkillMenu;
 import org.leslie.client.skill.SkillTablePage.Table.SelfAssessMenu;
 import org.leslie.client.skill.SkillTablePage.Table.ViewHistoryMenu;
+//import org.leslie.client.skill.SkillTablePage.Table.ViewHistoryMenu;
 import org.leslie.shared.security.permission.AssessSkillPermission;
 import org.leslie.shared.security.permission.CreateSkillPermission;
 import org.leslie.shared.security.permission.UpdateSkillPermission;
 import org.leslie.shared.skill.AssessmentCodeType;
+import org.leslie.shared.skill.ISkillAssessmentService;
 import org.leslie.shared.skill.ISkillService;
 import org.leslie.shared.skill.ISkillService.SkillPresentation;
 import org.leslie.shared.skill.SkillTablePageData;
@@ -111,6 +118,8 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 			getTable().getMenuByClass(NewSkillMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(DeleteSkillMenu.class).setVisibleGranted(false);
 			getTable().getMenuByClass(SelfAssessMenu.class).setVisibleGranted(false);
+			getTable().getCategoryColumn().setInitialSortIndex(0);
+			getTable().getNameColumn().setInitialSortIndex(1);
 			break;
 		case PERSONAL_HISTORY:
 			getTable().getDescriptionColumn().setDisplayable(false);
@@ -494,6 +503,56 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 		}
 
 		@Order(5000)
+		public class AssessMenu extends AbstractMenu {
+
+			@Override
+			protected String getConfiguredText() {
+				return TEXTS.get("AssessAs");
+			}
+
+			@Override
+			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+				return CollectionUtility.<IMenuType>hashSet(
+						TableMenuType.MultiSelection, TableMenuType.SingleSelection);
+			}
+
+			@Override
+			protected void injectActionNodesInternal(OrderedCollection<IMenu> actionNodes) {
+				AssessmentCodeType assessmentCodeType = (AssessmentCodeType) CollectionUtility
+						.firstElement(CODES.getCodeTypes(AssessmentCodeType.class));
+				for (ICode<Integer> code : assessmentCodeType.getCodes()) {
+					IMenu menu = new AbstractMenu() {
+						@Override
+						protected String getConfiguredText() {
+							return code.getText();
+						}
+
+						@Override
+						protected Set<? extends IMenuType> getConfiguredMenuTypes() {
+							return CollectionUtility.<IMenuType>hashSet(
+									TableMenuType.MultiSelection, TableMenuType.SingleSelection);
+						}
+
+						@Override
+						protected void execAction() {
+							if (MessageBoxes.createYesNo()
+									.withHeader(TEXTS.get("AssessSkill"))
+									.withBody(TEXTS.get("AssessSelectedSkillCompetenciesAs",
+											code.getText()))
+									.show() == IMessageBox.YES_OPTION) {
+								BEANS.get(ISkillAssessmentService.class).assessSkills(
+										getUserId(), getTable().getIdColumn().getSelectedValues(),
+										code.getId());
+								reloadPage();
+							}
+						}
+					};
+					actionNodes.addLast(menu);
+				}
+			}
+		}
+
+		@Order(6000)
 		public class ViewHistoryMenu extends AbstractMenu {
 			@Override
 			protected String getConfiguredText() {
@@ -523,23 +582,5 @@ public class SkillTablePage extends AbstractPageWithTable<Table> {
 				form.startView();
 			}
 		}
-
-		@Order(6000)
-		public class AssessMenu extends AbstractMenu {
-			@Override
-			protected String getConfiguredText() {
-				return TEXTS.get("Assess_");
-			}
-
-			@Override
-			protected Set<? extends IMenuType> getConfiguredMenuTypes() {
-				return CollectionUtility.hashSet(TableMenuType.MultiSelection);
-			}
-
-			@Override
-			protected void execAction() {
-			}
-		}
-
 	}
 }

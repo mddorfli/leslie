@@ -73,7 +73,7 @@ public class SkillService implements ISkillService {
 	@Override
 	public SkillTablePageData getPersonalSkillHistoryTableData(Long skillId) {
 		List<SkillAssessment> assessments = JPA.createNamedQuery(
-				SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID, SkillAssessment.class)
+				SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID_ORDERED, SkillAssessment.class)
 				.setParameter("skillId", skillId)
 				.setParameter("userId", ServerSession.get().getUserNr())
 				.getResultList();

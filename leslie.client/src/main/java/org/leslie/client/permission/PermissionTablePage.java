@@ -90,7 +90,8 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 			// get all permissions
 			TreeMap<String, Integer[]> validLevels = new TreeMap<String, Integer[]>();
-			Set<Class<? extends Permission>> allPermissions = BEANS.get(IPermissionService.class).getAllPermissionClasses();
+			Set<Class<? extends Permission>> allPermissions = BEANS.get(IPermissionService.class)
+					.getAllPermissionClasses();
 			for (Class<? extends Permission> clazz : allPermissions) {
 				if (!BasicHierarchyPermission.class.isAssignableFrom(clazz)) {
 					continue;
@@ -268,8 +269,6 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 			}
 		}
 
-		
-		
 		@Order(50.0)
 		public class ProjectColumn extends AbstractBooleanColumn {
 
@@ -372,7 +371,7 @@ public class PermissionTablePage extends AbstractPageWithTable<PermissionTablePa
 
 									} else if (level.getValue() == PermissionLevel.LEVEL_OWN.getValue()) {
 										values = getOwnColumn().getSelectedValues();
-										
+
 									} else if (level.getValue() == PermissionLevel.LEVEL_PROJECT.getValue()) {
 										values = getProjectColumn().getSelectedValues();
 

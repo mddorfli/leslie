@@ -30,13 +30,18 @@ import org.leslie.server.mapping.MappedField;
 				+ "  LEFT JOIN FETCH sa.assessedBy "
 				+ " WHERE sa.user.id = :userId "
 				+ "   AND sa.id IN (SELECT MAX(sqsa.id) FROM SkillAssessment sqsa GROUP BY sqsa.user, sqsa.skill)"),
-		@NamedQuery(name = SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID, query = "SELECT sa FROM SkillAssessment sa WHERE sa.user.id = :userId AND sa.skill.id = :skillId "),
+		@NamedQuery(name = SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID_ORDERED, query = ""
+				+ "SELECT sa "
+				+ "  FROM SkillAssessment sa "
+				+ " WHERE sa.user.id = :userId "
+				+ "   AND sa.skill.id = :skillId "
+				+ " ORDER BY sa.lastModified DESC "),
 })
 @MappedClass(value = SkillAssessmentMapping.class)
 public class SkillAssessment {
 
 	public static final String QUERY_LATEST_BY_USER_ID_FETCH_ALL = "SkillAssessment.latestByUserIdFetchAll";
-	public static final String QUERY_HISTORY_BY_SKILL_ID_USER_ID = "SkillAssessment.historyBySkillIdUserId";
+	public static final String QUERY_HISTORY_BY_SKILL_ID_USER_ID_ORDERED = "SkillAssessment.historyBySkillIdUserIdOrdered";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,6 +76,10 @@ public class SkillAssessment {
 	@Temporal(TemporalType.TIMESTAMP)
 	@MappedField
 	private Date lastModified;
+
+	@ManyToOne
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 
 	public long getId() {
 		return id;
@@ -134,5 +143,13 @@ public class SkillAssessment {
 
 	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	public User getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(User modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 }

@@ -3,10 +3,14 @@ package org.leslie.server.skill;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.eclipse.scout.rt.platform.Bean;
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.platform.exception.VetoException;
+import org.eclipse.scout.rt.platform.util.CollectionUtility;
 import org.eclipse.scout.rt.shared.TEXTS;
 import org.eclipse.scout.rt.shared.services.common.security.ACCESS;
 import org.leslie.server.ServerSession;
@@ -23,6 +27,43 @@ import org.leslie.shared.skill.SkillAssessmentHistoryFormData.History.HistoryRow
 
 @Bean
 public class SkillAssessmentService implements ISkillAssessmentService {
+
+	@Override
+	public SkillAssessmentHistoryFormData loadHistory(SkillAssessmentHistoryFormData formData) {
+		if (!ACCESS.check(new AssessSkillPermission(formData.getSkillAssessmentId()))) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+		SkillAssessment current = JPA.find(SkillAssessment.class, formData.getSkillAssessmentId());
+		formData.setUserId(current.getUser().getId());
+
+		List<SkillAssessment> assessments = JPA.createNamedQuery(
+				SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID_ORDERED, SkillAssessment.class)
+				.setParameter("skillId", current.getSkill().getId())
+				.setParameter("userId", current.getUser().getId())
+				.getResultList();
+		for (SkillAssessment assessment : assessments) {
+			History history = formData.getHistory();
+			HistoryRowData row = history.addRow();
+			row.setAssessmentId(assessment.getId());
+			row.setName(assessment.getSkill().getName());
+			row.setSelfAssessment(assessment.getSelfAssessment());
+			row.setAssessment(assessment.getAssessment());
+			row.setAffinity(assessment.getSelfAffinity());
+			row.setLastModified(assessment.getLastModified());
+			row.setModifiedBy(assessment.getModifiedBy().getDisplayName());
+			row.setModifiedById(assessment.getModifiedBy().getId());
+
+			if (assessment.getSkill().getCategory() != null) {
+				row.setCategory(assessment.getSkill().getCategory().getName());
+			}
+
+			if (assessment.getAssessedBy() != null) {
+				row.setAssessedById(assessment.getAssessedBy().getId());
+				row.setAssessedBy(assessment.getAssessedBy().getDisplayName());
+			}
+		}
+		return formData;
+	}
 
 	@Override
 	public SkillAssessmentFormData load(SkillAssessmentFormData formData) throws ProcessingException {
@@ -64,12 +105,67 @@ public class SkillAssessmentService implements ISkillAssessmentService {
 		assessment.setSelfAffinity(formData.getSelfAffinity().getValue());
 		assessment.setSelfAssessment(formData.getSelfAssessment().getValue());
 		assessment.setLastModified(Date.from(Instant.now()));
+		assessment.setModifiedBy(user);
+
+		// carry any existing assessment over to the new record
+		List<SkillAssessment> history = JPA.createNamedQuery(
+				SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID_ORDERED, SkillAssessment.class)
+				.setParameter("skillId", skill.getId())
+				.setParameter("userId", user.getId())
+				.getResultList();
+		SkillAssessment latestAssessment = CollectionUtility.firstElement(history);
+		if (latestAssessment != null) {
+			assessment.setAssessment(latestAssessment.getAssessment());
+			assessment.setAssessedBy(latestAssessment.getAssessedBy());
+		}
+
 		JPA.persist(assessment);
 
 		user.getSkillAssessments().add(assessment);
 		skill.getAssessments().add(assessment);
 
 		return formData;
+	}
+
+	@Override
+	public void assessSkills(Long userId, List<Long> skillIds, Integer competencyLevel) {
+		if (ACCESS.getLevel(new AssessSkillPermission()) != AssessSkillPermission.LEVEL_ALL) {
+			throw new VetoException(TEXTS.get("AuthorizationFailed"));
+		}
+
+		User assessedUser = JPA.find(User.class, userId);
+		User currentUser = ServerSession.get().getUser();
+		Map<Long, Skill> skills = JPA.createNamedQuery(Skill.QUERY_ALL, Skill.class).getResultList().stream()
+				.collect(Collectors.toMap(Skill::getId, Function.identity()));
+
+		for (Long skillId : skillIds) {
+			Skill skill = skills.get(skillId);
+
+			SkillAssessment assessment = new SkillAssessment();
+			assessment.setUser(assessedUser);
+			assessment.setSkill(skill);
+			assessment.setAssessment(competencyLevel);
+			assessment.setAssessedBy(currentUser);
+			assessment.setLastModified(Date.from(Instant.now()));
+			assessment.setModifiedBy(currentUser);
+
+			// carry any existing self-assessment over to the new record
+			List<SkillAssessment> history = JPA.createNamedQuery(
+					SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID_ORDERED, SkillAssessment.class)
+					.setParameter("skillId", skill.getId())
+					.setParameter("userId", assessedUser.getId())
+					.getResultList();
+			SkillAssessment latestAssessment = CollectionUtility.firstElement(history);
+			if (latestAssessment != null) {
+				assessment.setSelfAffinity(latestAssessment.getSelfAffinity());
+				assessment.setSelfAssessment(latestAssessment.getSelfAssessment());
+			}
+
+			JPA.persist(assessment);
+
+			assessedUser.getSkillAssessments().add(assessment);
+			skill.getAssessments().add(assessment);
+		}
 	}
 
 	/**
@@ -85,35 +181,4 @@ public class SkillAssessmentService implements ISkillAssessmentService {
 				.anyMatch(assessment -> assessment.getId() == skillAssessmentId);
 	}
 
-	@Override
-	public SkillAssessmentHistoryFormData loadHistory(SkillAssessmentHistoryFormData formData) {
-		if (!ACCESS.check(new AssessSkillPermission(formData.getSkillAssessmentId()))) {
-			throw new VetoException(TEXTS.get("AuthorizationFailed"));
-		}
-		SkillAssessment current = JPA.find(SkillAssessment.class, formData.getSkillAssessmentId());
-		List<SkillAssessment> assessments = JPA.createNamedQuery(
-				SkillAssessment.QUERY_HISTORY_BY_SKILL_ID_USER_ID, SkillAssessment.class)
-				.setParameter("skillId", current.getSkill().getId())
-				.setParameter("userId", current.getUser().getId())
-				.getResultList();
-
-		for (SkillAssessment assessment : assessments) {
-			History history = formData.getHistory();
-			HistoryRowData row = history.addRow();
-			row.setAssessmentId(assessment.getId());
-			if (assessment.getSkill().getCategory() != null) {
-				row.setCategory(assessment.getSkill().getCategory().getName());
-			}
-			row.setName(assessment.getSkill().getName());
-			row.setSelfAssessment(assessment.getSelfAssessment());
-			row.setAssessment(assessment.getAssessment());
-			row.setAffinity(assessment.getSelfAffinity());
-			row.setLastModified(assessment.getLastModified());
-			if (assessment.getAssessedBy() != null) {
-				row.setAssessedById(assessment.getAssessedBy().getId());
-				row.setAssessedBy(assessment.getAssessedBy().getDisplayName());
-			}
-		}
-		return formData;
-	}
 }

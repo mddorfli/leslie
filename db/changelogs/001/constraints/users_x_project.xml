@@ -20,4 +20,5 @@
 	<addUniqueConstraint tableName="users_x_project" columnNames="user_id,project_id"/>
 </changeSet>
 
+
 </databaseChangeLog>

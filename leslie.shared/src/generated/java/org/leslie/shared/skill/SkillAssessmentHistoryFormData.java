@@ -41,6 +41,24 @@ public class SkillAssessmentHistoryFormData extends AbstractFormData {
 		return getPropertyByClass(SkillAssessmentIdProperty.class);
 	}
 
+	/**
+	 * access method for property UserId.
+	 */
+	public Long getUserId() {
+		return getUserIdProperty().getValue();
+	}
+
+	/**
+	 * access method for property UserId.
+	 */
+	public void setUserId(Long userId) {
+		getUserIdProperty().setValue(userId);
+	}
+
+	public UserIdProperty getUserIdProperty() {
+		return getPropertyByClass(UserIdProperty.class);
+	}
+
 	public static class History extends AbstractTableFieldBeanData {
 
 		private static final long serialVersionUID = 1L;
@@ -93,6 +111,8 @@ public class SkillAssessmentHistoryFormData extends AbstractFormData {
 			public static final String assessedById = "assessedById";
 			public static final String assessedBy = "assessedBy";
 			public static final String lastModified = "lastModified";
+			public static final String modifiedById = "modifiedById";
+			public static final String modifiedBy = "modifiedBy";
 			private Long m_id;
 			private Long m_assessmentId;
 			private Long m_categoryId;
@@ -104,6 +124,8 @@ public class SkillAssessmentHistoryFormData extends AbstractFormData {
 			private Long m_assessedById;
 			private String m_assessedBy;
 			private Date m_lastModified;
+			private Long m_modifiedById;
+			private String m_modifiedBy;
 
 			public Long getId() {
 				return m_id;
@@ -192,10 +214,31 @@ public class SkillAssessmentHistoryFormData extends AbstractFormData {
 			public void setLastModified(Date newLastModified) {
 				m_lastModified = newLastModified;
 			}
+
+			public Long getModifiedById() {
+				return m_modifiedById;
+			}
+
+			public void setModifiedById(Long newModifiedById) {
+				m_modifiedById = newModifiedById;
+			}
+
+			public String getModifiedBy() {
+				return m_modifiedBy;
+			}
+
+			public void setModifiedBy(String newModifiedBy) {
+				m_modifiedBy = newModifiedBy;
+			}
 		}
 	}
 
 	public static class SkillAssessmentIdProperty extends AbstractPropertyData<Long> {
+
+		private static final long serialVersionUID = 1L;
+	}
+
+	public static class UserIdProperty extends AbstractPropertyData<Long> {
 
 		private static final long serialVersionUID = 1L;
 	}

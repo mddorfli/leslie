@@ -1,11 +1,14 @@
 package org.leslie.client.skill;
 
 import org.eclipse.scout.rt.client.dto.FormData;
+import org.eclipse.scout.rt.client.ui.basic.cell.Cell;
 import org.eclipse.scout.rt.client.ui.basic.table.AbstractTable;
+import org.eclipse.scout.rt.client.ui.basic.table.ITableRow;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractDateTimeColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractLongColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractSmartColumn;
 import org.eclipse.scout.rt.client.ui.basic.table.columns.AbstractStringColumn;
+import org.eclipse.scout.rt.client.ui.basic.table.columns.IColumn;
 import org.eclipse.scout.rt.client.ui.form.AbstractForm;
 import org.eclipse.scout.rt.client.ui.form.AbstractFormHandler;
 import org.eclipse.scout.rt.client.ui.form.fields.button.AbstractCloseButton;
@@ -14,6 +17,7 @@ import org.eclipse.scout.rt.client.ui.form.fields.tablefield.AbstractTableField;
 import org.eclipse.scout.rt.platform.BEANS;
 import org.eclipse.scout.rt.platform.Order;
 import org.eclipse.scout.rt.shared.TEXTS;
+import org.eclipse.scout.rt.shared.data.basic.FontSpec;
 import org.eclipse.scout.rt.shared.services.common.code.ICodeType;
 import org.leslie.client.skill.SkillAssessmentHistoryForm.MainBox.CloseButton;
 import org.leslie.client.skill.SkillAssessmentHistoryForm.MainBox.GroupBox;
@@ -27,6 +31,8 @@ public class SkillAssessmentHistoryForm extends AbstractForm {
 
 	private Long skillAssessmentId;
 
+	private Long userId;
+
 	@FormData
 	public Long getSkillAssessmentId() {
 		return skillAssessmentId;
@@ -35,6 +41,16 @@ public class SkillAssessmentHistoryForm extends AbstractForm {
 	@FormData
 	public void setSkillAssessmentId(Long skillAssessmentId) {
 		this.skillAssessmentId = skillAssessmentId;
+	}
+
+	@FormData
+	public Long getUserId() {
+		return userId;
+	}
+
+	@FormData
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	@Override
@@ -83,6 +99,23 @@ public class SkillAssessmentHistoryForm extends AbstractForm {
 
 				public class Table extends AbstractTable {
 
+					@Override
+					protected void execDecorateCell(Cell view, ITableRow row, IColumn<?> col) {
+						Long editingUserId = getModifiedByIdColumn().getValue(row);
+						if (editingUserId.equals(getUserId())
+								&& (col.getColumnId().equals(getSelfAssessmentColumn().getColumnId())
+										|| col.getColumnId().equals(getAffinityColumn().getColumnId()))) {
+							// it was (probably) a self-assessment.
+							view.setFont(FontSpec.parse("BOLD"));
+						}
+						if (editingUserId.equals(getAssessedByIdColumn().getValue(row))
+								&& (col.getColumnId().equals(getAssessmentColumn().getColumnId())
+										|| col.getColumnId().equals(getAssessedByColumn().getColumnId()))) {
+							// it was (probably) an assessment.
+							view.setFont(FontSpec.parse("BOLD"));
+						}
+					}
+
 					public CategoryIdColumn getCategoryIdColumn() {
 						return getColumnSet().getColumnByClass(CategoryIdColumn.class);
 					}
@@ -117,6 +150,14 @@ public class SkillAssessmentHistoryForm extends AbstractForm {
 
 					public AssessmentIdColumn getAssessmentIdColumn() {
 						return getColumnSet().getColumnByClass(AssessmentIdColumn.class);
+					}
+
+					public ModifiedByIdColumn getModifiedByIdColumn() {
+						return getColumnSet().getColumnByClass(ModifiedByIdColumn.class);
+					}
+
+					public ModifiedByColumn getModifiedByColumn() {
+						return getColumnSet().getColumnByClass(ModifiedByColumn.class);
 					}
 
 					public NameColumn getNameColumn() {
@@ -271,6 +312,29 @@ public class SkillAssessmentHistoryForm extends AbstractForm {
 							return 120;
 						}
 					}
+
+					@Order(11000)
+					public class ModifiedByIdColumn extends AbstractLongColumn {
+
+						@Override
+						protected boolean getConfiguredDisplayable() {
+							return false;
+						}
+					}
+
+					@Order(12000)
+					public class ModifiedByColumn extends AbstractStringColumn {
+						@Override
+						protected String getConfiguredHeaderText() {
+							return TEXTS.get("ModifiedBy");
+						}
+
+						@Override
+						protected int getConfiguredWidth() {
+							return 100;
+						}
+					}
+
 				}
 			}
 
@@ -290,8 +354,6 @@ public class SkillAssessmentHistoryForm extends AbstractForm {
 			exportFormData(formData);
 			formData = BEANS.get(ISkillAssessmentService.class).loadHistory(formData);
 			importFormData(formData);
-
-			setEnabledGranted(false);
 		}
 	}
 }
