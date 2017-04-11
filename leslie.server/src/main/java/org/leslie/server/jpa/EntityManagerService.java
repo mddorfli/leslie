@@ -1,5 +1,8 @@
 package org.leslie.server.jpa;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.persistence.EntityManager;
@@ -7,6 +10,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import org.eclipse.scout.rt.platform.BEANS;
+import org.eclipse.scout.rt.platform.config.AbstractStringConfigProperty;
 import org.eclipse.scout.rt.platform.exception.ProcessingException;
 import org.eclipse.scout.rt.platform.service.IService;
 import org.eclipse.scout.rt.platform.util.Assertions;
@@ -28,7 +33,13 @@ public class EntityManagerService implements IService {
 
 	@PostConstruct
 	private void init() {
-		m_entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+		Map<String, String> properties = new HashMap<>();
+		properties.put("javax.persistence.jdbc.driver", BEANS.get(JdbcDriverClassProperty.class).getValue());
+		properties.put("javax.persistence.jdbc.url", BEANS.get(JdbcUrlProperty.class).getValue());
+		properties.put("javax.persistence.jdbc.user", BEANS.get(JdbcUsernameProperty.class).getValue());
+		properties.put("javax.persistence.jdbc.password", BEANS.get(JdbcPasswordProperty.class).getValue());
+
+		m_entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, properties);
 		m_entityManager = m_entityManagerFactory.createEntityManager();
 	}
 
@@ -105,4 +116,37 @@ public class EntityManagerService implements IService {
 			// n/a
 		}
 	}
+
+	public static class JdbcUrlProperty extends AbstractStringConfigProperty {
+
+		@Override
+		public String getKey() {
+			return "server.jdbc.url";
+		}
+	}
+
+	public static class JdbcDriverClassProperty extends AbstractStringConfigProperty {
+
+		@Override
+		public String getKey() {
+			return "server.jdbc.driverClass";
+		}
+	}
+
+	public static class JdbcUsernameProperty extends AbstractStringConfigProperty {
+
+		@Override
+		public String getKey() {
+			return "server.jdbc.user";
+		}
+	}
+
+	public static class JdbcPasswordProperty extends AbstractStringConfigProperty {
+
+		@Override
+		public String getKey() {
+			return "server.jdbc.password";
+		}
+	}
+
 }
