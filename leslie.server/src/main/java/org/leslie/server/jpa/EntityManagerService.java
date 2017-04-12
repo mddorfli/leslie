@@ -123,6 +123,11 @@ public class EntityManagerService implements IService {
 		public String getKey() {
 			return "server.jdbc.url";
 		}
+
+		@Override
+		protected String getDefaultValue() {
+			return "jdbc:postgresql://localhost:5432/leslie";
+		}
 	}
 
 	public static class JdbcDriverClassProperty extends AbstractStringConfigProperty {
@@ -130,6 +135,11 @@ public class EntityManagerService implements IService {
 		@Override
 		public String getKey() {
 			return "server.jdbc.driverClass";
+		}
+
+		@Override
+		protected String getDefaultValue() {
+			return "org.postgresql.Driver";
 		}
 	}
 
@@ -139,6 +149,11 @@ public class EntityManagerService implements IService {
 		public String getKey() {
 			return "server.jdbc.user";
 		}
+
+		@Override
+		protected String getDefaultValue() {
+			return "leslie";
+		}
 	}
 
 	public static class JdbcPasswordProperty extends AbstractStringConfigProperty {
@@ -146,6 +161,11 @@ public class EntityManagerService implements IService {
 		@Override
 		public String getKey() {
 			return "server.jdbc.password";
+		}
+
+		@Override
+		protected String getDefaultValue() {
+			return "leslie";
 		}
 	}
 
