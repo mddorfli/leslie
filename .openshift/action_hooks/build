@@ -2,5 +2,20 @@
 
 export JAVA_HOME=$OPENSHIFT_DATA_DIR/jdk1.8.0_121
 export TOMCAT_HOME=$OPENSHIFT_DATA_DIR/apache-tomcat-8.5.13
-export PATH=$JAVA_HOME/bin:$PATH
+export M2_HOME=$OPENSHIFT_DATA_DIR/apache-maven-3.5.0
+export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+
+# create a maven global-settings file
+if [ ! -d ${OPENSHIFT_DATA_DIR}maven.xml ]
+then
+	cd $OPENSHIFT_DATA_DIR
+	echo "<settings>" > maven.xml
+	echo "  <localRepository>${OPENSHIFT_DATA_DIR}maven</localRepository>" >> maven.xml
+	echo "</settings>" >> maven.xml
+fi
+
+cd $OPENSHIFT_REPO_DIR
+
+mvn --global-settings ${OPENSHIFT_DATA_DIR}maven.xml --version
+mvn --global-settings ${OPENSHIFT_DATA_DIR}maven.xml --file leslie/pom.xml clean package 
 
