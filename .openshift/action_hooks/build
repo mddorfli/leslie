@@ -1,12 +1,6 @@
 #!/bin/bash
-set -x
 
 export JAVA_HOME=$OPENSHIFT_DATA_DIR/jdk1.8.0_121
 export TOMCAT_HOME=$OPENSHIFT_DATA_DIR/apache-tomcat-8.5.13
 export PATH=$JAVA_HOME/bin:$PATH
 
-if [ -d $TOMCAT_HOME ]
-then
-	cd $TOMCAT_HOME/bin
-	./shutdown.sh
-fi
