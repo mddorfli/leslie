@@ -2,4 +2,48 @@
 # The logic to start up your application should be put in this
 # script. The application will work only if it binds to
 # $OPENSHIFT_DIY_IP:8080
-nohup $OPENSHIFT_REPO_DIR/diy/testrubyserver.rb $OPENSHIFT_DIY_IP $OPENSHIFT_REPO_DIR/diy |& /usr/bin/logshifter -tag diy &
+# nohup $OPENSHIFT_REPO_DIR/diy/testrubyserver.rb $OPENSHIFT_DIY_IP $OPENSHIFT_REPO_DIR/diy |& /usr/bin/logshifter -tag diy &
+
+# Print a trace of simple commands, for commands, case commands, select commands, and arithmetic for commands and their arguments or associated word lists after they are expanded and before they are executed.
+set -x
+
+# set local variables
+java_dir=jdk1.8.0_121
+java_inst_file=jdk-8u121-linux-x64.tar.gz
+java_url=http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/$java_inst_file
+tomcat_dir=apache-tomcat-8.5.13
+tomcat_inst_file=apache-tomcat-8.5.13.tar.gz
+tomcat_url=http://www-eu.apache.org/dist/tomcat/tomcat-8/v8.5.13/bin/$tomcat_inst_file
+
+# export java path
+export JAVA_HOME=$OPENSHIFT_DATA_DIR/$java_dir
+export PATH=$JAVA_HOME/bin:$PATH
+
+# install java
+if [ ! -d $OPENSHIFT_DATA_DIR/$java_dir ]
+then
+	cd $OPENSHIFT_DATA_DIR
+	wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" $java_url
+	tar -vxf $java_inst_file
+	rm -f $java_inst_file
+fi
+
+# install tomcat
+if [ ! -d $OPENSHIFT_DATA_DIR/$tomcat_dir ]
+then
+	cd $OPENSHIFT_DATA_DIR
+	wget $tomcat_url
+	tar -vxf $tomcat_inst_file
+	rm -f $tomcat_inst_file
+	
+	# replace ports and ip addresses in configuration
+	cd $OPENSHIFT_DATA_DIR/$tomcat_dir/conf
+	cp server.xml server.xml.original
+    sed -i "s#<Server\s*port=\(\"8005\"\)\(.*\)#<Server address=\"$OPENSHIFT_DIY_IP\" port=\"18005\" \2#g" server.xml
+    sed -i "s#<Connector\s*port=\(\"8080\"\)\(.*\)#<Connector address=\"$OPENSHIFT_DIY_IP\" port=\"8080\" \2#g;" server.xml
+    sed -i "s#<Connector\s*port=\(\"8009\"\)\(.*\)#<Connector address=\"$OPENSHIFT_DIY_IP\" port=\"18009\" \2#g" server.xml	
+    sed -i "s#redirectPort=\"8443\"#redirectPort=\"18443\"#g" server.xml
+fi
+
+cd $OPENSHIFT_DATA_DIR/$tomcat_dir/bin
+./startup.sh

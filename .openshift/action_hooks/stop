@@ -1,10 +1,20 @@
 #!/bin/bash
-source $OPENSHIFT_CARTRIDGE_SDK_BASH
+set -x
 
-# The logic to stop your application should be put in this script.
-if [ -z "$(ps -ef | grep testrubyserver.rb | grep -v grep)" ]
+# set local variables
+java_dir=jdk1.8.0_121
+java_inst_file=jdk-8u121-linux-x64.tar.gz
+java_url=http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/$java_inst_file
+tomcat_dir=apache-tomcat-8.5.13
+tomcat_inst_file=apache-tomcat-8.5.13.tar.gz
+tomcat_url=http://ftp.carnet.hr/misc/apache/tomcat/tomcat-8/v8.5.13/bin/$tomcat_inst_file
+
+# export java path
+export JAVA_HOME=$OPENSHIFT_DATA_DIR/$java_dir
+export PATH=$JAVA_HOME/bin:$PATH
+
+if [ -d $OPENSHIFT_DATA_DIR/$tomcat_dir ]
 then
-    client_result "Application is already stopped"
-else
-    kill `ps -ef | grep testrubyserver.rb | grep -v grep | awk '{ print $2 }'` > /dev/null 2>&1
+	cd $OPENSHIFT_DATA_DIR/$tomcat_dir/bin
+	./shutdown.sh
 fi
