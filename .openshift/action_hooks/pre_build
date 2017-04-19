@@ -1,0 +1,24 @@
+#!/bin/bash
+
+export JAVA_HOME=$OPENSHIFT_DATA_DIR/jdk1.8.0_121
+export TOMCAT_HOME=$OPENSHIFT_DATA_DIR/apache-tomcat-8.5.13
+export M2_HOME=$OPENSHIFT_DATA_DIR/apache-maven-3.5.0
+export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+
+# replace server connection configuration
+if [ -f ${OPENSHIFT_REPO_DIR}leslie.server.app.war/src/main/resources/config.properties ]
+then
+	cd ${OPENSHIFT_REPO_DIR}leslie.server.app.war/src/main/resources
+	# server.jdbc.url=jdbc:postgresql://localhost:5432/leslie -> server.jdbc.url=jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/leslie
+	sed -i "s#^server\.jdbc\.url=jdbc:postgresql:\/\/\([a-zA-Z0-9\.]\+\):\([0-9]\+\)\/\(\w\+\)\$#server\.jdbc\.url=jdbc:postgresql:\/\/$OPENSHIFT_POSTGRESQL_DB_HOST:$OPENSHIFT_POSTGRESQL_DB_PORT\/\3#g" config.properties
+fi
+
+# replace client connection configuration
+if [ -f ${OPENSHIFT_REPO_DIR}leslie.ui.html.app.war/src/main/resources/config.properties ]
+then
+	cd ${OPENSHIFT_REPO_DIR}leslie.ui.html.app.war/src/main/resources
+	# scout.server.url=http://localhost:8080/org.leslie.server -> scout.server.url=http://${OPENSHIFT_DIY_IP}:${OPENSHIFT_DIY_PORT}/org.leslie.server
+	sed -i "s#^scout\.server\.url=http:\/\/\([a-zA-Z0-9\.]\+\):\([0-9]\+\)\/\([a-zA-Z0-9\._]\+\)\$#scout\.server\.url=http:\/\/$OPENSHIFT_DIY_IP:$OPENSHIFT_DIY_PORT\/\3#g" config.properties
+	# auth.jdbc.url=jdbc:postgresql://localhost:5432/leslie -> auth.jdbc.url=jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/leslie
+	sed -i "s#^auth\.jdbc\.url=jdbc:postgresql:\/\/\([a-zA-Z0-9\.]\+\):\([0-9]\+\)\/\(\w\+\)\$#auth\.jdbc\.url=jdbc:postgresql:\/\/$OPENSHIFT_POSTGRESQL_DB_HOST:$OPENSHIFT_POSTGRESQL_DB_PORT\/\3#g" config.properties
+fi
