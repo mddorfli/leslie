@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Print a trace of simple commands, for commands, case commands, select commands, and arithmetic for commands and their arguments or associated word lists after they are expanded and before they are executed.
+set -x
+
+export JAVA_HOME=${OPENSHIFT_DATA_DIR}jdk1.8.0_121
+export TOMCAT_HOME=${OPENSHIFT_DATA_DIR}apache-tomcat-8.5.13
+export M2_HOME=${OPENSHIFT_DATA_DIR}apache-maven-3.5.0
+export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+
+client_dir=org.leslie.ui.html
+server_dir=org.leslie.server
+client_war=${OPENSHIFT_REPO_DIR}leslie.ui.html.app.war/target/${client_dir}.war
+server_war=${OPENSHIFT_REPO_DIR}leslie.server.app.war/target/${server_dir}.war
+
+# cleanup tomcat
+rm -rf $TOMCAT_HOME/work
+rm -f $TOMCAT_HOME/logs/*
+rm -f $TOMCAT_HOME/webapps/${client_dir}.war
+rm -rf $TOMCAT_HOME/webapps/$client_dir
+rm -f $TOMCAT_HOME/webapps/${server_dir}.war
+rm -rf $TOMCAT_HOME/webapps/$server_dir
+
+# client
+if [ -f $client_war ]
+then
+	unzip -d $TOMCAT_HOME/webapps/$client_dir $client_war
+fi
+
+# server
+if [ -f $server_war ]
+then
+	unzip -d $TOMCAT_HOME/webapps/$server_dir $server_war
+fi

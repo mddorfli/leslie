@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Print a trace of simple commands, for commands, case commands, select commands, and arithmetic for commands and their arguments or associated word lists after they are expanded and before they are executed.
+set -x
+
+export JAVA_HOME=${OPENSHIFT_DATA_DIR}jdk1.8.0_121
+export TOMCAT_HOME=${OPENSHIFT_DATA_DIR}apache-tomcat-8.5.13
+export M2_HOME=${OPENSHIFT_DATA_DIR}apache-maven-3.5.0
+export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+
+if [ ! -d ${OPENSHIFT_REPO_DIR}db ]
+then
+	cd ${OPENSHIFT_REPO_DIR}db
+	java -classpath lib/liquibase.jar:lib/postgresql-42.0.0.jar:changelogs liquibase.integration.commandline.Main --changeLogFile=changelogs/master.xml --url=jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/leslie dropAll
+	java -classpath lib/liquibase.jar:lib/postgresql-42.0.0.jar:changelogs liquibase.integration.commandline.Main --changeLogFile=changelogs/master.xml --contexts=TEST --url=jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/leslie update
+fi
