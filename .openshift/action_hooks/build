@@ -6,7 +6,7 @@ export M2_HOME=$OPENSHIFT_DATA_DIR/apache-maven-3.5.0
 export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
 
 # create a maven global-settings file
-if [ ! -d ${OPENSHIFT_DATA_DIR}maven.xml ]
+if [ ! -f ${OPENSHIFT_DATA_DIR}maven.xml ]
 then
 	cd $OPENSHIFT_DATA_DIR
 	echo "<settings>" > maven.xml
