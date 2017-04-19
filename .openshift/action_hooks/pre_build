@@ -27,6 +27,15 @@ fi
 # Print a trace of simple commands, for commands, case commands, select commands, and arithmetic for commands and their arguments or associated word lists after they are expanded and before they are executed.
 set -x
 
+# create a maven global-settings file if it doesn't exist
+if [ ! -f ${OPENSHIFT_DATA_DIR}maven.xml ]
+then
+	cd $OPENSHIFT_DATA_DIR
+	echo "<settings>" > maven.xml
+	echo "  <localRepository>${OPENSHIFT_DATA_DIR}maven</localRepository>" >> maven.xml
+	echo "</settings>" >> maven.xml
+fi
+
 # replace server connection configuration
 if [ -f ${OPENSHIFT_REPO_DIR}leslie.server.app.war/src/main/resources/config.properties ]
 then

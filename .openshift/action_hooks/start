@@ -1,7 +1,6 @@
 #!/bin/bash
-# The logic to start up your application should be put in this
-# script. The application will work only if it binds to
-# $OPENSHIFT_DIY_IP:8080
+# The logic to start up your application should be put in this script. 
+# The application will work only if it binds to $OPENSHIFT_DIY_IP:8080
 export JAVA_HOME=${OPENSHIFT_DATA_DIR}jdk1.8.0_121
 export TOMCAT_HOME=${OPENSHIFT_DATA_DIR}apache-tomcat-8.5.13
 export M2_HOME=${OPENSHIFT_DATA_DIR}apache-maven-3.5.0
