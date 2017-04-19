@@ -48,6 +48,9 @@ then
     sed -i "s#<Connector\s*port=\(\"8080\"\)\(.*\)#<Connector address=\"$OPENSHIFT_DIY_IP\" port=\"8080\" \2#g;" server.xml
     sed -i "s#<Connector\s*port=\(\"8009\"\)\(.*\)#<Connector address=\"$OPENSHIFT_DIY_IP\" port=\"18009\" \2#g" server.xml	
     sed -i "s#redirectPort=\"8443\"#redirectPort=\"18443\"#g" server.xml
+	
+	# replace the setenv.sh in the tomcat bin folder
+	cp -f  $OPENSHIFT_REPO_DIR/.openshift/setenv.sh $TOMCAT_HOME/bin
 fi
 
 cd $TOMCAT_HOME/bin
