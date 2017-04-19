@@ -1,12 +1,31 @@
 #!/bin/bash
-
-# Print a trace of simple commands, for commands, case commands, select commands, and arithmetic for commands and their arguments or associated word lists after they are expanded and before they are executed.
-set -x
-
 export JAVA_HOME=${OPENSHIFT_DATA_DIR}jdk1.8.0_121
 export TOMCAT_HOME=${OPENSHIFT_DATA_DIR}apache-tomcat-8.5.13
 export M2_HOME=${OPENSHIFT_DATA_DIR}apache-maven-3.5.0
 export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+
+# install java
+if [ ! -d $JAVA_HOME ]
+then
+	java_inst_file=jdk-8u121-linux-x64.tar.gz
+	cd $OPENSHIFT_DATA_DIR
+	wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/$java_inst_file
+	tar -vxf $java_inst_file
+	rm -f $java_inst_file
+fi
+
+# install maven
+if [ ! -d $M2_HOME ]
+then
+	maven_inst_file=apache-maven-3.5.0-bin.tar.gz
+	cd $OPENSHIFT_DATA_DIR
+	wget http://www-eu.apache.org/dist/maven/maven-3/3.5.0/binaries/$maven_inst_file
+	tar -vxf $maven_inst_file
+	rm -f $maven_inst_file
+fi
+
+# Print a trace of simple commands, for commands, case commands, select commands, and arithmetic for commands and their arguments or associated word lists after they are expanded and before they are executed.
+set -x
 
 # replace server connection configuration
 if [ -f ${OPENSHIFT_REPO_DIR}leslie.server.app.war/src/main/resources/config.properties ]
