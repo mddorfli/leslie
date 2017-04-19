@@ -28,3 +28,11 @@ if [ -f $server_war ]
 then
 	unzip -d $TOMCAT_HOME/webapps/$server_dir $server_war
 fi
+
+# update database
+if [ -d ${OPENSHIFT_REPO_DIR}db ]
+then
+	cd ${OPENSHIFT_REPO_DIR}db
+	java -classpath lib/liquibase.jar:lib/postgresql-42.0.0.jar:changelogs liquibase.integration.commandline.Main --changeLogFile=changelogs/master.xml --url=jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/leslie dropAll
+	java -classpath lib/liquibase.jar:lib/postgresql-42.0.0.jar:changelogs liquibase.integration.commandline.Main --changeLogFile=changelogs/master.xml --contexts=TEST --url=jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/leslie update
+fi

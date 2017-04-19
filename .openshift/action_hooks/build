@@ -16,7 +16,6 @@ then
 fi
 
 cd $OPENSHIFT_REPO_DIR
-
 mvn --global-settings ${OPENSHIFT_DATA_DIR}maven.xml --version
 mvn --global-settings ${OPENSHIFT_DATA_DIR}maven.xml --file leslie/pom.xml clean package -DskipTests
 

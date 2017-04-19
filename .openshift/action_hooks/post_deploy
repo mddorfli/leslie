@@ -4,10 +4,6 @@ export TOMCAT_HOME=${OPENSHIFT_DATA_DIR}apache-tomcat-8.5.13
 export M2_HOME=${OPENSHIFT_DATA_DIR}apache-maven-3.5.0
 export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
 
-# update database
-if [ -d ${OPENSHIFT_REPO_DIR}db ]
-then
-	cd ${OPENSHIFT_REPO_DIR}db
-	java -classpath lib/liquibase.jar:lib/postgresql-42.0.0.jar:changelogs liquibase.integration.commandline.Main --changeLogFile=changelogs/master.xml --url=jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/leslie dropAll
-	java -classpath lib/liquibase.jar:lib/postgresql-42.0.0.jar:changelogs liquibase.integration.commandline.Main --changeLogFile=changelogs/master.xml --contexts=TEST --url=jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/leslie update
-fi
+# clean up the build folder (to save disk space)
+cd $OPENSHIFT_REPO_DIR
+mvn --global-settings ${OPENSHIFT_DATA_DIR}maven.xml --file leslie/pom.xml clean
