@@ -10,41 +10,41 @@
 	</insert>
 </changeSet>
 
-<changeSet id="100" author="mddorfli" context="DEV">
-	<loadData tableName="users" file="changelogs/001/data/dev/users.csv"/>
+<changeSet id="100" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="users" file="changelogs/001/data/users.csv"/>
 </changeSet>
-<changeSet id="110" author="mddorfli" context="DEV">
-	<loadData tableName="role" file="changelogs/001/data/dev/role.csv"/>
+<changeSet id="110" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="role" file="changelogs/001/data/role.csv"/>
 </changeSet>
-<changeSet id="120" author="mddorfli" context="DEV">
-	<loadData tableName="project" file="changelogs/001/data/dev/project.csv"/>
+<changeSet id="120" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="project" file="changelogs/001/data/project.csv"/>
 </changeSet>
-<changeSet id="130" author="mddorfli" context="DEV">
-	<loadData tableName="users_x_project" file="changelogs/001/data/dev/users_x_project.csv"/>
+<changeSet id="130" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="users_x_project" file="changelogs/001/data/users_x_project.csv"/>
 </changeSet>
-<changeSet id="140" author="mddorfli" context="DEV">
-	<loadData tableName="role_x_permission" file="changelogs/001/data/dev/role_x_permission.csv"/>
+<changeSet id="140" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="role_x_permission" file="changelogs/001/data/role_x_permission.csv"/>
 </changeSet>
-<changeSet id="145" author="mddorfli" context="DEV">
-	<loadData tableName="users_x_role" file="changelogs/001/data/dev/users_x_role.csv"/>
+<changeSet id="145" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="users_x_role" file="changelogs/001/data/users_x_role.csv"/>
 </changeSet>
-<changeSet id="200" author="mddorfli" context="DEV">
-	<loadData tableName="activity" file="changelogs/001/data/dev/activity.csv"/>
+<changeSet id="200" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="activity" file="changelogs/001/data/activity.csv"/>
 </changeSet>
-<changeSet id="210" author="mddorfli" context="DEV">
-	<loadData tableName="activity_project" file="changelogs/001/data/dev/activity_project.csv"/>
+<changeSet id="210" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="activity_project" file="changelogs/001/data/activity_project.csv"/>
 </changeSet>
-<changeSet id="220" author="mddorfli" context="DEV">
-	<loadData tableName="activity_vacation" file="changelogs/001/data/dev/activity_vacation.csv"/>
+<changeSet id="220" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="activity_vacation" file="changelogs/001/data/activity_vacation.csv"/>
 </changeSet>
-<changeSet id="300" author="mddorfli" context="DEV">
-	<loadData tableName="skill_category" file="changelogs/001/data/dev/skill_category.csv"/>
+<changeSet id="300" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="skill_category" file="changelogs/001/data/skill_category.csv"/>
 </changeSet>
-<changeSet id="310" author="mddorfli" context="DEV">
-	<loadData tableName="skill" file="changelogs/001/data/dev/skill.csv"/>
+<changeSet id="310" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="skill" file="changelogs/001/data/skill.csv"/>
 </changeSet>
-<changeSet id="320" author="mddorfli" context="DEV">
-	<loadData tableName="users_x_skill" file="changelogs/001/data/dev/users_x_skill.csv"/>
+<changeSet id="320" author="mddorfli" context="DEV,TEST">
+	<loadData tableName="users_x_skill" file="changelogs/001/data/users_x_skill.csv"/>
 </changeSet>
 
 </databaseChangeLog>
